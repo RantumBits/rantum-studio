@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dune Cross-Frontend Attribution Engine | Rantum Studio</title>
+    <meta name="description" content="Analyzing deep trace call data on Dune Analytics to uncover hidden frontend routing and user behaviors.">
+    <meta property="og:title" content="Dune Cross-Frontend Attribution Engine | Rantum Studio">
+    <meta property="og:description" content="Analyzing deep trace call data on Dune Analytics to uncover hidden frontend routing and user behaviors.">
+    <meta property="og:image" content="../favicon.png">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/dune-cross-frontend-attribution.html">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Tailwind CSS with Typography Plugin -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            900: '#111111',
+                            800: '#1a1a1a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        /* Custom Typography Overrides */
+        .prose pre {
+            background: rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+        }
+        .prose code {
+            color: #d8b4fe !important; /* purple-300 */
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875em;
+        }
+        .prose pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit !important;
+        }
+        .prose a {
+            color: #a855f7 !important; /* purple-500 */
+            text-decoration: none;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+            transition: all 0.2s;
+        }
+        .prose a:hover {
+            border-bottom-color: #a855f7;
+        }
+    </style>
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Dune Cross-Frontend Attribution Engine",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+    
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            View on Dune
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+        
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Dune Analytics</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Web3</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Engineering</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Dune Cross-Frontend Attribution Engine
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                Analyzing deep trace call data to uncover hidden frontend routing and user behaviors across decentralized protocols.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+            
+            <h2>The Challenge</h2>
+            <p>
+                In the Web3 ecosystem, smart contracts are public, but the origin of the transactions is often obfuscated. When a user interacts with a decentralized exchange (DEX) aggregator, their transaction is routed through multiple intermediary contracts. 
+            </p>
+            <p>
+                A core challenge for protocols is determining <strong>which frontend interface</strong> originated the trade. This data is critical for assigning affiliate fees, understanding market share, and optimizing routing algorithms. However, this attribution data is buried deep within execution traces, not emitted in standard event logs.
+            </p>
+
+            <h2>The Solution</h2>
+            <p>
+                By leveraging Dune Analytics' <code>trace</code> and <code>call</code> tables, we built an attribution engine that recursively unpacks nested smart contract calls to identify the originating frontend router.
+            </p>
+
+            <h3>Architectural Approach</h3>
+            <ul>
+                <li><strong>Trace Analysis:</strong> Parsing <code>trace_address</code> arrays to reconstruct the call stack of a transaction.</li>
+                <li><strong>Signature Matching:</strong> Identifying specific function selectors (e.g., <code>swapExactTokensForTokens</code>) embedded in calldata.</li>
+                <li><strong>Spellbook Integration:</strong> Structuring the raw trace analysis into materialized views within Dune's open-source <code>Spellbook</code> dbt models for high-performance querying.</li>
+            </ul>
+
+            <h3>Example SQL Extraction</h3>
+            <p>Below is a simplified example of how we extract frontend attribution codes injected into transaction calldata:</p>
+            
+<pre><code class="language-sql">-- Extracting affiliate/frontend codes from raw calldata
+SELECT 
+    evt_tx_hash,
+    evt_block_time,
+    sender,
+    -- Decode the last 4 bytes of calldata to identify the frontend router
+    RIGHT(encode(call_data, 'hex'), 8) as frontend_id,
+    amount_in,
+    amount_out
+FROM dex_protocol.router_calls
+WHERE success = true
+AND evt_block_time >= CURRENT_DATE - INTERVAL '30' DAY</code></pre>
+
+            <h2>The Impact</h2>
+            <p>
+                This attribution model successfully mapped over 85% of previously "unknown" transaction volume to specific frontend aggregators and wallets. 
+            </p>
+            <p>
+                The insights allowed the protocol team to confidently adjust their affiliate fee structures and launch targeted incentive campaigns for their highest-performing frontend partners, directly driving a 15% increase in total volume routed through their infrastructure.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Need complex data decoded?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum Studio specializes in on-chain analytics, pipeline engineering, and quantitative product discovery for Web3 protocols.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>
