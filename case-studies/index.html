@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Case Studies | Rantum Studio</title>
+    <meta name="description" content="Technical deep-dives and architectural case studies from Rantum Studio.">
+    <meta property="og:title" content="Technical Case Studies | Rantum Studio">
+    <meta property="og:description" content="Technical deep-dives and architectural case studies from Rantum Studio.">
+    <meta property="og:image" content="../favicon.png">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            900: '#111111',
+                            800: '#1a1a1a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+    
+    <nav class="relative z-10 max-w-4xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-white font-bold text-xl tracking-tight hover:text-purple-400 transition-colors">
+            Rantum<span class="text-purple-500">.</span>
+        </a>
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-4xl mx-auto px-6 py-12 sm:py-20">
+        
+        <header class="mb-16">
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Case Studies
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed max-w-2xl">
+                An archive of technical deep-dives, architectural reviews, and data engineering pipelines built by Rantum Studio.
+            </p>
+        </header>
+
+        <!-- Archive List -->
+        <div class="space-y-6">
+            
+            <!-- Item 1: Dune -->
+            <a href="dune-cross-frontend-attribution.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <h3 class="text-2xl font-semibold text-white group-hover:text-purple-400 transition-colors">Dune Cross-Frontend Attribution</h3>
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-6 max-w-3xl">Dune Cross-Frontend Attribution Engine. Analyzing deep trace call data to uncover hidden frontend routing and user behaviors.</p>
+                <div class="flex gap-2">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Dune Analytics</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Web3</span>
+                </div>
+            </a>
+
+            <!-- Item 2: DePIN -->
+            <a href="depin-qos-oracle.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <h3 class="text-2xl font-semibold text-white group-hover:text-purple-400 transition-colors">DePIN QoS Oracle</h3>
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-6 max-w-3xl">Designed and implemented a real-time Quality of Service (QoS) anomaly detection oracle for decentralized physical infrastructure networks.</p>
+                <div class="flex gap-2">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">DePIN</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Machine Learning</span>
+                </div>
+            </a>
+
+            <!-- Item 3: Graphify -->
+            <a href="graphify-charts.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <h3 class="text-2xl font-semibold text-white group-hover:text-purple-400 transition-colors">Graphify Charts</h3>
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-6 max-w-3xl">A FastAPI rendering engine that aggregates Notion databases and streams dynamic, real-time SVG charts directly into Notion embeds.</p>
+                <div class="flex gap-2">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">SaaS</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Viz</span>
+                </div>
+            </a>
+
+            <!-- Item 4: Address Intel -->
+            <a href="address-intel.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <h3 class="text-2xl font-semibold text-white group-hover:text-purple-400 transition-colors">Address Intel API</h3>
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-6 max-w-3xl">Real-time real estate intelligence platform fusing highly fragmented municipal building permits with Multimodal AI (Gemini Pro) to generate predictive teardown and flippability scores.</p>
+                <div class="flex gap-2">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">PropTech</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Analytics</span>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
