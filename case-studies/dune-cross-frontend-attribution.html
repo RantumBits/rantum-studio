@@ -143,46 +143,49 @@
             
             <h2>The Challenge</h2>
             <p>
-                In the Web3 ecosystem, smart contracts are public, but the origin of the transactions is often obfuscated. When a user interacts with a decentralized exchange (DEX) aggregator, their transaction is routed through multiple intermediary contracts. 
+                The decentralized exchange (DEX) ecosystem routes billions of dollars in volume, but attributing that volume to the correct originating frontend—like the Uniswap UI, MetaMask Swaps, or Matcha—is notoriously difficult. 
             </p>
             <p>
-                A core challenge for protocols is determining <strong>which frontend interface</strong> originated the trade. This data is critical for assigning affiliate fees, understanding market share, and optimizing routing algorithms. However, this attribution data is buried deep within execution traces, not emitted in standard event logs.
+                There is no standardized way for a frontend to "announce" itself on-chain. Furthermore, true retail volume is frequently obfuscated behind complex proxy contracts or drowned out by massive programmatic arbitrage and MEV bot activity. Without clear attribution, protocols cannot accurately determine which interfaces are actually driving organic user growth.
             </p>
 
             <h2>The Solution</h2>
             <p>
-                By leveraging Dune Analytics' <code>trace</code> and <code>call</code> tables, we built an attribution engine that recursively unpacks nested smart contract calls to identify the originating frontend router.
+                By leveraging Dune Analytics' highly granular <code>trace</code> and <code>call</code> tables, we built a macro-level attribution engine capable of identifying trade origins across the entire DEX space. Because frontends use wildly disparate methods to track their own volume, our engine had to be highly adaptive.
             </p>
 
             <h3>Architectural Approach</h3>
             <ul>
-                <li><strong>Trace Analysis:</strong> Parsing <code>trace_address</code> arrays to reconstruct the call stack of a transaction.</li>
-                <li><strong>Signature Matching:</strong> Identifying specific function selectors (e.g., <code>swapExactTokensForTokens</code>) embedded in calldata.</li>
-                <li><strong>Spellbook Integration:</strong> Structuring the raw trace analysis into materialized views within Dune's open-source <code>Spellbook</code> dbt models for high-performance querying.</li>
+                <li><strong>Calldata Extraction:</strong> Parsing raw hex calldata to identify custom affiliate codes appended to the end of transaction payloads.</li>
+                <li><strong>Signature & Contract Mapping:</strong> Building a dynamic registry that maps specific router functions or dedicated smart contract addresses exclusively to their parent frontends.</li>
+                <li><strong>Bot Filtration via Trace Analysis:</strong> Parsing <code>trace_address</code> arrays and proxy contract interactions to mathematically separate organic retail flow from high-frequency "bot" volume.</li>
             </ul>
 
             <h3>Example SQL Extraction</h3>
-            <p>Below is a simplified example of how we extract frontend attribution codes injected into transaction calldata:</p>
+            <p>Below is a conceptual example of how we extract frontend attribution codes while filtering out identified bot addresses and proxy noise:</p>
             
-<pre><code class="language-sql">-- Extracting affiliate/frontend codes from raw calldata
+<pre><code class="language-sql">-- Extracting frontend codes while filtering bot volume
 SELECT 
     evt_tx_hash,
     evt_block_time,
-    sender,
+    tx_from AS sender,
     -- Decode the last 4 bytes of calldata to identify the frontend router
     RIGHT(encode(call_data, 'hex'), 8) as frontend_id,
     amount_in,
     amount_out
 FROM dex_protocol.router_calls
 WHERE success = true
-AND evt_block_time >= CURRENT_DATE - INTERVAL '30' DAY</code></pre>
+-- Filter known MEV/Arbitrage bot contracts
+AND tx_from NOT IN (SELECT address FROM labels.mev_bots)
+-- Ensure direct interaction (proxy filtration)
+AND call_depth <= 2</code></pre>
 
             <h2>The Impact</h2>
             <p>
-                This attribution model successfully mapped over 85% of previously "unknown" transaction volume to specific frontend aggregators and wallets. 
+                This comprehensive attribution model provided an unprecedented, macro-level view of retail versus bot volume across the entire decentralized exchange ecosystem. 
             </p>
             <p>
-                The insights allowed the protocol team to confidently adjust their affiliate fee structures and launch targeted incentive campaigns for their highest-performing frontend partners, directly driving a 15% increase in total volume routed through their infrastructure.
+                By successfully mapping previously "unknown" transactions to their exact frontend origins, the model allowed protocols and analysts to accurately assess which interfaces were truly driving market share. This data fundamentally shifted how liquidity incentives, affiliate fees, and growth strategies are optimized across the Web3 space.
             </p>
 
         </article>
