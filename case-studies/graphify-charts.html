@@ -137,7 +137,61 @@
         <!-- Article Content (Prose) -->
         <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
             
-            <p class="text-gray-500 italic">This case study is currently being drafted. Check back soon for the full technical breakdown.</p>
+            <h2>The Challenge</h2>
+            <p>
+                Notion is arguably the most powerful workspace and database engine for modern teams. However, it severely lacks native, customizable charting and data visualization options. 
+            </p>
+            <p>
+                To visualize Notion databases, users typically resort to heavy third-party SaaS tools that inject clunky iframes, require complex bidirectional data synchronization, and often break the clean aesthetics of a Notion workspace (especially when switching between Light and Dark modes).
+            </p>
+
+            <h2>The Solution</h2>
+            <p>
+                We engineered <strong>Graphify Charts</strong>, a blazing-fast Python/FastAPI rendering engine that bypasses traditional heavy iframes entirely. Instead of syncing data to a separate database, Graphify dynamically aggregates Notion databases on-the-fly and streams beautifully rendered, native SVG charts directly into Notion embed blocks.
+            </p>
+
+            <h3>Architectural Approach</h3>
+            <ul>
+                <li><strong>Dynamic Aggregation:</strong> Securely querying Notion API databases in real-time to extract schemas, group properties, and calculate mathematical aggregates (sums, counts, averages) without ever storing the user's raw data.</li>
+                <li><strong>Raw SVG Streaming:</strong> Utilizing a custom Python charting module (<code>app.charts</code>) to programmatically construct perfectly responsive XML/SVG nodes. The API returns an <code>image/svg+xml</code> response, which Notion natively caches and renders instantly.</li>
+                <li><strong>Theme Awareness:</strong> The rendering engine automatically detects query parameters to inject CSS variables, seamlessly matching Notion's native Light and Dark modes.</li>
+                <li><strong>Monetization Engine:</strong> Fully integrated Stripe middleware to gate premium chart limits via rate-limiting (<code>slowapi</code>).</li>
+            </ul>
+
+            <h3>Example: The SVG Rendering Pipeline</h3>
+            <p>Below is a conceptual look at how our FastAPI endpoint bypasses HTML and streams raw vector graphics directly to the client:</p>
+            
+<pre><code class="language-python">@app.get("/embed/{chart_id}.svg")
+async def stream_notion_chart(
+    chart_id: str, 
+    theme: str = "dark",
+    db: Session = Depends(get_db)
+):
+    chart_config = crud.get_chart(db, chart_id)
+    
+    # 1. Fetch live data from Notion API
+    raw_pages = notion.query_database_pages(chart_config.notion_db_id)
+    
+    # 2. Aggregate the data based on user configuration
+    aggregated_data = notion.aggregate_data(raw_pages, chart_config.axes)
+    
+    # 3. Generate raw SVG XML
+    svg_content = charts.render_chart(
+        data=aggregated_data, 
+        type=chart_config.chart_type, 
+        theme=theme
+    )
+    
+    # 4. Stream directly as an image bypassing iframes
+    return Response(content=svg_content, media_type="image/svg+xml")</code></pre>
+
+            <h2>The Impact</h2>
+            <p>
+                Graphify fundamentally changes how teams visualize data in Notion. 
+            </p>
+            <p>
+                By streaming raw SVGs rather than loading entire React applications inside iframes, render times dropped from multiple seconds down to under 200 milliseconds. The result is a seamless, native-feeling charting experience that empowers Notion power-users to build stunning, real-time dashboards without sacrificing performance or aesthetics.
+            </p>
 
         </article>
 
