@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClearTrace — On-Chain Execution Intelligence | Rantum Studio</title>
+    <meta name="description" content="Neutral, third-party proof of where DEX volume really originates — surfacing hidden, untagged orderflow plus execution quality and MEV across Ethereum, Base, Arbitrum, and Optimism.">
+    <meta property="og:title" content="ClearTrace — On-Chain Execution Intelligence | Rantum Studio">
+    <meta property="og:description" content="Neutral, third-party proof of where DEX volume really originates — hidden orderflow, execution quality, and MEV across four chains. Live API + dashboard.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/cleartrace.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/cleartrace.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "ClearTrace — On-Chain Execution Intelligence",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Attribution</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Engineering</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                ClearTrace
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                Neutral, third-party proof of where DEX volume really originates — surfacing hidden, untagged orderflow plus execution quality and MEV across Ethereum, Base, Arbitrum, and Optimism.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">4</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Chains live</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">~7.5<span class="text-base text-gray-500"> bps</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Median best slippage</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">172K+</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Labeled contracts</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                The decentralized exchange (DEX) ecosystem routes enormous volume, but attributing that volume to the frontend that actually originated it — the Uniswap UI, a wallet-native swap, an aggregator, an institutional desk — is notoriously hard. There is no standard way for a frontend to "announce" itself on-chain.
+            </p>
+            <p>
+                That gap matters most to the people funding growth. L2 foundations and grant programs hand out incentives based on volume numbers that are easy to game: wash trading, proxy routing, and MEV-farm flow all look like "adoption" in standard dashboards. Without neutral attribution, incentives reward the wrong behavior.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                ClearTrace is a live, neutral, third-party execution-intelligence engine built on Dune Analytics' granular <code>trace</code> and <code>call</code> tables — leveraging architectural insight from our open-source contributions to Dune's Spellbook dbt models. It attributes trade origin, benchmarks execution quality, and measures MEV exposure across Ethereum, Base, Arbitrum, and Optimism — against a registry of 172K+ labeled contracts — and serves it through a public dashboard and REST API at <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer">cleartracedata.com</a>.
+            </p>
+
+            <h3>Four attribution vectors for hidden orderflow</h3>
+            <ul>
+                <li><strong>Call-data suffix trapper:</strong> parses static hex suffixes appended to router calldata that standard contract decoders ignore — catching meta-frontends and wallet-native swap extensions.</li>
+                <li><strong>Proxy-router hunt:</strong> flags <code>tx_to</code> / pool-address mismatches to reveal custom enterprise frontends and institutional smart wallets bypassing public tracking.</li>
+                <li><strong>Multi-hop origin trace:</strong> uses window functions (<code>LAG</code>/<code>LEAD</code>) over per-wallet interaction sequences to map interface hops and user churn across chains.</li>
+                <li><strong>Fee-recipient vector:</strong> clusters anonymous frontends by the basis-point fees they route to static on-chain identifiers during execution.</li>
+            </ul>
+
+            <h3>Execution quality, measured neutrally</h3>
+            <p>
+                ClearTrace scores execution by comparing each trade's realized price against a 1-minute Volume-Weighted Average Price (VWAP) oracle — the true cost of a trade, not the quoted price the aggregator advertises. Across the chains it covers, the best-performing aggregators land around a <strong>~7.5 bps median</strong> effective slippage. It separately detects sandwich attacks (frontrun → victim → backrun) by scanning in-block transaction ordering, and reports both the number of attacks and total value sandwiched as a distinct MEV-exposure metric rather than folding it into the slippage score.
+            </p>
+
+            <h3>Illustrative extraction</h3>
+            <p>A simplified shape of the attribution pass — isolating frontend codes while filtering proxy noise and known bot flow:</p>
+
+<pre><code class="language-sql">-- Attribute trades to originating frontend, net of proxy/bot noise
+SELECT
+    evt_tx_hash,
+    evt_block_time,
+    tx_from AS sender,
+    -- Decode the trailing calldata suffix that identifies the frontend
+    RIGHT(encode(call_data, 'hex'), 8) AS frontend_id,
+    amount_usd
+FROM dex.trades_traces
+WHERE success = true
+  AND tx_from NOT IN (SELECT address FROM labels.mev_bots)
+  AND call_depth &lt;= 2  -- direct interaction; strips proxy layers</code></pre>
+
+            <h2>What It Shows</h2>
+            <p>
+                Finding signal in deliberately adversarial data — flow that is obfuscated, unlabeled, or actively trying not to be measured — and shipping it as live, defensible infrastructure with a public API. It is the on-chain expression of Rantum's through-line: rare-data attribution and detection turned into a product.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That we can build data infrastructure others can't easily replicate. ClearTrace gives foundations, grant programs, and protocol teams neutral proof of organic-versus-wash/proxy/bot volume for named recipients — the basis for spending incentives on real adoption. It runs today as a free dashboard and public API, with paid per-chain integrity reports and standing monthly monitoring engagements.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship — on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>

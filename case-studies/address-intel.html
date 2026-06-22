@@ -3,85 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Address Intel API | Rantum Studio</title>
-    <meta name="description" content="Wallet profiling and behavior scoring API for Web3 applications.">
-    <meta property="og:title" content="Address Intel API | Rantum Studio">
-    <meta property="og:description" content="Wallet profiling and behavior scoring API for Web3 applications.">
-    <meta property="og:image" content="../favicon.png">
+    <title>AddressIntel — Predictive Real-Estate Intelligence | Rantum Studio</title>
+    <meta name="description" content="Predictive real-estate intelligence that fuses fragmented municipal permit records with multimodal AI to score teardown probability and flippability. Live B2B API.">
+    <meta property="og:title" content="AddressIntel — Predictive Real-Estate Intelligence | Rantum Studio">
+    <meta property="og:description" content="Fusing fragmented municipal permit data with multimodal AI to predict teardowns and off-market opportunity. Live B2B API.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://rantum.xyz/case-studies/address-intel.html">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/address-intel.html">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../favicon.png">
 
-    <!-- Tailwind CSS with Typography Plugin -->
-    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        gray: {
-                            900: '#111111',
-                            800: '#1a1a1a',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Prism.js for Syntax Highlighting -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 
-    <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-        }
-        /* Custom Typography Overrides */
-        .prose pre {
-            background: rgba(0, 0, 0, 0.3) !important;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 0.75rem;
-        }
-        .prose code {
-            color: #d8b4fe !important; /* purple-300 */
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.25rem;
-            font-size: 0.875em;
-        }
-        .prose pre code {
-            background: transparent;
-            padding: 0;
-            color: inherit !important;
-        }
-        .prose a {
-            color: #a855f7 !important; /* purple-500 */
-            text-decoration: none;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
-            transition: all 0.2s;
-        }
-        .prose a:hover {
-            border-bottom-color: #a855f7;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/app.css">
 
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "Address Intel API",
+      "headline": "AddressIntel — Predictive Real-Estate Intelligence",
       "author": {
         "@type": "Person",
         "name": "Andrew Maury"
@@ -100,27 +52,32 @@
 <body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
     <!-- Subtle grid background -->
     <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
-    
+
     <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
         <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             Back to Studio
         </a>
+        <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit AddressIntel &rarr;
+        </a>
     </nav>
 
     <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
-        
+
         <!-- Article Header -->
         <header class="mb-16">
-            <div class="flex gap-2 mb-6">
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">API</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Engineering</span>
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">PropTech</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Predictive ML</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Multimodal AI</span>
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
-                Address Intel API
+                AddressIntel
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                Wallet profiling and behavior scoring API for Web3 applications.
+                Predictive real-estate intelligence that fuses fragmented municipal permit records with multimodal AI to score teardown probability, flippability, and off-market opportunity.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -134,17 +91,68 @@
             </div>
         </header>
 
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">2</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Markets tracked</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">10K+</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Sales records</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">3</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Predictive scores</div>
+            </div>
+        </div>
+
         <!-- Article Content (Prose) -->
         <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
-            
-            <p class="text-gray-500 italic">This case study is currently being drafted. Check back soon for the full technical breakdown.</p>
+
+            <h2>The Challenge</h2>
+            <p>
+                The most valuable real-estate signals are buried in the messiest data. Building permits, zoning changes, and code-enforcement records are filed across dozens of municipal systems — each with its own format, portal, and lag — and almost never connected to live listing data. By the time an off-market teardown or value-add opportunity shows up in a normal feed, the developers who watch permits already know.
+            </p>
+            <p>
+                The hard part isn't the model; it's making the underlying data usable at all: fragmented, civic, unstructured, and constantly changing.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                AddressIntel is a live real-estate intelligence platform covering the San Francisco Peninsula and Nantucket Island. A Python scraper fleet, orchestrated on GitHub Actions, continuously ingests municipal permits and MLS listings; the data is normalized, fused, and scored, then served through a B2B GraphQL API. It runs on a hybrid public-benefit model — a free public transparency layer over neighborhood development trends, funded by a monetized enterprise API for developers and institutional investors.
+            </p>
+
+            <h3>Predictive scoring &amp; multimodal AI</h3>
+            <ul>
+                <li><strong>Teardown &amp; flippability models:</strong> proprietary probability scores for teardown, flippability, and bidding-war likelihood, trained on fused permit + sales history.</li>
+                <li><strong>Vision-based condition scoring:</strong> Google Gemini reads MLS listing photos to score interior/exterior property condition automatically — turning unstructured images into a model feature.</li>
+                <li><strong>Permit alpha:</strong> joining civic permit filings to listings surfaces off-market developer activity before it becomes visible in standard feeds.</li>
+            </ul>
+
+            <h3>Architecture</h3>
+            <ul>
+                <li><strong>Pipeline:</strong> Python scraper fleet (Selenium / undetected-chromedriver / Requests) on GitHub Actions cron, with Gemini handling unstructured vision and NLP.</li>
+                <li><strong>Backend:</strong> Firebase Data Connect (GraphQL over Cloud SQL Postgres) with Firebase Auth; Stripe-metered access for enterprise clients.</li>
+                <li><strong>Frontend:</strong> Next.js (App Router) + React on Firebase App Hosting, with Sentry edge error tracking.</li>
+            </ul>
+
+            <h2>What It Shows</h2>
+            <p>
+                Turning messy, fragmented public records into a predictive product — and crossing domains, from data science into real estate, with point-in-time ML discipline so the scores reflect what was knowable at the time, not hindsight. It's the same through-line as ClearTrace, applied to civic rather than on-chain data.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That we can find signal in a data-rich space incumbents underuse, and turn it into a monetizable product — pipeline, models, API, and billing included. The same capability transfers to any business sitting on fragmented or underused data: marketplaces, fintech, insurance, logistics.
+            </p>
 
         </article>
 
         <!-- Call to Action -->
         <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
-            <h3 class="text-2xl font-bold text-white mb-4">Need complex data decoded?</h3>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum Studio specializes in on-chain analytics, pipeline engineering, and quantitative product discovery for Web3 protocols.</p>
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship.</p>
             <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
                 Work with us
             </a>
@@ -157,6 +165,7 @@
         <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <p>&copy; 2026 Rantum Studio</p>
             <div class="flex gap-6">
+                <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">AddressIntel</a>
                 <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
                 <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
                 <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
@@ -166,6 +175,5 @@
 
     <!-- Prism.js script for Syntax Highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
 </body>
 </html>

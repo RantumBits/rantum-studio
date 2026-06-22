@@ -3,17 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rantum | Independent Data & Product Studio</title>
+    <title>Rantum | Senior Data Science & ML Studio</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
-    
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="canonical" href="https://rantum.xyz/">
+
     <!-- Open Graph / SEO -->
-    <meta property="og:title" content="Rantum | Independent Data & Product Studio">
-    <meta property="og:description" content="We partner with founders and teams to build data-intensive products and establish growth pipelines.">
-    <meta property="og:image" content="favicon.png">
-    <meta property="og:url" content="https://rantum.xyz">
-    <meta name="twitter:card" content="summary">
+    <meta name="description" content="Rantum is a senior data science & ML studio led by Andrew Maury (ex-0x, Uniswap, Art Blocks). We turn messy, fragmented, and adversarial data into models, APIs, and products that ship.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Rantum">
+    <meta property="og:title" content="Rantum | Senior Data Science & ML Studio">
+    <meta property="og:description" content="We turn messy, fragmented, and adversarial data into models, APIs, and products that ship. Led by Andrew Maury — ex-0x, Uniswap, Art Blocks.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rantum | Senior Data Science & ML Studio">
+    <meta name="twitter:description" content="We turn messy, fragmented, and adversarial data into models, APIs, and products that ship.">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-10Z6J5BWD0"></script>
@@ -24,32 +34,8 @@
       gtag('config', 'G-10Z6J5BWD0');
     </script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        gray: {
-                            900: '#111111',
-                            800: '#1a1a1a',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-        }
-    </style>
+    <link rel="stylesheet" href="assets/app.css">
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -57,7 +43,13 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Rantum",
+      "description": "Senior data science & ML studio that turns messy, fragmented, and adversarial data into models, APIs, and products that ship.",
       "url": "https://rantum.xyz",
+      "founder": {
+        "@type": "Person",
+        "name": "Andrew Maury",
+        "url": "https://andrewmaury.com"
+      },
       "sameAs": [
         "https://linkedin.com/in/andrewmaury",
         "https://x.com/RantumBits",
@@ -70,27 +62,30 @@
 <body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
     <!-- Subtle grid background -->
     <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
-    
+
     <main class="relative z-10 max-w-4xl mx-auto px-6 py-24 sm:py-32">
         <header class="mb-20">
             <h1 class="text-5xl font-bold tracking-tighter text-white mb-6 font-mono">
                 Rantum<span class="text-purple-500">.</span>
             </h1>
-            <p class="text-xl text-gray-400 font-light max-w-2xl leading-relaxed">
-                An independent data and product studio founded by <a href="https://andrewmaury.com" class="text-white hover:text-purple-400 border-b border-gray-700 hover:border-purple-400 transition-all pb-0.5">Andrew Maury</a>. 
+            <p class="text-2xl sm:text-3xl text-white font-light max-w-2xl leading-tight mb-6">
+                Senior data science &amp; ML that ships. We find the signal others miss — and turn it into product.
+            </p>
+            <p class="text-lg text-gray-400 font-light max-w-2xl leading-relaxed">
+                Rantum is an independent data science &amp; machine-learning studio. We've built and scaled data behind teams at <strong class="text-white">0x Labs</strong>, <strong class="text-white">Uniswap</strong>, and <strong class="text-white">Art Blocks</strong> — and we specialize in the hard part: turning messy, fragmented, or adversarial data into models, APIs, and products that ship, validated properly rather than just prototyped.
                 <br><br>
-                Backed by 4 years scaling data infrastructure at <strong class="text-white">0x Labs</strong>, open-source contributions to <strong class="text-white">Dune's Spellbook</strong>, and our role as a founding analytics advisor for the <strong class="text-white">Uniswap Grants Program</strong>, we partner with founders and teams to build data-intensive products, establish growth pipelines, and solve complex analytical challenges. Currently accepting new projects.
+                <span class="italic">Founded by <a href="https://andrewmaury.com" class="text-white not-italic hover:text-purple-400 border-b border-gray-700 hover:border-purple-400 transition-all pb-0.5">Andrew Maury</a>.</span> Available for fractional data/ML leadership and select project engagements.
             </p>
             <div class="mt-8">
                 <a href="#contact" class="inline-flex items-center text-purple-400 hover:text-purple-300 font-mono text-sm transition-colors group">
-                    Work with us 
+                    Work with us
                     <svg class="w-4 h-4 ml-2 transform group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
                 </a>
             </div>
         </header>
 
         <section class="mb-20 border-y border-gray-800/50 py-8 text-center">
-            <p class="text-xs uppercase tracking-widest text-gray-500 font-mono mb-6">Past collaborations & clients include</p>
+            <p class="text-xs uppercase tracking-widest text-gray-500 font-mono mb-6">Data &amp; analytics work for teams at</p>
             <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 hover:opacity-100 transition-all duration-500">
                 <div class="flex flex-col items-center">
                     <span class="text-xl font-black text-white tracking-widest">0x Labs</span>
@@ -105,40 +100,55 @@
             </div>
         </section>
 
-        <section>
-            <h2 class="text-sm uppercase tracking-widest text-gray-500 font-mono mb-8 flex items-center">
+        <!-- Case Studies / Proof (up front) -->
+        <section class="mb-24">
+            <h2 class="text-sm uppercase tracking-widest text-gray-500 font-mono mb-3 flex items-center">
                 <span class="w-2 h-2 rounded-full bg-green-500 mr-3 animate-pulse"></span>
-                Internal & Client Projects
+                Selected Work
             </h2>
-            
+            <p class="text-gray-400 max-w-2xl mb-8 leading-relaxed">The through-line across everything we build: finding signal in data others can't use — by entity resolution, attribution, detection, and prediction — and shipping it as a live model, API, or product.</p>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Project 1: Dune Attribution -->
-                <a href="case-studies/dune-cross-frontend-attribution.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
+                <!-- Project 1: ClearTrace -->
+                <a href="case-studies/cleartrace.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">Dune Cross-Frontend Attribution</h3>
+                        <h3 class="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">ClearTrace <span class="text-[10px] font-mono align-middle ml-1 px-1.5 py-0.5 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span></h3>
                         <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </div>
-                    <p class="text-sm text-gray-400 leading-relaxed mb-6">Dune Cross-Frontend Attribution Engine. Analyzing deep trace call data to uncover hidden frontend routing and user behaviors.<br><br><span class="italic text-gray-500 text-xs tracking-wide">Built leveraging architectural insights from our contributions to Dune's open-source Spellbook dbt models.</span></p>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-6">Neutral, third-party proof of where DEX volume really originates — surfacing hidden, untagged orderflow plus execution quality and MEV across four chains. Live API + dashboard.<br><br><span class="italic text-gray-500 text-xs tracking-wide">Cross-frontend attribution built on deep trace-call data, leveraging our open-source contributions to Dune's Spellbook.</span></p>
                     <div class="flex gap-2">
-                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Dune Analytics</span>
-                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Web3</span>
+                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Attribution</span>
                     </div>
                 </a>
 
-                <!-- Project 2: DePIN QoS Oracle -->
+                <!-- Project 2: Address Intel -->
+                <a href="case-studies/address-intel.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">AddressIntel <span class="text-[10px] font-mono align-middle ml-1 px-1.5 py-0.5 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span></h3>
+                        <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-6">Predictive real-estate intelligence that fuses fragmented municipal permit records with multimodal AI to score teardown probability and flippability. Live B2B API.</p>
+                    <div class="flex gap-2">
+                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">PropTech</span>
+                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Predictive ML</span>
+                    </div>
+                </a>
+
+                <!-- Project 3: DePIN QoS Oracle -->
                 <a href="case-studies/depin-qos-oracle.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">DePIN QoS Oracle</h3>
+                        <h3 class="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">DePIN QoS Oracle <span class="text-[10px] font-mono align-middle ml-1 px-1.5 py-0.5 rounded bg-amber-900/20 text-amber-400/80 border border-amber-500/20">Prototype</span></h3>
                         <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </div>
-                    <p class="text-sm text-gray-400 leading-relaxed mb-6">Designed and implemented a real-time Quality of Service (QoS) anomaly detection oracle for decentralized physical infrastructure networks.</p>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-6">A real-time anomaly-detection oracle that scores the reliability of decentralized GPU compute (Akash, Render, io.net) as a 0–100 Compute Health Score for autonomous AI agents.</p>
                     <div class="flex gap-2">
                         <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">DePIN</span>
-                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Machine Learning</span>
+                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Anomaly Detection</span>
                     </div>
                 </a>
 
-                <!-- Project 3: Graphify Charts -->
+                <!-- Project 4: Graphify Charts -->
                 <a href="case-studies/graphify-charts.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
                     <div class="flex justify-between items-start mb-4">
                         <h3 class="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">Graphify Charts</h3>
@@ -151,19 +161,6 @@
                     </div>
                 </a>
 
-                <!-- Project 4: Address Intel -->
-                <a href="case-studies/address-intel.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">Address Intel API</h3>
-                        <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    </div>
-                    <p class="text-sm text-gray-400 leading-relaxed mb-6">Real-time real estate intelligence platform fusing highly fragmented municipal building permits with Multimodal AI (Gemini Pro) to generate predictive teardown and flippability scores.</p>
-                    <div class="flex gap-2">
-                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">PropTech</span>
-                        <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Analytics</span>
-                    </div>
-                </a>
-
             </div>
 
             <div class="mt-12 text-center">
@@ -172,18 +169,67 @@
                     <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>
             </div>
+        </section>
 
+        <!-- Services -->
+        <section class="mb-24">
+            <h2 class="text-sm uppercase tracking-widest text-gray-500 font-mono mb-8">What we do</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6 rounded-xl">
+                    <h3 class="text-white font-semibold mb-2">Fractional Head of Data / ML</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Senior data leadership without the full-time hire — strategy, architecture, and hands-on builds.</p>
+                </div>
+                <div class="glass-panel p-6 rounded-xl">
+                    <h3 class="text-white font-semibold mb-2">Data products &amp; intelligence APIs</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Design and ship data products, enrichment/attribution APIs, and predictive intelligence layers — like ClearTrace and AddressIntel.</p>
+                </div>
+                <div class="glass-panel p-6 rounded-xl">
+                    <h3 class="text-white font-semibold mb-2">ML &amp; predictive models</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Build, validate, and deploy models with real rigor — point-in-time discipline and honest backtesting.</p>
+                </div>
+                <div class="glass-panel p-6 rounded-xl">
+                    <h3 class="text-white font-semibold mb-2">Data &amp; model audits</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Assess pipelines, models, and data quality — technical due diligence you can act on.</p>
+                </div>
+                <div class="glass-panel p-6 rounded-xl md:col-span-2 border-purple-900/30">
+                    <h3 class="text-white font-semibold mb-2">On-chain &amp; crypto data <span class="text-xs font-mono text-purple-400 ml-2 align-middle">specialty</span></h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Execution analysis, cross-frontend attribution, MEV/labeling, and on-chain analytics — deep expertise for crypto and fintech teams.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Rantum -->
+        <section class="mb-8">
+            <h2 class="text-sm uppercase tracking-widest text-gray-500 font-mono mb-8">Why Rantum</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                <div>
+                    <h3 class="text-white font-semibold mb-2">A rare skill</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Turning messy, adversarial, or public data into shipped products — not just analysis decks.</p>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-2">We ship, not just advise</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">ClearTrace and AddressIntel are live, sophisticated builds — defensible infrastructure others can't easily replicate.</p>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-2">Rigor</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">We validate before we ship — backtesting and point-in-time discipline, rare among data freelancers.</p>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-2">Pedigree</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Data science at 0x Labs, Uniswap, and Art Blocks, plus open-source contributions to Dune's Spellbook.</p>
+                </div>
+            </div>
         </section>
 
         <!-- Contact Section -->
         <section id="contact" class="mt-32 glass-panel p-12 rounded-3xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
-            <h2 class="text-3xl font-bold text-white mb-4">Have a project in mind?</h2>
-            <p class="text-gray-400 mb-8 max-w-xl mx-auto">We're currently taking on select clients for product discovery, data engineering, and growth strategy. Let's build something great.</p>
+            <h2 class="text-3xl font-bold text-white mb-4">Have hard data to make useful?</h2>
+            <p class="text-gray-400 mb-8 max-w-xl mx-auto">We're taking on select engagements — fractional data/ML leadership, data products, and models built and validated properly. Let's build something that ships.</p>
             <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20">
                 Get in touch
             </a>
         </section>
-        
+
         <footer class="mt-24 pt-8 border-t border-gray-800 flex justify-between items-center text-sm font-mono text-gray-500">
             <p>&copy; 2026 Rantum Studio</p>
             <div class="flex gap-6">

@@ -6,13 +6,28 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://rantum.xyz/case-studies/dune-cross-frontend-attribution.html</loc>
+    <loc>https://rantum.xyz/case-studies/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://rantum.xyz/case-studies/cleartrace.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://rantum.xyz/case-studies/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://rantum.xyz/case-studies/address-intel.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rantum.xyz/case-studies/depin-qos-oracle.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rantum.xyz/case-studies/graphify-charts.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

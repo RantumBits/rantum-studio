@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+  }
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+/* Case-study prose (Tailwind Typography) overrides */
+.prose pre {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+}
+.prose code {
+  color: #d8b4fe !important; /* purple-300 */
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit !important;
+}
+.prose a {
+  color: #a855f7 !important; /* purple-500 */
+  text-decoration: none;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+  transition: all 0.2s;
+}
+.prose a:hover {
+  border-bottom-color: #a855f7;
+}
