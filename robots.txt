@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rantum.xyz/sitemap.xml
