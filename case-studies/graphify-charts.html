@@ -100,7 +100,7 @@
 
             <h2>The Solution</h2>
             <p>
-                We engineered <strong>Graphify Charts</strong>, a blazing-fast Python/FastAPI rendering engine that bypasses traditional heavy iframes entirely. Instead of syncing data to a separate database, Graphify dynamically aggregates Notion databases on-the-fly and streams beautifully rendered, native SVG charts directly into Notion embed blocks.
+                We built <strong>Graphify Charts</strong>, a fast Python/FastAPI rendering engine that bypasses traditional heavy iframes entirely. Instead of syncing data to a separate database, Graphify dynamically aggregates Notion databases on-the-fly and streams beautifully rendered, native SVG charts directly into Notion embed blocks.
             </p>
 
             <h3>Architectural Approach</h3>
@@ -140,10 +140,10 @@ async def stream_notion_chart(
 
             <h2>The Impact</h2>
             <p>
-                Graphify fundamentally changes how teams visualize data in Notion. 
+                By streaming raw SVGs rather than loading entire React applications inside iframes, charts render near-instantly instead of after the multi-second load of a heavy embed. The result is a native-feeling charting experience that lets Notion power-users build real-time dashboards without sacrificing performance or aesthetics.
             </p>
             <p>
-                By streaming raw SVGs rather than loading entire React applications inside iframes, charts render near-instantly instead of after the multi-second load of a heavy embed. The result is a seamless, native-feeling charting experience that lets Notion power-users build real-time dashboards without sacrificing performance or aesthetics.
+                Graphify is an internal tool rather than a core data engagement, but it reflects the same discipline we bring to everything: take a data source others render clunky and slow, and ship a fast, well-engineered product on top of it — pipeline, rendering, and billing included.
             </p>
 
         </article>
@@ -173,6 +173,6 @@ async def stream_notion_chart(
 
     <!-- Prism.js script for Syntax Highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 </body>
 </html>

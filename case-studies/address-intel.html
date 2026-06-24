@@ -94,16 +94,16 @@
         <!-- Key Stats -->
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">2</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Markets tracked</div>
-            </div>
-            <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">10K+</div>
                 <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Sales records</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">3</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Predictive scores</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Predictive models</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">2</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Live markets</div>
             </div>
         </div>
 
@@ -120,19 +120,19 @@
 
             <h2>What We Built</h2>
             <p>
-                AddressIntel is a live real-estate intelligence platform covering the San Francisco Peninsula and Nantucket Island. A Python scraper fleet, orchestrated on GitHub Actions, continuously ingests municipal permits and MLS listings; the data is normalized, fused, and scored, then served through a B2B GraphQL API. It runs on a hybrid public-benefit model — a free public transparency layer over neighborhood development trends, funded by a monetized enterprise API for developers and institutional investors.
+                AddressIntel is a live real-estate intelligence platform covering the San Francisco Peninsula and Nantucket Island. A Python ingestion fleet, orchestrated on GitHub Actions, continuously pulls municipal permits and public listing data; the data is normalized, fused, and scored, then served through a B2B GraphQL API. It runs on a hybrid public-benefit model — a free public transparency layer over neighborhood development trends, funded by a monetized enterprise API for developers and institutional investors.
             </p>
 
             <h3>Predictive scoring &amp; multimodal AI</h3>
             <ul>
                 <li><strong>Teardown &amp; flippability models:</strong> proprietary probability scores for teardown, flippability, and bidding-war likelihood, trained on fused permit + sales history.</li>
-                <li><strong>Vision-based condition scoring:</strong> Google Gemini reads MLS listing photos to score interior/exterior property condition automatically — turning unstructured images into a model feature.</li>
+                <li><strong>Vision-based condition scoring:</strong> Google Gemini reads listing photos to score interior/exterior property condition automatically — turning unstructured images into a model feature.</li>
                 <li><strong>Permit alpha:</strong> joining civic permit filings to listings surfaces off-market developer activity before it becomes visible in standard feeds.</li>
             </ul>
 
             <h3>Architecture</h3>
             <ul>
-                <li><strong>Pipeline:</strong> Python scraper fleet (Selenium / undetected-chromedriver / Requests) on GitHub Actions cron, with Gemini handling unstructured vision and NLP.</li>
+                <li><strong>Pipeline:</strong> a Python ingestion fleet on GitHub Actions cron, normalizing multi-source civic and listing data, with Gemini handling unstructured vision and NLP.</li>
                 <li><strong>Backend:</strong> Firebase Data Connect (GraphQL over Cloud SQL Postgres) with Firebase Auth; Stripe-metered access for enterprise clients.</li>
                 <li><strong>Frontend:</strong> Next.js (App Router) + React on Firebase App Hosting, with Sentry edge error tracking.</li>
             </ul>
