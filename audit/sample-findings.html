@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Audit Findings — Data &amp; Model Audit | Rantum Studio</title>
+    <meta name="description" content="A findings excerpt in the format of Rantum's Data & Model Audit report, drawn from the standing internal audit of ClearTrace — real findings, real numbers, severity-rated with an ROI-ranked roadmap.">
+    <meta property="og:title" content="Sample Audit Findings — Data &amp; Model Audit | Rantum Studio">
+    <meta property="og:description" content="What a Rantum audit report looks like: severity-rated findings with quantified evidence and an ROI-ranked roadmap. Excerpted from the internal audit of our own live data product.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/audit/sample-findings.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/audit/sample-findings.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-10Z6J5BWD0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-10Z6J5BWD0');
+    </script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to the Audit
+        </a>
+        <a href="mailto:andrew@andrewmaury.com?subject=Data%20%26%20Model%20Audit" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Scope an audit &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Header -->
+        <header class="mb-12">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Sample excerpt</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Report format</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Sample Audit Findings
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed">
+                Client audit reports are confidential, so this excerpt comes from the standing internal audit of <a href="../case-studies/cleartrace.html" class="text-purple-400 hover:text-purple-300 border-b border-purple-500/30 hover:border-purple-400 transition-all">ClearTrace</a>, our own live execution-quality benchmark. The findings below are real and the numbers are actual measurements from June–July 2026. Third-party names are withheld, exactly as identifying details would be redacted in a published client excerpt.
+            </p>
+        </header>
+
+        <!-- Report meta block -->
+        <div class="glass-panel rounded-2xl p-6 mb-16 font-mono text-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                <div><span class="text-gray-500">Engagement:</span> <span class="text-white">Internal audit (ClearTrace)</span></div>
+                <div><span class="text-gray-500">Period:</span> <span class="text-white">June–July 2026</span></div>
+                <div><span class="text-gray-500">Scope:</span> <span class="text-white">Quote-accuracy pipeline + publishing layer</span></div>
+                <div><span class="text-gray-500">Findings shown:</span> <span class="text-white">3 of a longer report</span></div>
+            </div>
+        </div>
+
+        <!-- Executive summary -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300 mb-16">
+            <h2>Executive summary</h2>
+            <p>
+                The system under audit measures whether DEX-aggregator quotes are honest: it samples quotes, checks them against realized outcomes, and publishes accuracy ratings. The audit found the pipeline's core measurements sound, but surfaced three issues typical of load-bearing data systems: a verification layer that had been silently passing everything, a headline conclusion that reversed once the sample grew large enough to be trusted, and a source that was fully rated in the data layer yet missing from the public one. Each finding below states what we found, why it matters, and what we recommended — the same structure every client finding gets.
+            </p>
+        </article>
+
+        <!-- Finding 1 -->
+        <section class="mb-12">
+            <div class="glass-panel rounded-2xl p-8">
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-red-900/30 text-red-400 border border-red-500/30">HIGH</span>
+                    <span class="text-xs font-mono text-gray-500 uppercase tracking-widest">Finding 01 · Monitoring &amp; verification</span>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4">The verification layer was verifying nothing</h3>
+                <div class="text-gray-400 leading-relaxed space-y-4 text-[0.95rem]">
+                    <p>
+                        <strong class="text-white">What we found.</strong> A CI check exists to verify that every numeric claim in published content can be found in the underlying database — a numeric honesty gate. On inspection, it had flagged <span class="font-mono text-white">100%</span> of claims as unverifiable on every content change since it was introduced (38 of 38 on one change, 39 of 39 on the next). The cause: the checker queried hardcoded column names that did not exist in any table, every query raised an error, and the errors were silently swallowed. One of the tables it searched did not exist at all. The gate was advisory, so nothing blocked — it simply produced noise that everyone learned to ignore.
+                    </p>
+                    <p>
+                        <strong class="text-white">Why it matters.</strong> A verifier that silently checks nothing is worse than no verifier: it manufactures the feeling of oversight while making it impossible to distinguish a genuinely fabricated number from the checker's own blind spot. This pattern generalizes — data-quality checks, reconciliation jobs, and alerting rules that error out and default to green are among the most common findings we make.
+                    </p>
+                    <p>
+                        <strong class="text-white">Recommendation (adopted).</strong> Fix the schema references, drop the phantom table, and extend the checker to recompute derived aggregates so ratio- and rollup-style claims become checkable rather than skipped. After the fix, the same content that had scored 0 of 39 verified scored 39 of 39. Add the meta-rule: any check that can fail must fail loudly, and "checker found nothing" must be distinguishable from "checker could not look."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Finding 2 -->
+        <section class="mb-12">
+            <div class="glass-panel rounded-2xl p-8">
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-red-900/30 text-red-400 border border-red-500/30">HIGH</span>
+                    <span class="text-xs font-mono text-gray-500 uppercase tracking-widest">Finding 02 · Statistical discipline</span>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4">The headline conclusion reversed once the sample could carry it</h3>
+                <div class="text-gray-400 leading-relaxed space-y-4 text-[0.95rem]">
+                    <p>
+                        <strong class="text-white">What we found.</strong> An early look at a thin slice of the sample suggested one routing source (name withheld) delivered on its quotes <em>less</em> often at the $1M trade size than at $1k, pointing at a large-trade slippage problem. Instead of publishing, the claim was held until each measurement cell met a rating threshold: at least 30 realized samples spanning at least 7 days. With the full sample (916 rows over 9.6 days), the pattern <em>reversed</em>: the source realized 65.8% at $1k, 72.9% at $10k, 87.7% at $100k, and 90.7% at $1M. The $1M cohort was its best; retail-size quotes were the real weakness. That weakness held on every day of the sample rather than tracing to one bad run, no peer source shared it, and every miss was a real failure to deliver — not a benign routing artifact.
+                    </p>
+                    <p>
+                        <strong class="text-white">Why it matters.</strong> The thin-sample conclusion was not just imprecise — it pointed in the opposite direction of the truth, and it would have been published under the system's own name. Cohort comparisons on thin samples are the most dangerous class of data-product claim, because they are usually plausible, directional, and wrong.
+                    </p>
+                    <p>
+                        <strong class="text-white">Recommendation (adopted).</strong> Gate every published cohort comparison on the rating threshold, expose the threshold in the methodology, and treat "not yet rated" as a first-class published state rather than an excuse to ship the early number.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Finding 3 -->
+        <section class="mb-16">
+            <div class="glass-panel rounded-2xl p-8">
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-amber-900/20 text-amber-400/80 border border-amber-500/20">MEDIUM</span>
+                    <span class="text-xs font-mono text-gray-500 uppercase tracking-widest">Finding 03 · Layer consistency</span>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4">Rated in the data layer, missing from the public layer</h3>
+                <div class="text-gray-400 leading-relaxed space-y-4 text-[0.95rem]">
+                    <p>
+                        <strong class="text-white">What we found.</strong> When the sampler produced its first statistically rated results (112 of 168 measurement cells crossing the threshold), the public leaderboard showed 5 of the 6 sampled sources. The sixth was fully rated in the data layer — 20 rated cells — but never appeared in the public rollup: it was dropped at the boundary between the rating layer and the presentation layer.
+                    </p>
+                    <p>
+                        <strong class="text-white">Why it matters.</strong> Every boundary between layers — raw to derived, derived to published — is a place where records can vanish without any error. Nothing was "wrong" in either layer individually; the loss only shows up when you reconcile counts across the boundary. In client systems this same pattern appears as customers missing from dashboards, transactions missing from revenue reports, and cohorts missing from investor metrics.
+                    </p>
+                    <p>
+                        <strong class="text-white">Recommendation.</strong> Add a reconciliation check at each layer boundary asserting that everything rated upstream is represented downstream (or explicitly excluded, with a reason). Boundary reconciliation is cheap to add and catches a class of bug that no within-layer test ever will.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roadmap excerpt -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 mb-8">
+            <h2>Roadmap excerpt (ROI-ranked)</h2>
+            <p>
+                Every report ends with a roadmap: each recommendation ranked by what it costs against what it protects or earns. The excerpt below covers the three findings above.
+            </p>
+        </article>
+        <div class="glass-panel rounded-2xl overflow-hidden mb-16">
+            <table class="w-full text-sm text-left">
+                <thead>
+                    <tr class="border-b border-gray-800 font-mono text-xs uppercase tracking-widest text-gray-500">
+                        <th class="px-6 py-4">Fix</th>
+                        <th class="px-6 py-4">Effort</th>
+                        <th class="px-6 py-4">What it protects</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-400">
+                    <tr class="border-b border-gray-800/50">
+                        <td class="px-6 py-4 text-white">Repair the numeric-honesty gate; make silent failure impossible</td>
+                        <td class="px-6 py-4 font-mono">Days</td>
+                        <td class="px-6 py-4">Credibility of every number the product publishes</td>
+                    </tr>
+                    <tr class="border-b border-gray-800/50">
+                        <td class="px-6 py-4 text-white">Gate cohort claims on the statistical rating threshold</td>
+                        <td class="px-6 py-4 font-mono">Days</td>
+                        <td class="px-6 py-4">Prevents publishing directionally wrong headline claims</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 text-white">Reconciliation checks at every layer boundary</td>
+                        <td class="px-6 py-4 font-mono">~1 week</td>
+                        <td class="px-6 py-4">Completeness of everything shown publicly or to investors</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Closing note -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 mb-4">
+            <h2>What a full report adds</h2>
+            <p>
+                A client report covers one named system at this level of specificity, end to end: the lineage map from week one, every finding quantified with evidence that can be re-run, severity ratings, and the full ROI-ranked roadmap. It is written to be handed to your team — or to us — and acted on.
+            </p>
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-16 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Want this run against your system?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">The Data &amp; Model Audit is $12,000 flat, three weeks, scoped to one named pipeline or model. The report is yours either way.</p>
+            <a href="mailto:andrew@andrewmaury.com?subject=Data%20%26%20Model%20Audit" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Scope an audit
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="index.html" class="hover:text-gray-400 transition-colors">The Audit</a>
+                <a href="../case-studies/" class="hover:text-gray-400 transition-colors">Case Studies</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
