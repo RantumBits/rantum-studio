@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Fragmented Permit Data to a Teardown-Probability Model | Rantum Studio</title>
+    <meta name="description" content="How AddressIntel turns permit records scattered across four municipal systems into an APN-joined, point-in-time teardown label — and an honest backtest that knows the difference between a real signal and leakage.">
+    <meta property="og:title" content="From Fragmented Permit Data to a Teardown-Probability Model | Rantum Studio">
+    <meta property="og:description" content="Unifying four municipal permit systems on the parcel APN, engineering a non-circular teardown label, and backtesting it point-in-time — the hard part of predictive PropTech.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/teardown-probability-model.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/teardown-probability-model.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "From Fragmented Permit Data to a Teardown-Probability Model",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit AddressIntel &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">PropTech</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Point-in-Time ML</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Engineering</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                From Fragmented Permit Data to a Teardown-Probability Model
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                Building permits are the earliest signal of a teardown — and the messiest data in real estate. Here is how AddressIntel unifies four municipal systems on the parcel APN, engineers a teardown label that doesn't cheat, and backtests it the only way that means anything: point-in-time.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">4</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Permit systems unified</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">1.5K+</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">APN-stamped teardown permits</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">~2<span class="text-base text-gray-500"> yr</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Median lead time</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                A teardown is worth knowing about early. A developer who can spot, a year or two ahead, which aging house on an outsized lot is likely to be demolished and rebuilt has a real edge over the market. The signal that precedes almost every teardown is a building permit: a demolition filing, then a new single-family-residence filing on the same parcel.
+            </p>
+            <p>
+                The trouble is that permits are the messiest data in real estate. On the San Francisco Peninsula alone they are filed across four different portal technologies — Accela ACA (Palo Alto, Cupertino, Santa Clara), Tyler EnerGov CSS (San Mateo, San Carlos), eTRAKiT (Hillsborough, Atherton, Woodside, Burlingame), and San Jose's open-data CKAN API. Each has its own schema, its own free-text vocabulary for what a permit <em>is</em>, its own history depth, and no shared identifier that ties a permit to a specific parcel or listing. The hard part is not the model. It is making the underlying data joinable and trustworthy at all.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                A permit pipeline and a teardown-probability model inside <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer">AddressIntel</a>, our predictive real-estate intelligence platform. The pipeline normalizes those four sources into one schema, resolves every record to a parcel, and classifies free-text permit types into a fixed taxonomy. On top of that sits the part most predictive PropTech skips: a label and a backtest built so the numbers can be trusted.
+            </p>
+
+            <h3>One schema, joined on the parcel APN</h3>
+            <p>
+                The parcel Assessor's Parcel Number (APN) is the join key that makes everything else possible. San Jose's open-data API carries the APN natively on every permit, along with clean fields for permit type, issue and final dates, valuation, and contractor — the highest-volume market, unlocked with a free JSON call rather than a brittle scrape. For the Selenium-scraped portals, the APN is recovered from the assessor record and used to stitch permits, sales, and listings onto a single parcel timeline. Permit type descriptions, which range from <code>"NEW SINGLE FAMILY RESIDENCE"</code> to <code>"Single Family (New) - New"</code> to a bare <code>"Demolition"</code>, are classified into a stable taxonomy (demolition, new construction, addition, remodel, roof, ADU, and so on) so a query means the same thing in every city.
+            </p>
+
+            <h3>A label that doesn't cheat</h3>
+            <p>
+                The first version of the label was a proxy: California's Proposition 13 caps assessed-value growth except on new construction, so a teardown-rebuild shows up as a sharp jump in a parcel's <em>building</em> value. It was cheap to compute and looked plausible. We cross-validated it against real permits anyway — and it failed. Of 140 proxy-flagged rebuilds, exactly one had a confirming demolition or new-build permit at the same APN. The proxy was catching ownership resets and additions, not teardowns.
+            </p>
+            <p>
+                So the real label comes from the permits themselves: a parcel is a teardown if it has a demolition or new-single-family permit in the forward window. Because that label is built from permits rather than assessed value, it is <em>independent</em> of the model's strongest feature (the land-to-improvement value ratio) — which means the backtest measures prediction, not an artifact of the label sharing arithmetic with the feature.
+            </p>
+
+            <h3>Point-in-time, or it means nothing</h3>
+            <p>
+                A teardown changes the structure, and that is the whole trap. Score a parcel as of 2018, but read its <code>year_built</code>, square footage, or listing photos today, and every one of those attributes describes the <em>new</em> house that replaced it. The features would silently encode the answer. This is the point-in-time leakage principle, and it disqualifies most of the obvious features from the backtest: only dated history — assessment rolls, sales, and permits, each stamped with the year it was true — is clean.
+            </p>
+            <p>The label construction, reduced to its essentials, makes the discipline explicit:</p>
+
+<pre><code class="language-python"># Point-in-time teardown label from real permits — no lookahead, no leakage
+for T in (2016, 2018, 2020):                    # historical scoring dates
+    for parcel in universe:
+        roll = assessment_asof(parcel, T)        # land/improvement split dated <= T
+        if not roll:
+            continue
+
+        permit_years = teardown_permits[parcel.apn]   # DEMO or NEW-SFR at this APN
+        if any(y <= T for y in permit_years):
+            continue                             # already torn down by T — drop it
+
+        label = 1 if any(T < y <= T + 3 for y in permit_years) else 0
+
+        # Features use ONLY dated history (assessed values, sales, permits).
+        # year_built, house sqft, and photos describe the *rebuilt* house — they leak.
+        observations.append((point_in_time_features(roll), label))</code></pre>
+
+            <h3>What the honest number turned out to be</h3>
+            <p>
+                Run this way — scoring dates of 2016, 2018, and 2020, a three-year forward window, roughly 17,600 parcel-date observations at a 0.72% teardown base rate — a single heuristic sets a genuinely high bar. Sorting parcels by their land-to-improvement value ratio alone gives about a 5x lift in the top decile: it catches roughly half of all teardowns in the top 10% of parcels, about two years before the permit is filed. A hand-blended model did not beat it. Neighborhood-contagion, tenure, and assessment-growth features were tested and each either added nothing or diluted the ratio.
+            </p>
+            <p>
+                That is a result, not a failure. A model that cannot beat "sort by the value ratio" adds nothing a developer doesn't already get for free, and we learned that in a week of backtesting rather than after a year in production. It also sharpened where the real edge has to come from — assessment-independent signals like maintenance-permit history (a negative teardown signal: an owner investing in a structure they intend to keep) and explicit seller intent in listing language ("value in the land," "as-is," "contractor special"). Just as important, it clarified the line between the backtest and the live product: physical features like lot coverage and structure age <em>leak</em> when backtesting a rebuilt parcel, but are clean and strong when scoring a house that is still standing today.
+            </p>
+
+            <h2>What It Shows</h2>
+            <p>
+                The hard, unglamorous discipline underneath predictive ML: unifying fragmented public records onto a single joinable spine, engineering a label that is independent of the feature it validates, and enforcing point-in-time hygiene so a backtest reports what was actually knowable at scoring time. It is the same through-line as ClearTrace — finding signal in messy, real-world data — applied to civic records instead of on-chain flow.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That we will tell you whether a model works before you bet a roadmap on it. Anyone can produce a flattering backtest by leaking the future into the features; the value is in the rigor that refuses to. For a business sitting on fragmented, underused data, that means the difference between a predictive product you can defend to a customer and a demo that quietly falls apart in production. The same capability transfers to any domain with messy records and a hard-to-measure outcome: insurance, lending, marketplaces, logistics.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship — validated properly, not just prototyped.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">AddressIntel</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
