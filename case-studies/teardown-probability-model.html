@@ -28,6 +28,50 @@
 
     <link rel="stylesheet" href="../assets/app.css">
 
+    <!-- Scoped styles for the interactive lift-by-decile chart (self-contained, no Tailwind rebuild needed) -->
+    <style>
+      .stat-row{display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap;padding:22px 10px}
+      .stat-row .num{font-family:'JetBrains Mono',monospace;font-weight:700;line-height:1;text-align:center}
+      .stat-row .num .big{font-size:2.4rem;color:#fff}
+      .stat-row .num.bad .big{color:#f59e0b}
+      .stat-row .num.good .big{color:#a855f7}
+      .stat-row .num .lab{font-size:.7rem;color:#8b8b93;text-transform:uppercase;letter-spacing:.06em;margin-top:6px;max-width:13ch}
+      .stat-row .arrow{font-size:1.6rem;color:#52525b}
+      #teardown-legend{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 18px}
+      .legend-chip{appearance:none;cursor:pointer;font:inherit;font-size:.78rem;font-weight:600;
+        color:#c7c7cf;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+        border-radius:999px;padding:6px 12px 6px 10px;display:inline-flex;align-items:center;gap:7px;
+        transition:opacity .15s}
+      .legend-chip .dot{width:9px;height:9px;border-radius:50%;flex:none}
+      .legend-chip.proxy .dot{background:#f59e0b}
+      .legend-chip.clean .dot{background:#a855f7}
+      .legend-chip[aria-pressed="false"]{opacity:.35}
+      .chart-controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:2px}
+      .metric-toggle{display:inline-flex;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:3px}
+      .metric-toggle button{appearance:none;border:0;background:transparent;color:#9c9ca3;font:inherit;
+        font-size:.76rem;font-weight:600;padding:6px 11px;border-radius:6px;cursor:pointer;white-space:nowrap}
+      .metric-toggle button[aria-pressed="true"]{background:#a855f7;color:#fff}
+      .iconbtn{appearance:none;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);
+        color:#9c9ca3;font:inherit;font-size:.76rem;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer}
+      .iconbtn:hover{color:#fff}
+      #teardown-chart-card:fullscreen{background:#111111;padding:28px;display:flex;flex-direction:column;justify-content:center}
+      #teardown-chart-card:fullscreen .plot-wrap{flex:1;min-height:0}
+      #teardown-chart-card:fullscreen #teardown-svg{height:76vh}
+      .plot-wrap{position:relative;width:100%}
+      #teardown-svg{display:block;width:100%;height:auto;overflow:visible}
+      .bar{cursor:pointer}
+      .bar-hatch{fill:url(#hatchPattern)}
+      .refline{stroke:#52525b;stroke-width:1;stroke-dasharray:4 4}
+      .axislabel{fill:#8b8b93;font-family:'JetBrains Mono',monospace;font-size:10px}
+      .catlabel{fill:#c7c7cf;font-family:Inter,sans-serif;font-size:11px}
+      #teardown-tooltip{position:absolute;pointer-events:none;background:#1a1a1a;border:1px solid rgba(255,255,255,.12);
+        border-radius:9px;padding:9px 12px;font-size:12.5px;line-height:1.5;color:#e5e5e8;max-width:270px;
+        box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:5}
+      #teardown-tooltip .tt-head{font-weight:700;color:#fff;margin-bottom:2px}
+      #teardown-tooltip .tt-val{font-family:'JetBrains Mono',monospace;font-weight:700}
+      .chartnote{font-size:12px;color:#8b8b93;margin-top:12px;line-height:1.5}
+    </style>
+
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -102,8 +146,8 @@
                 <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">APN-stamped teardown permits</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">~2<span class="text-base text-gray-500"> yr</span></div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Median lead time</div>
+                <div class="text-2xl font-bold text-white font-mono">2.0<span class="text-base text-gray-500">x</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Clean-label lift, best signal</div>
             </div>
         </div>
 
@@ -132,6 +176,13 @@
             <p>
                 The first version of the label was a proxy: California's Proposition 13 caps assessed-value growth except on new construction, so a teardown-rebuild shows up as a sharp jump in a parcel's <em>building</em> value. It was cheap to compute and looked plausible. We cross-validated it against real permits anyway — and it failed. Of 140 proxy-flagged rebuilds, exactly one had a confirming demolition or new-build permit at the same APN. The proxy was catching ownership resets and additions, not teardowns.
             </p>
+
+            <div class="not-prose glass-panel rounded-xl stat-row">
+                <div class="num bad"><div class="big">140</div><div class="lab">Proxy-flagged rebuilds</div></div>
+                <div class="arrow">&rarr;</div>
+                <div class="num good"><div class="big">1</div><div class="lab">Confirmed by a real permit</div></div>
+            </div>
+
             <p>
                 So the real label comes from the permits themselves: a parcel is a teardown if it has a demolition or new-single-family permit in the forward window. Because that label is built from permits rather than assessed value, it is <em>independent</em> of the model's strongest feature (the land-to-improvement value ratio) — which means the backtest measures prediction, not an artifact of the label sharing arithmetic with the feature.
             </p>
@@ -161,10 +212,44 @@ for T in (2016, 2018, 2020):                    # historical scoring dates
 
             <h3>What the honest number turned out to be</h3>
             <p>
-                Run this way — scoring dates of 2016, 2018, and 2020, a three-year forward window, roughly 17,600 parcel-date observations at a 0.72% teardown base rate — a single heuristic sets a genuinely high bar. Sorting parcels by their land-to-improvement value ratio alone gives about a 5x lift in the top decile: it catches roughly half of all teardowns in the top 10% of parcels, about two years before the permit is filed. A hand-blended model did not beat it. Neighborhood-contagion, tenure, and assessment-growth features were tested and each either added nothing or diluted the ratio.
+                The first run, scored on the proxy label before it was cross-validated, looked like a strong result: 17,589 parcel-date observations across three scoring dates, a 0.72% base rate, and a single heuristic (sort parcels by land-to-improvement value ratio) capturing about half of all "teardowns" in the top decile, a 5.3x lift. A hand-blended model, land value alone, and a cheapest-structure heuristic all trailed it. It looked like an undefeated baseline.
             </p>
             <p>
-                That is a result, not a failure. A model that cannot beat "sort by the value ratio" adds nothing a developer doesn't already get for free, and we learned that in a week of backtesting rather than after a year in production. It also sharpened where the real edge has to come from — assessment-independent signals like maintenance-permit history (a negative teardown signal: an owner investing in a structure they intend to keep) and explicit seller intent in listing language ("value in the land," "as-is," "contractor special"). Just as important, it clarified the line between the backtest and the live product: physical features like lot coverage and structure age <em>leak</em> when backtesting a rebuilt parcel, but are clean and strong when scoring a house that is still standing today.
+                It wasn't. Once the label was rebuilt from real permits, a well-powered, non-circular test on 36,896 San Jose parcels and 266 confirmed teardowns, the ratio's edge evaporated: no signal, arguably inverted, on the low-power sample (11 positives) where it could be checked. The 5.3x had been an artifact of the proxy label sharing arithmetic with the ratio. A building-value spike triggers both, so scoring by the ratio was, in effect, scoring against a shadow of the label it was supposed to predict. The chart below is that reversal.
+            </p>
+
+            <div class="not-prose my-10">
+              <div class="glass-panel rounded-2xl p-5 sm:p-6" id="teardown-chart-card">
+                <div class="chart-controls">
+                  <div>
+                    <div class="text-xs font-mono uppercase tracking-wide text-gray-500 mb-1">Interactive &middot; lift@decile by scorer</div>
+                    <div class="text-sm text-gray-400">Click a chip to isolate a backtest run. Hover a bar for the source numbers.</div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="metric-toggle" role="group" aria-label="Metric">
+                      <button type="button" data-metric="lift" aria-pressed="true">Lift (&times;)</button>
+                      <button type="button" data-metric="edge" aria-pressed="false">Edge over random (%)</button>
+                    </div>
+                    <button type="button" class="iconbtn" id="teardown-fullscreen-btn" aria-pressed="false">⛶ Fullscreen</button>
+                  </div>
+                </div>
+                <div id="teardown-legend">
+                  <button class="legend-chip proxy" data-series="proxy" aria-pressed="true"><span class="dot"></span>Proxy-label backtest (Rev 3.1, later found circular)</button>
+                  <button class="legend-chip clean" data-series="clean" aria-pressed="true"><span class="dot"></span>Clean permit-label backtest (real permits, non-circular)</button>
+                </div>
+                <div class="plot-wrap">
+                  <svg id="teardown-svg" viewBox="0 0 760 400" role="img" aria-label="Bar chart comparing lift at decile across scorers between the proxy-label and clean permit-label teardown backtests"></svg>
+                  <div id="teardown-tooltip" hidden></div>
+                </div>
+                <div class="chartnote">Dashed line = 1&times; (no better than random). Every figure traces to <code>docs/addressintel_teardown_backtest_spec.md</code> and <code>docs/NEXT_STEPS.md</code> in the AddressIntel repo. Nothing here is simulated.</div>
+              </div>
+            </div>
+
+            <p>
+                The one signal that held up on the clean test was plainer than any of the discarded ones: parcels with an outsized lot for the neighborhood carry a real, if modest, 2.0x lift, well-powered at 266 positives. Maintenance-permit history, hoped to be a clean negative signal (an owner investing in a structure they intend to keep), added nothing blended with lot size. Neighborhood-contagion, tenure, and assessment-growth features, tested earlier against the still-trusted proxy label, had already added nothing or diluted the ratio; none of them got a second look once the ratio itself stopped being trustworthy.
+            </p>
+            <p>
+                That is a result, not a failure, and a sharper one than the model simply beating its baselines would have been. A backtest that would have shipped as a "proprietary 5x teardown score" turned out, on closer inspection, to be measuring its own label. The honest output is a much smaller claim (an outsized lot is worth about 2x) and an explicit rule against overselling it. It also clarified where a real edge would have to come from if one exists at all: explicit seller intent in listing language ("value in the land," "as-is," "contractor special") remains untested and is the cheapest next thing to try. Just as important, it clarified the line between the backtest and the live product: physical features like lot coverage and structure age <em>leak</em> when backtesting a rebuilt parcel, but are clean and strong when scoring a house that is still standing today.
             </p>
 
             <h2>What It Shows</h2>
@@ -174,7 +259,7 @@ for T in (2016, 2018, 2020):                    # historical scoring dates
 
             <h2>What It Proves to a Client</h2>
             <p>
-                That we will tell you whether a model works before you bet a roadmap on it. Anyone can produce a flattering backtest by leaking the future into the features; the value is in the rigor that refuses to. For a business sitting on fragmented, underused data, that means the difference between a predictive product you can defend to a customer and a demo that quietly falls apart in production. The same capability transfers to any domain with messy records and a hard-to-measure outcome: insurance, lending, marketplaces, logistics.
+                That we will tell you whether a model works before you bet a roadmap on it. This case study is itself the proof: an early 5x number looked good enough to ship, and got walked back to a smaller, defensible 2x once a cleaner test was possible. Anyone can produce a flattering backtest by leaking the future into the features; the value is in the rigor that refuses to. For a business sitting on fragmented, underused data, that means the difference between a predictive product you can defend to a customer and a demo that quietly falls apart in production. The same capability transfers to any domain with messy records and a hard-to-measure outcome: insurance, lending, marketplaces, logistics.
             </p>
 
         </article>
@@ -206,5 +291,211 @@ for T in (2016, 2018, 2020):                    # historical scoring dates
     <!-- Prism.js script for Syntax Highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <!-- Interactive lift@decile chart: proxy-label backtest (Rev 3.1) vs. clean permit-label backtest.
+         Every number here traces to docs/addressintel_teardown_backtest_spec.md and docs/NEXT_STEPS.md
+         in the address-intel repo. Nothing is simulated or interpolated. -->
+    <script>
+    (function(){
+      const NS = 'http://www.w3.org/2000/svg';
+      const svg = document.getElementById('teardown-svg');
+      if (!svg) return;
+
+      const DATA = [
+        { key:'ratio', lines:['Land/impr.','ratio'],
+          proxy:{ lift:5.3, note:'5.3x lift, 53% capture &middot; 17,589 obs, 0.72% base rate &middot; the undefeated baseline in the original run' },
+          clean:{ lift:0, lowpower:true, note:'No signal, arguably inverted &middot; teardown median ratio 0.73 vs 1.00 population median &middot; only 11 positives carried this feature, low power' } },
+        { key:'lotsize', lines:['Lot size'],
+          proxy:null,
+          clean:{ lift:2.0, note:'2.0x lift, 95% CI [1.5, 2.4] &middot; 266 positives, well-powered &middot; the one signal that survived' } },
+        { key:'maint', lines:['Maintenance','+ lot size'],
+          proxy:null,
+          clean:{ lift:2.1, note:'Maintenance-permit history blended with lot size: 2.0x &rarr; 2.1x &middot; effectively no added lift' } },
+        { key:'blend', lines:['Hand-blended','model'],
+          proxy:{ lift:4.7, note:'4.7x lift, 95% CI [3.8, 5.6], 47% capture &middot; lost to the bare ratio heuristic in the original run' },
+          clean:null },
+        { key:'landvalue', lines:['Land value'],
+          proxy:{ lift:4.2, note:'4.2x lift, 42% capture &middot; baseline in the original run, not re-tested on the clean label' },
+          clean:null },
+        { key:'cheapstruct', lines:['Cheapest','structure'],
+          proxy:{ lift:1.8, note:'1.8x lift, 18% capture &middot; baseline in the original run, not re-tested on the clean label' },
+          clean:null },
+        { key:'random', lines:['Random'],
+          proxy:{ lift:0.9, note:'0.9x lift, 9% capture &middot; baseline in the original run' },
+          clean:null },
+      ];
+
+      const COLOR = { proxy:'#f59e0b', clean:'#a855f7' };
+      const state = { metric:'lift', visible:{ proxy:true, clean:true } };
+
+      function val(entry, metric){
+        if (entry.lift === undefined) return null;
+        return metric === 'lift' ? entry.lift : (entry.lift - 1) * 100;
+      }
+      function fmt(v, metric){
+        if (metric === 'lift') return v.toFixed(1) + '×';
+        const s = v >= 0 ? '+' : '';
+        return s + Math.round(v) + '%';
+      }
+
+      function visibleValues(){
+        const out = [];
+        DATA.forEach(d=>{
+          if (state.visible.proxy && d.proxy) out.push(val(d.proxy, state.metric));
+          if (state.visible.clean && d.clean) out.push(val(d.clean, state.metric));
+        });
+        return out;
+      }
+
+      function domain(){
+        const vals = visibleValues();
+        const ref = state.metric === 'lift' ? 1 : 0;
+        let lo = Math.min(0, ref, ...vals);
+        let hi = Math.max(ref, ...vals, 0.001);
+        const pad = (hi - lo) * 0.18 || 1;
+        hi += pad;
+        if (lo < 0) lo -= pad * 0.3;
+        return [lo, hi];
+      }
+
+      function el(tag, attrs){
+        const e = document.createElementNS(NS, tag);
+        for (const k in attrs) e.setAttribute(k, attrs[k]);
+        return e;
+      }
+
+      const W = 760, H = 400, padL = 42, padR = 14, padT = 14, padB = 54;
+      const plotW = W - padL - padR, plotH = H - padT - padB;
+
+      function render(){
+        svg.innerHTML = '';
+        const defs = el('defs', {});
+        const hatch = el('pattern', { id:'hatchPattern', width:6, height:6, patternTransform:'rotate(45)', patternUnits:'userSpaceOnUse' });
+        hatch.appendChild(el('rect', { width:6, height:6, fill:COLOR.clean, 'fill-opacity':0.18 }));
+        hatch.appendChild(el('line', { x1:0, y1:0, x2:0, y2:6, stroke:COLOR.clean, 'stroke-width':2 }));
+        defs.appendChild(hatch);
+        svg.appendChild(defs);
+
+        const [lo, hi] = domain();
+        const yScale = v => padT + (hi - v) / (hi - lo) * plotH;
+        const n = DATA.length, slotW = plotW / n;
+
+        // gridlines + ticks
+        const ticks = 5;
+        for (let i=0;i<=ticks;i++){
+          const v = lo + (hi-lo) * i/ticks;
+          const y = yScale(v);
+          svg.appendChild(el('line', { x1:padL, x2:W-padR, y1:y, y2:y, stroke:'#232326', 'stroke-width':1 }));
+          const t = el('text', { x:padL-8, y:y+3, class:'axislabel', 'text-anchor':'end' });
+          t.textContent = fmt(v, state.metric);
+          svg.appendChild(t);
+        }
+        // reference line (1x for lift, 0% for edge)
+        const refVal = state.metric === 'lift' ? 1 : 0;
+        const refY = yScale(refVal);
+        svg.appendChild(el('line', { x1:padL, x2:W-padR, y1:refY, y2:refY, class:'refline' }));
+
+        const baseY = yScale(0);
+
+        DATA.forEach((d, i)=>{
+          const slotX = padL + i*slotW;
+          const barW = slotW * 0.30;
+          const gap = slotW * 0.06;
+          const series = [];
+          if (d.proxy && state.visible.proxy) series.push({ s:'proxy', entry:d.proxy });
+          if (d.clean && state.visible.clean) series.push({ s:'clean', entry:d.clean });
+
+          series.forEach((item, si)=>{
+            let bx;
+            if (series.length === 2) {
+              bx = si === 0 ? slotX + slotW/2 - gap/2 - barW : slotX + slotW/2 + gap/2;
+            } else {
+              bx = slotX + slotW/2 - barW/2;
+            }
+            const v = val(item.entry, state.metric);
+            let hgt = Math.abs(yScale(v) - baseY);
+            if (item.entry.lowpower) hgt = Math.max(hgt, 4);
+            const y = v >= 0 ? baseY - hgt : baseY;
+            const rect = el('rect', {
+              x:bx, y:y, width:barW, height:Math.max(hgt,1),
+              rx:3, fill: item.entry.lowpower ? 'url(#hatchPattern)' : COLOR[item.s],
+              stroke: item.entry.lowpower ? COLOR.clean : 'none', 'stroke-width': item.entry.lowpower ? 1.25 : 0,
+              'stroke-dasharray': item.entry.lowpower ? '3 2' : 'none',
+              class:'bar'
+            });
+            rect.addEventListener('mousemove', (evt)=>showTip(evt, d, item));
+            rect.addEventListener('mouseleave', hideTip);
+            svg.appendChild(rect);
+
+            if (item.entry.lowpower){
+              const star = el('text', { x:bx+barW/2, y:y-6, 'text-anchor':'middle', class:'axislabel' });
+              star.textContent = 'low power';
+              svg.appendChild(star);
+            }
+          });
+
+          // category label (2 lines max)
+          const lx = slotX + slotW/2;
+          d.lines.forEach((line, li)=>{
+            const t = el('text', { x:lx, y:H-padB+16+li*13, class:'catlabel', 'text-anchor':'middle' });
+            t.textContent = line;
+            svg.appendChild(t);
+          });
+        });
+      }
+
+      const tip = document.getElementById('teardown-tooltip');
+      function showTip(evt, d, item){
+        const label = d.lines.join(' ');
+        const seriesName = item.s === 'proxy' ? 'Proxy-label backtest' : 'Clean permit-label backtest';
+        tip.innerHTML = '<div class="tt-head">'+label+' &middot; '+seriesName+'</div>'+
+          '<div class="tt-val">'+fmt(val(item.entry, state.metric), state.metric)+'</div>'+
+          '<div style="margin-top:4px;color:#9c9ca3">'+item.entry.note+'</div>';
+        tip.hidden = false;
+        const wrap = svg.parentElement;
+        const wrapRect = wrap.getBoundingClientRect();
+        let left = evt.clientX - wrapRect.left + 14;
+        let top = evt.clientY - wrapRect.top + 14;
+        if (left + 280 > wrapRect.width) left = evt.clientX - wrapRect.left - 290;
+        tip.style.left = left + 'px';
+        tip.style.top = top + 'px';
+      }
+      function hideTip(){ tip.hidden = true; }
+
+      // legend toggles
+      document.querySelectorAll('.legend-chip').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const s = btn.dataset.series;
+          state.visible[s] = !state.visible[s];
+          btn.setAttribute('aria-pressed', state.visible[s]);
+          render();
+        });
+      });
+
+      // metric toggle
+      document.querySelectorAll('.metric-toggle button').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          state.metric = btn.dataset.metric;
+          document.querySelectorAll('.metric-toggle button').forEach(b=>b.setAttribute('aria-pressed', b===btn));
+          render();
+        });
+      });
+
+      // fullscreen
+      const card = document.getElementById('teardown-chart-card');
+      const fsBtn = document.getElementById('teardown-fullscreen-btn');
+      fsBtn.addEventListener('click', ()=>{
+        if (!document.fullscreenElement) card.requestFullscreen?.();
+        else document.exitFullscreen?.();
+      });
+      document.addEventListener('fullscreenchange', ()=>{
+        const on = document.fullscreenElement === card;
+        fsBtn.setAttribute('aria-pressed', on);
+        fsBtn.textContent = on ? '✖ Exit fullscreen' : '⛶ Fullscreen';
+      });
+
+      render();
+    })();
+    </script>
 </body>
 </html>
