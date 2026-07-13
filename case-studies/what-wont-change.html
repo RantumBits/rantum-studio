@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Won't Change in On-Chain Execution Markets | Rantum Studio</title>
+    <meta name="description" content="Nine structural bets about on-chain execution, MEV, and data verification that don't depend on any specific protocol, model, or chain staying the same.">
+    <meta property="og:title" content="What Won't Change in On-Chain Execution Markets | Rantum Studio">
+    <meta property="og:description" content="Nine structural bets about on-chain execution, MEV, and data verification that don't depend on any specific protocol, model, or chain staying the same.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/what-wont-change.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/what-wont-change.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "What Won't Change in On-Chain Execution Markets",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-indigo-900/20 text-indigo-400/80 border border-indigo-500/20">Perspective</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Market Structure</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                What Won't Change in On-Chain Execution Markets
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                Nine structural bets, not predictions about any specific protocol, model, or chain.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Perspective</span>
+            </div>
+        </header>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <p>
+                Jeff Bezos built Amazon's strategy around a simple question: not what will change, but what won't. Customers will always want lower prices, faster delivery, and more selection, so you can invest in those things for a decade knowing the bet doesn't expire. The list below applies the same question to on-chain execution markets: MEV taxonomy, aggregator benchmarks, and L2 rollups will all look different in five years. These nine things are structural enough that they probably won't.
+            </p>
+
+            <ol>
+                <li>
+                    <strong>Quoted price and realized price will keep diverging.</strong> Aggregators are graded on the quote, fills are graded on the outcome, and those are two different systems scored on two different clocks. As long as that split exists, the gap between what a user is shown and what they get does not close on its own.
+                </li>
+                <li>
+                    <strong>Extraction will not disappear, it will relocate.</strong> Close one MEV vector, public mempool sandwiching, and the volume does not vanish, it moves to whatever ordering mechanism comes next: private orderflow, sequencer auctions, intent solvers. The taxonomy turns over every cycle. The tax on uninformed flow does not.
+                </li>
+                <li>
+                    <strong>Self-reported performance will keep needing outside verification.</strong> Any number a business is graded on is a number that business has an incentive to present favorably. That is not a crypto problem, it predates crypto by decades, and it means independent measurement stays useful precisely because self-reporting never gets more trustworthy on its own.
+                </li>
+                <li>
+                    <strong>The venues with the least visibility will look the cleanest, until someone builds the tooling to check.</strong> A near-zero measured attack rate is a claim about what the instrumentation can see, not automatically a claim about what happened. That confusion is permanent, because building visibility into a new venue is always slower than launching the venue.
+                </li>
+                <li>
+                    <strong>Compliance will keep asking for evidence, not marketing copy.</strong> Best-execution obligations and MiCA-adjacent reporting requirements move in one direction: toward a defensible, auditable record instead of a claim. The specific regimes and acronyms will change. The demand for a paper trail will not.
+                </li>
+                <li>
+                    <strong>As synthetic and bot-driven activity grows, verified data gets scarcer, not more redundant.</strong> Wash volume, sybil'd points-farming, and cheap fabricated activity make raw on-chain data noisier every year, not cleaner. That makes a checked, sourced dataset worth more over time instead of racing toward commodity pricing.
+                </li>
+                <li>
+                    <strong>A backtest without point-in-time discipline will keep looking better than the real result.</strong> Leakage does not get easier to spot as a dataset gets bigger, it gets easier to hide inside it. This was true of the first quant backtest decades ago, and nothing about on-chain data exempts it now.
+                </li>
+                <li>
+                    <strong>Whoever can prove where volume actually came from controls the argument about who gets paid for it.</strong> Grants, fee-sharing, and points programs all get built on top of attribution claims. Attribution stays contested, not settled, for as long as there is money attached to the answer.
+                </li>
+                <li>
+                    <strong>Public data will keep being technically available and practically unusable at the same time.</strong> A chain being open does not make the truth on it legible. Someone still has to reconcile inconsistent schemas, resolve labels, and throw out the junk, and that work does not automate itself away just because the underlying dataset got bigger.
+                </li>
+            </ol>
+
+            <h2>Why it matters to a buyer</h2>
+            <p>
+                None of these depend on ClearTrace being the tool that measures them, or on any particular chain, aggregator, or MEV vector staying relevant. That is the point of the framing: if you're deciding whether independent execution-quality verification is worth paying for five years out, the case for it doesn't rest on today's specifics. It rests on the fact that the underlying gap, between what venues report and what actually happened, is structural, and structural gaps don't get closed by any one release cycle.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
