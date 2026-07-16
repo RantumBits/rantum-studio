@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The DeFi Data Quick-Start — Book Companion | Rantum Studio</title>
+    <meta name="description" content="Companion page for The DeFi Data Quick-Start: Reading On-Chain Truth with Dune Analytics. Live links, runnable queries, and errata — kept current after the book ships.">
+    <meta property="og:title" content="The DeFi Data Quick-Start — Book Companion | Rantum Studio">
+    <meta property="og:description" content="Live links, runnable queries, and errata for the book. Bookmark this page; it changes when the tools do.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/quickstart/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/quickstart/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "The DeFi Data Quick-Start — Book Companion",
+      "about": {
+        "@type": "Book",
+        "name": "The DeFi Data Quick-Start: Reading On-Chain Truth with Dune Analytics",
+        "author": { "@type": "Person", "name": "Andrew Maury" }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-indigo-900/20 text-indigo-400/80 border border-indigo-500/20">Book Companion</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Dune Analytics</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">DeFi Data</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                The DeFi Data Quick-Start
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                Everything the book links to, kept current. The book's text is frozen in print; this page is not. Bookmark it — it changes when the tools do.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Reading On-Chain Truth with Dune Analytics</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The live example</h2>
+            <p>
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer"><strong>ClearTrace</strong></a> — the neutral DEX execution-intelligence dashboard and API the book's methodology chapters draw on: cross-frontend attribution, sandwich detection, and execution-quality measurement across Ethereum, Base, Arbitrum, and Optimism.
+            </p>
+
+            <h2>Work along with the book</h2>
+            <ul>
+                <li><a href="https://dune.com" target="_blank" rel="noopener noreferrer">Dune Analytics</a> — make a free account; every query in the book runs on the free tier.</li>
+                <li><a href="https://docs.dune.com" target="_blank" rel="noopener noreferrer">Dune documentation</a> — the query editor, DuneSQL reference, and table schemas.</li>
+                <li><a href="https://github.com/duneanalytics/spellbook" target="_blank" rel="noopener noreferrer">Spellbook</a> — the open-source models behind <code>dex.trades</code> and the curated tables (Chapter 5).</li>
+                <li><a href="https://docs.dune.com" target="_blank" rel="noopener noreferrer">Dune Data API</a> — programmatic query execution, for Chapter 10's architecture.</li>
+            </ul>
+
+            <h2>The queries</h2>
+            <p>
+                The book's Chapter 3 queries and the assembled dashboard, live on Dune — fork them, change the chain, break them, learn:
+            </p>
+            <ul>
+                <li><a href="https://dune.com/rantum/eth-dex-health" target="_blank" rel="noopener noreferrer"><strong>eth-dex-health</strong></a> — the assembled dashboard from the end of Chapter 3: volume chart, smell-test table, and the what-this-measures text widget.</li>
+                <li><a href="https://dune.com/queries/7969085" target="_blank" rel="noopener noreferrer"><code>eth-dex-trades-preview</code></a> — your first look at live trades (Chapter 3, query 1).</li>
+                <li><a href="https://dune.com/queries/7971230" target="_blank" rel="noopener noreferrer"><code>eth-dex-daily-volume-7d</code></a> — daily volume by venue, with the stacked bar chart (Chapter 3, query 2).</li>
+                <li><a href="https://dune.com/queries/7971261" target="_blank" rel="noopener noreferrer"><code>eth-dex-trades-per-taker-7d</code></a> — the trades-per-taker smell test (Chapter 3, query 3).</li>
+            </ul>
+
+            <h2>Going deeper</h2>
+            <ul>
+                <li>A block explorer (e.g., <a href="https://etherscan.io" target="_blank" rel="noopener noreferrer">Etherscan</a>) — verify any single transaction against the raw chain.</li>
+                <li><a href="https://thegraph.com/docs" target="_blank" rel="noopener noreferrer">The Graph</a> — the subgraph/indexer layer from Chapter 2.</li>
+                <li><a href="https://docs.flashbots.net" target="_blank" rel="noopener noreferrer">Flashbots</a> — the deepest public material on MEV, ordering, and private orderflow (Chapter 7).</li>
+            </ul>
+
+            <h2>Errata &amp; updates</h2>
+            <p>
+                On-chain tooling moves fast. Corrections and post-publish changes to queries or table names are logged here, newest first.
+            </p>
+            <ul>
+                <li><em>None yet — first edition, July 2026. Every query was verified against live Dune data at publication.</em></li>
+            </ul>
+
+            <h2>The author</h2>
+            <p>
+                Andrew Maury is the founder of <a href="../index.html">Rantum</a>, a data science and ML studio that turns messy, adversarial data into models, APIs, and products that ship. More at <a href="https://andrewmaury.com" target="_blank" rel="noopener noreferrer">andrewmaury.com</a>.
+            </p>
+
+        </article>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-gray-800 text-sm font-mono text-gray-600 flex flex-wrap justify-between gap-4">
+            <span>&copy; 2026 Rantum Studio</span>
+            <span><a href="../index.html" class="hover:text-gray-400 transition-colors">rantum.xyz</a></span>
+        </footer>
+
+    </main>
+</body>
+</html>
