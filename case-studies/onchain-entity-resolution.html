@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On-Chain Entity Resolution — Naming the "Unknown Proxy" | Rantum Studio</title>
+    <meta name="description" content="How ClearTrace turns anonymous, high-volume 'Unknown Proxy (0x…)' contracts into named entities with a cheapest-first resolution ladder across a dozen sources — on-chain registries, bytecode fingerprints, proxy slots, and paid APIs tried last.">
+    <meta property="og:title" content="On-Chain Entity Resolution — Naming the Unknown Proxy | Rantum Studio">
+    <meta property="og:description" content="A cheapest-first, twelve-rung labeling ladder that resolves anonymous on-chain contracts to named entities across Ethereum, Base, Arbitrum, and Optimism.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/onchain-entity-resolution.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/onchain-entity-resolution.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "On-Chain Entity Resolution — Naming the Unknown Proxy",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Entity Resolution</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Engineering</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Naming the "Unknown Proxy"
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                On-chain entity resolution: turning anonymous, high-volume <code>Unknown Proxy (0x…)</code> contracts into named entities with a cheapest-first labeling ladder across a dozen sources, spanning Ethereum, Base, Arbitrum, and Optimism.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">12+</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Label sources</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">4</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Chains resolved</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">172K+</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Contracts attributed</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                ClearTrace attributes DEX volume to the frontend that originated each trade. But attribution has a stubborn tail: the highest-volume contracts often resolve to nothing more useful than <code>Unknown Proxy (0x…)</code>. Those anonymous entries are the flow that matters most: institutional desks, custom enterprise frontends, and wallet-native swap extensions. A single unnamed proxy can sit near the top of a chain's volume table and quietly distort the entire picture of who is actually transacting.
+            </p>
+            <p>
+                No single data source names them all. Etherscan misses verifications that Sourcify holds. A proxy hides the implementation that carries its real identity. The same router, redeployed byte-for-byte across four chains, looks like four unrelated unknowns. Paid entity APIs would name a chunk of it, but running them across every unknown, on every sync, burns credits fast. The hard part is resolving each address to the best available label without paying for answers a free source already holds.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                A resolution ladder. For each unknown contract, ClearTrace walks a fixed sequence of sources ordered cheapest-and-most-authoritative first, stopping at the first real name. Roughly a dozen rungs, from a free <code>eth_call</code> to paid entity APIs tried last, with the order itself doing most of the work: by the time an address reaches a paid source, the free rungs have already named the vast majority of volume.
+            </p>
+
+            <h3>The ladder, cheapest first</h3>
+            <ul>
+                <li><strong>Ground truth: the deployer's own list.</strong> The single highest authority is a protocol publishing its own deployment addresses. This rung was added after a hard lesson: a contract's <em>absence</em> from a third party's decoded set is not evidence that it is unofficial. When the deployer publishes the addresses, that file is the answer, and it outranks every heuristic below it.</li>
+                <li><strong>On-chain registries.</strong> Some protocols track their own deployments in on-chain registries. A single free <code>eth_call</code> (for example, an <code>ownerOf</code> against the 0x Settler deployer's ERC-721) returns the currently active contract for a feature, straight from the chain, with no third-party API and no key.</li>
+                <li><strong>Free local and public sources.</strong> Intel tables already in the local database, then the Etherscan v2 multichain API, then the keyless public mirrors Sourcify and Blockscout, which frequently hold verifications Etherscan does not.</li>
+                <li><strong>Structural resolution.</strong> When no directory has a name, the bytecode does. Identical normalized runtime bytecode to an already-named contract on <em>any</em> chain inherits its label. Proxies are followed to their implementation via the EIP-1167 minimal-proxy target or the EIP-1967 implementation and beacon storage slots, and the proxy inherits that name.</li>
+                <li><strong>Deployer-graph attribution.</strong> Still unnamed contracts are attributed through their creator: a named deployer EOA, its ENS primary name, or the majority label of sibling contracts the same deployer already shipped.</li>
+                <li><strong>Paid sources, last and gated.</strong> Arkham (only when a session is configured) and Nansen (paid credits) sit at the bottom. Nansen halts for the rest of the run the moment it reports credit exhaustion, and a final pass batches every still-unnamed address into <em>one</em> Dune <code>labels.contracts</code> execution, never one call per address.</li>
+            </ul>
+
+            <h3>Cross-chain identity</h3>
+            <p>
+                Two facts collapse a lot of duplicate unknowns into single known entities. First, teams deploy byte-identical routers across chains, so ClearTrace fingerprints each contract as a SHA-256 of its runtime bytecode with the Solidity CBOR metadata trailer stripped. That trailer differs between otherwise-identical builds, so removing it lets one labeled instance name its twins everywhere. Second, the same key controls an address on every EVM chain, so a mainnet ENS primary name identifies a wallet cross-chain. The pipeline also recognizes EIP-7702 delegated EOAs by their <code>0xef0100</code> designator and labels them through their delegate, so a delegated wallet never masquerades as a high-volume "Unknown Proxy" whale.
+            </p>
+
+            <h3>Refusing to guess</h3>
+            <p>
+                A wrong label is worse than an honest "Unknown." Every rung is filtered against a blocklist of meaningless names: generic activity tags like "High Activity," and proxy wrapper class names like <code>TransparentUpgradeableProxy</code> or <code>ERC1967Proxy</code> that describe the shape of a contract, not its owner. Masking those forces the ladder to fall through to a rung that resolves the actual implementation instead of propagating a name that says nothing. Each label also carries a confidence tier and is re-checked on a fixed interval, so a name from a weaker rung is replaced when a more authoritative source later resolves the same address.
+            </p>
+
+            <h3>Spending the effort where the volume is</h3>
+            <p>
+                Unknown volume is heavily concentrated in a few large addresses, so the pipeline ranks unresolved contracts globally by attributed volume and resolves the top of that list each sync, rather than sweeping every address round-robin. It is the cheapest way to move the most attributed volume from "Unknown" to named per run. In a recent snapshot of the label store, 259 of the resolved contracts carried entity names, and about 89% of those (231 of 259) were named by the free and structural rungs before any live paid lookup to Arkham, Nansen, or the batched Dune call.
+            </p>
+
+<pre><code class="language-sql">-- Rank still-unnamed contracts by the volume they carry, across all chains,
+-- so the resolution ladder spends its effort (and any paid rungs) on the
+-- addresses that actually distort attribution.
+SELECT
+    resolved_contract_name,
+    blockchain,
+    total_volume_usd
+FROM dune_attribution
+WHERE (resolved_contract_name LIKE 'Unknown%'
+       OR resolved_contract_name GLOB '0x[0-9a-fA-F]*')
+  AND blockchain IS NOT NULL
+ORDER BY total_volume_usd DESC
+LIMIT 100;</code></pre>
+
+            <h2>What It Shows</h2>
+            <p>
+                Entity resolution on deliberately adversarial identity: flow that is unlabeled, proxied, redeployed across chains, or actively structured not to be measured. When off-the-shelf labels run out, ClearTrace resolves identity from the on-chain facts themselves: bytecode fingerprints, proxy storage slots, deployer graphs, and registry calls. It is the same Rantum through-line as the attribution engine it feeds: finding signal others can't, and doing it with cost discipline and a refusal to invent an answer.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That we can build an identity and attribution layer no single vendor sells. Any one vendor names part of the on-chain world; the value is in the ladder that combines authoritative, free, and paid sources in the right order, resolves structurally when none of them answer, and knows when to stop. For a foundation, grant program, or protocol team, that is the difference between "a large unknown near the top of the table" and a named entity you can actually reason about. It runs today inside ClearTrace's live dashboard and public API.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship — on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>
