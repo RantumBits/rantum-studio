@@ -77,7 +77,7 @@
                 Naming the "Unknown Proxy"
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                On-chain entity resolution: turning anonymous, high-volume <code>Unknown Proxy (0x…)</code> contracts into named entities with a cheapest-first labeling ladder across a dozen sources — spanning Ethereum, Base, Arbitrum, and Optimism.
+                On-chain entity resolution: turning anonymous, high-volume <code>Unknown Proxy (0x…)</code> contracts into named entities with a cheapest-first labeling ladder across a dozen sources, spanning Ethereum, Base, Arbitrum, and Optimism.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -94,7 +94,7 @@
         <!-- Key Stats -->
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">12</div>
+                <div class="text-2xl font-bold text-white font-mono">12+</div>
                 <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Label sources</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
@@ -112,10 +112,10 @@
 
             <h2>The Challenge</h2>
             <p>
-                ClearTrace attributes DEX volume to the frontend that originated each trade. But attribution has a stubborn tail: the highest-volume contracts often resolve to nothing more useful than <code>Unknown Proxy (0x…)</code>. Those anonymous entries are not noise — they are institutional desks, custom enterprise frontends, and wallet-native swap extensions, exactly the flow that matters most. A single unnamed proxy can sit near the top of a chain's volume table and quietly distort the entire picture of who is actually transacting.
+                ClearTrace attributes DEX volume to the frontend that originated each trade. But attribution has a stubborn tail: the highest-volume contracts often resolve to nothing more useful than <code>Unknown Proxy (0x…)</code>. Those anonymous entries are the flow that matters most: institutional desks, custom enterprise frontends, and wallet-native swap extensions. A single unnamed proxy can sit near the top of a chain's volume table and quietly distort the entire picture of who is actually transacting.
             </p>
             <p>
-                No single data source names them all. Etherscan misses verifications that Sourcify holds. A proxy hides the implementation that carries its real identity. The same router, redeployed byte-for-byte across four chains, looks like four unrelated unknowns. Paid entity APIs would name a chunk of it, but running them across every unknown, on every sync, burns credits fast. The problem is not "look it up" — it is resolving each address to the best available label without paying for answers a free source already holds.
+                No single data source names them all. Etherscan misses verifications that Sourcify holds. A proxy hides the implementation that carries its real identity. The same router, redeployed byte-for-byte across four chains, looks like four unrelated unknowns. Paid entity APIs would name a chunk of it, but running them across every unknown, on every sync, burns credits fast. The hard part is resolving each address to the best available label without paying for answers a free source already holds.
             </p>
 
             <h2>What We Built</h2>
@@ -125,27 +125,27 @@
 
             <h3>The ladder, cheapest first</h3>
             <ul>
-                <li><strong>Ground truth — the deployer's own list.</strong> The single highest authority is a protocol publishing its own deployment addresses. This rung was added after a hard lesson: a contract's <em>absence</em> from a third party's decoded set is not evidence that it is unofficial. When the deployer publishes the addresses, that file is the answer, and it outranks every heuristic below it.</li>
-                <li><strong>On-chain registries.</strong> Some protocols track their own deployments in on-chain registries. A single free <code>eth_call</code> (for example, an <code>ownerOf</code> against the 0x Settler deployer's ERC-721) returns the currently active contract for a feature — authoritative, no third-party API.</li>
-                <li><strong>Free local and public sources.</strong> Intel tables already in the local database, then the Etherscan v2 multichain API, then the keyless public mirrors Sourcify and Blockscout — which frequently hold verifications Etherscan does not.</li>
+                <li><strong>Ground truth: the deployer's own list.</strong> The single highest authority is a protocol publishing its own deployment addresses. This rung was added after a hard lesson: a contract's <em>absence</em> from a third party's decoded set is not evidence that it is unofficial. When the deployer publishes the addresses, that file is the answer, and it outranks every heuristic below it.</li>
+                <li><strong>On-chain registries.</strong> Some protocols track their own deployments in on-chain registries. A single free <code>eth_call</code> (for example, an <code>ownerOf</code> against the 0x Settler deployer's ERC-721) returns the currently active contract for a feature, straight from the chain, with no third-party API and no key.</li>
+                <li><strong>Free local and public sources.</strong> Intel tables already in the local database, then the Etherscan v2 multichain API, then the keyless public mirrors Sourcify and Blockscout, which frequently hold verifications Etherscan does not.</li>
                 <li><strong>Structural resolution.</strong> When no directory has a name, the bytecode does. Identical normalized runtime bytecode to an already-named contract on <em>any</em> chain inherits its label. Proxies are followed to their implementation via the EIP-1167 minimal-proxy target or the EIP-1967 implementation and beacon storage slots, and the proxy inherits that name.</li>
                 <li><strong>Deployer-graph attribution.</strong> Still unnamed contracts are attributed through their creator: a named deployer EOA, its ENS primary name, or the majority label of sibling contracts the same deployer already shipped.</li>
-                <li><strong>Paid sources, last and gated.</strong> Arkham (only when a session is configured) and Nansen (paid credits) sit at the bottom. Nansen halts for the rest of the run the moment it reports credit exhaustion, and a final pass batches every still-unnamed address into <em>one</em> Dune <code>labels.contracts</code> execution — never one call per address.</li>
+                <li><strong>Paid sources, last and gated.</strong> Arkham (only when a session is configured) and Nansen (paid credits) sit at the bottom. Nansen halts for the rest of the run the moment it reports credit exhaustion, and a final pass batches every still-unnamed address into <em>one</em> Dune <code>labels.contracts</code> execution, never one call per address.</li>
             </ul>
 
             <h3>Cross-chain identity</h3>
             <p>
-                Two facts collapse a lot of duplicate unknowns into single known entities. First, teams deploy byte-identical routers across chains, so ClearTrace fingerprints each contract as a SHA-256 of its runtime bytecode with the Solidity CBOR metadata trailer stripped — that trailer differs between otherwise-identical builds, so removing it lets one labeled instance name its twins everywhere. Second, the same key controls an address on every EVM chain, so a mainnet ENS primary name identifies a wallet cross-chain. The pipeline also recognizes EIP-7702 delegated EOAs by their <code>0xef0100</code> designator and labels them through their delegate, so a delegated wallet never masquerades as a high-volume "Unknown Proxy" whale.
+                Two facts collapse a lot of duplicate unknowns into single known entities. First, teams deploy byte-identical routers across chains, so ClearTrace fingerprints each contract as a SHA-256 of its runtime bytecode with the Solidity CBOR metadata trailer stripped. That trailer differs between otherwise-identical builds, so removing it lets one labeled instance name its twins everywhere. Second, the same key controls an address on every EVM chain, so a mainnet ENS primary name identifies a wallet cross-chain. The pipeline also recognizes EIP-7702 delegated EOAs by their <code>0xef0100</code> designator and labels them through their delegate, so a delegated wallet never masquerades as a high-volume "Unknown Proxy" whale.
             </p>
 
             <h3>Refusing to guess</h3>
             <p>
-                A wrong label is worse than an honest "Unknown." Every rung is filtered against a blocklist of meaningless names — generic activity tags like "High Activity," and proxy wrapper class names like <code>TransparentUpgradeableProxy</code> or <code>ERC1967Proxy</code> that describe the shape of a contract, not its owner. Masking those forces the ladder to fall through to a rung that resolves the actual implementation instead of propagating a name that says nothing.
+                A wrong label is worse than an honest "Unknown." Every rung is filtered against a blocklist of meaningless names: generic activity tags like "High Activity," and proxy wrapper class names like <code>TransparentUpgradeableProxy</code> or <code>ERC1967Proxy</code> that describe the shape of a contract, not its owner. Masking those forces the ladder to fall through to a rung that resolves the actual implementation instead of propagating a name that says nothing. Each label also carries a confidence tier and is re-checked on a fixed interval, so a name from a weaker rung is replaced when a more authoritative source later resolves the same address.
             </p>
 
             <h3>Spending the effort where the volume is</h3>
             <p>
-                Unknown volume is heavily concentrated in a few large addresses, so the pipeline ranks unresolved contracts globally by attributed volume and resolves the top of that list each sync, rather than sweeping every address round-robin. It is the cheapest way to move the most attributed volume from "Unknown" to named per run.
+                Unknown volume is heavily concentrated in a few large addresses, so the pipeline ranks unresolved contracts globally by attributed volume and resolves the top of that list each sync, rather than sweeping every address round-robin. It is the cheapest way to move the most attributed volume from "Unknown" to named per run. In a recent snapshot of the label store, 259 of the resolved contracts carried entity names, and about 89% of those (231 of 259) were named by the free and structural rungs before any live paid lookup to Arkham, Nansen, or the batched Dune call.
             </p>
 
 <pre><code class="language-sql">-- Rank still-unnamed contracts by the volume they carry, across all chains,
@@ -164,12 +164,12 @@ LIMIT 100;</code></pre>
 
             <h2>What It Shows</h2>
             <p>
-                Entity resolution on deliberately adversarial identity — flow that is unlabeled, proxied, redeployed across chains, or actively structured not to be measured. When off-the-shelf labels run out, ClearTrace resolves identity from the on-chain facts themselves: bytecode fingerprints, proxy storage slots, deployer graphs, and registry calls. It is the same Rantum through-line as the attribution engine it feeds — finding signal others can't, and doing it with cost discipline and a refusal to invent an answer.
+                Entity resolution on deliberately adversarial identity: flow that is unlabeled, proxied, redeployed across chains, or actively structured not to be measured. When off-the-shelf labels run out, ClearTrace resolves identity from the on-chain facts themselves: bytecode fingerprints, proxy storage slots, deployer graphs, and registry calls. It is the same Rantum through-line as the attribution engine it feeds: finding signal others can't, and doing it with cost discipline and a refusal to invent an answer.
             </p>
 
             <h2>What It Proves to a Client</h2>
             <p>
-                That we can build an identity and attribution layer you can't buy off the shelf. Any one vendor names part of the on-chain world; the value is in the ladder that combines authoritative, free, and paid sources in the right order, resolves structurally when none of them answer, and knows when to stop. For a foundation, grant program, or protocol team, that is the difference between "a large unknown near the top of the table" and a named entity you can actually reason about. It runs today inside ClearTrace's live dashboard and public API.
+                That we can build an identity and attribution layer no single vendor sells. Any one vendor names part of the on-chain world; the value is in the ladder that combines authoritative, free, and paid sources in the right order, resolves structurally when none of them answer, and knows when to stop. For a foundation, grant program, or protocol team, that is the difference between "a large unknown near the top of the table" and a named entity you can actually reason about. It runs today inside ClearTrace's live dashboard and public API.
             </p>
 
         </article>
