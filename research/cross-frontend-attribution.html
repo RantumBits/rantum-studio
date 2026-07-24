@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume | Rantum Studio</title>
+    <meta name="description" content="Preprint: four independent heuristics for recovering frontend origin from raw DEX transaction and trace data — calldata-suffix trapping, proxy-router mismatch detection, multi-hop origin tracing, and fee-recipient clustering — with validation results from a live production sampler. DOI 10.5281/zenodo.21513263.">
+    <meta property="og:title" content="Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume">
+    <meta property="og:description" content="Preprint on recovering frontend origin from raw DEX transaction data, with the execution-quality scoring layer built on top of it. Published on Zenodo, DOI 10.5281/zenodo.21513263.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/research/cross-frontend-attribution.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/research/cross-frontend-attribution.html">
+
+    <!-- Google Scholar citation meta tags -->
+    <meta name="citation_title" content="Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume">
+    <meta name="citation_author" content="Maury, Andrew">
+    <meta name="citation_publication_date" content="2026/07/23">
+    <meta name="citation_online_date" content="2026/07/23">
+    <meta name="citation_pdf_url" content="https://rantum.xyz/research/cross-frontend-attribution-whitepaper.pdf">
+    <meta name="citation_doi" content="10.5281/zenodo.21513263">
+    <meta name="citation_abstract_html_url" content="https://rantum.xyz/research/cross-frontend-attribution.html">
+    <meta name="citation_language" content="en">
+    <meta name="citation_keywords" content="decentralized exchange; MEV; attribution; on-chain analytics; execution quality; blockchain data engineering">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ScholarlyArticle",
+      "headline": "Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "Rantum Studio"
+        }
+      },
+      "datePublished": "2026-07-23",
+      "sameAs": "https://doi.org/10.5281/zenodo.21513263",
+      "identifier": "https://doi.org/10.5281/zenodo.21513263",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Zenodo"
+      },
+      "keywords": "decentralized exchange, MEV, attribution, on-chain analytics, execution quality, blockchain data engineering"
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="../case-studies/cleartrace.html" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            The system behind it &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Paper Header -->
+        <header class="mb-12">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Preprint</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">DEX Attribution</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">MEV</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Execution Quality</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume
+            </h1>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>July 23, 2026</span>
+                <span>&bull;</span>
+                <a href="https://doi.org/10.5281/zenodo.21513263" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 transition-colors">DOI 10.5281/zenodo.21513263</a>
+            </div>
+        </header>
+
+        <!-- Download / Zenodo actions -->
+        <div class="flex flex-wrap gap-4 mb-16">
+            <a href="cross-frontend-attribution-whitepaper.pdf" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-6 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Download PDF
+            </a>
+            <a href="https://zenodo.org/records/21513263" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 border border-gray-700 hover:border-purple-500/50 text-gray-300 hover:text-white font-semibold py-3 px-6 rounded-full transition-colors text-sm">
+                View on Zenodo
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            </a>
+        </div>
+
+        <!-- Abstract -->
+        <article class="prose prose-invert prose-gray max-w-none">
+            <h2>Abstract</h2>
+            <p>
+                Decentralized exchange (DEX) volume is routinely used by liquidity-mining programs, Layer-2 (L2) foundations, and grant committees as a proxy for organic user adoption. This proxy is unreliable: the same underlying trade-execution infrastructure exposes no standard mechanism by which a frontend &mdash; a wallet-native swap widget, an aggregator, an institutional smart contract, a meta-router &mdash; announces its own identity on-chain. Volume figures that are not attributed to a true origin are trivially inflated by wash trading, proxy routing, and MEV-adjacent flow, and incentive programs built on top of them reward the wrong behavior.
+            </p>
+            <p>
+                This paper presents the attribution methodology developed for ClearTrace, a neutral, third-party execution-intelligence system covering Ethereum, Base, Arbitrum, and Optimism. We describe four independent heuristics for recovering frontend origin from raw transaction and trace data &mdash; a calldata-suffix trapper, a proxy-router mismatch detector, a multi-hop origin tracer, and a fee-recipient clustering method &mdash; and a companion execution-quality layer that benchmarks realized trade price against a volume-weighted average price (VWAP) oracle, kept deliberately separate from a sandwich/MEV-exposure score.
+            </p>
+            <p>
+                We report validation results from an in-production quote-accuracy sampler (112 of 168 tracked cells reaching statistical significance over a 9.6-day window), a worked example of a hypothesis reversal under additional data (order-size-dependent quote degradation at a major aggregator), and a structural finding distinguishing genuine sandwich-attack immunity from a coverage gap on Arbitrum. We close with the limitations of single-team validation and the case for treating cross-frontend attribution as a first-class, auditable input to incentive design rather than an afterthought to volume dashboards.
+            </p>
+
+            <h2>Cite</h2>
+        </article>
+
+        <div class="glass-panel p-6 rounded-xl mt-6 not-prose">
+            <pre class="text-xs font-mono text-gray-400 whitespace-pre-wrap leading-relaxed">@misc{maury2026crossfrontend,
+  author       = {Maury, Andrew},
+  title        = {Cross-Frontend Attribution Methodologies in
+                  Decentralized Exchange Volume},
+  year         = {2026},
+  month        = jul,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.21513263},
+  url          = {https://doi.org/10.5281/zenodo.21513263},
+  note         = {Preprint}
+}</pre>
+        </div>
+
+        <p class="text-xs font-mono text-gray-600 mt-6">
+            Licensed CC-BY 4.0. The methodology described is deployed in production at <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-gray-400 underline">cleartracedata.com</a>.
+        </p>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">AddressIntel</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
