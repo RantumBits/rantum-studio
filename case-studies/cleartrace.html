@@ -135,6 +135,9 @@
             <p>
                 ClearTrace scores execution by comparing each trade's realized price against a 1-minute Volume-Weighted Average Price (VWAP) oracle — the true cost of a trade, not the quoted price the aggregator advertises. Across the chains it covers, the best-performing aggregators land around a <strong>~7.5 bps median</strong> effective slippage. It separately detects sandwich attacks (frontrun → victim → backrun) by scanning in-block transaction ordering, and reports both the number of attacks and total value sandwiched as a distinct MEV-exposure metric rather than folding it into the slippage score.
             </p>
+            <p>
+                Explore it directly in the <a href="https://cleartracedata.com/research/execution-quality" target="_blank" rel="noopener noreferrer">interactive execution-quality explainer</a>, which replays the identical trade across seven aggregators and four trade sizes against a mainnet fork, so you can isolate any venue and read reliability, realized cost, and off-chain RFQ routing side by side.
+            </p>
 
             <h3>Illustrative extraction</h3>
             <p>A simplified shape of the attribution pass — isolating frontend codes while filtering proxy noise and known bot flow:</p>
