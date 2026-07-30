@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measuring Off-Chain RFQ Execution Quality | Rantum Studio</title>
+    <meta name="description" content="How ClearTrace measures DEX execution quality for trades routed through off-chain RFQ and private-market-maker venues that cannot be fork-simulated, using an on-chain fill and realized-slippage read instead of discarding the sample.">
+    <meta property="og:title" content="Measuring Off-Chain RFQ Execution Quality | Rantum Studio">
+    <meta property="og:description" content="Off-chain RFQ and PMM fills revert under fork-simulation. ClearTrace detects them from the route and measures them honestly on-chain, so the leaderboard is not biased toward AMM-only flow.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/rfq-execution-quality.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/rfq-execution-quality.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Measuring Off-Chain RFQ Execution Quality",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Execution Quality</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">RFQ / PMM</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                When You Can't Simulate the Fill
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                A large share of DEX aggregator volume settles through off-chain RFQ and private-market-maker venues that revert under fork-simulation. Discarding those samples would bias any execution-quality leaderboard toward simple AMM routes. Here is how ClearTrace detects them and measures them honestly instead.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">7</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Aggregators compared</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">$1K&ndash;$1M</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Trade sizes replayed</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">~3.8<span class="text-base text-gray-500">%</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Real revert vs ~57% in-sim</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                ClearTrace benchmarks DEX aggregator execution quality by comparing each quote to the price a trade actually realizes. The breadth method for that comparison is fork-and-simulate: take the aggregator's own swap calldata, replay it against current chain state with <code>eth_simulateV1</code>, and read the bought-token transfer to the taker. That works cleanly for a trade that settles through an on-chain automated market maker.
+            </p>
+            <p>
+                It does not work for how a growing share of size actually fills. At scale, aggregators route through RFQ and private-market-maker venues (Hashflow, Wintermute, Bebop, Dexalot, AirSwap) and through off-chain filler flows like UniswapX Dutch auctions. Those fills depend on a signed off-chain order that does not exist inside a fork. Replay them and the router reverts. A naive benchmark then faces a bad choice: score the revert as a quote failure, which is wrong, or silently drop the sample, which quietly biases the whole leaderboard toward the simple AMM routes that happen to simulate.
+            </p>
+            <p>
+                Neither is acceptable for a tool whose entire value is being a neutral, honest scorecard. The routes that are hardest to measure are exactly the ones large traders care about most.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                Rather than treat an un-simulatable route as a failure, ClearTrace detects it from the quote's own route and sends it down a different, honest measurement path. Every sample is classified before it is scored:
+            </p>
+            <ul>
+                <li><strong>AMM-routed samples</strong> go to the fork-sim quote-accuracy method: realized output versus quoted output, the breadth comparison.</li>
+                <li><strong>RFQ-routed samples</strong> go to the on-chain read instead: the realized fill-versus-revert rate and realized slippage measured from what actually landed on-chain, never a simulated number that was never going to succeed.</li>
+            </ul>
+            <p>
+                Detection reads each aggregator's route in its own shape, because none of them expose venues the same way. ClearTrace parses ParaSwap's <code>bestRoute</code> swap exchanges, KyberSwap's <code>routeSummary</code> hops, 0x's <code>fills</code>, 1inch's nested <code>protocols</code>, and Uniswap's top-level <code>routing</code> field that distinguishes a classic AMM route from a Dutch-auction filler. A route is tagged <code>rfq_routed</code> when any venue on it matches a known off-chain market-maker marker.
+            </p>
+            <p>
+                The classification is deliberately conservative. Bebop, for example, settles on-chain through its own settlement contract with maker signatures embedded directly in the transaction, so a direct Bebop quote does fork-simulate and is measured on the breadth path; the RFQ marker only fires when a Bebop leg appears inside another aggregator's route, where the signed settlement calldata is absent. Under-claiming beats over-claiming: a route that can be measured properly is, and only the ones that genuinely cannot are moved off the sim path.
+            </p>
+
+            <h3>A second gap: on-chain venues a fork can't replay</h3>
+            <p>
+                Off-chain RFQ is not the only source of a misleading revert. A separate class of venues settles fully on-chain and works for real users, yet still reverts in a naive fork simulation: Uniswap V4 hook pools (including MEV-protection hooks like Angstrom), Fluid DEX, and several next-generation AMMs. Our <code>[approve, swap]</code> bundle on a latest-block fork, with a generic caller and no builder or hook context, trips their leg and the router fails.
+            </p>
+            <p>
+                The size of that gap is easy to underestimate. Sampling KyberSwap routes on one date, the in-simulation revert rate was roughly <strong>57%</strong>, while Kyber's real on-chain revert rate over the same routes was about <strong>3.8%</strong>. The entire difference was these unsimulatable-but-valid venues. If we reported the sim number, we would be publishing a 15x overstatement of how often Kyber's routing fails. ClearTrace flags these routes as a coverage gap, not a quote failure, and stores the route venue names so the classification sharpens over time rather than hard-coding a guess.
+            </p>
+
+            <h3>Detecting the route</h3>
+            <p>The detection itself is a small, pure function over the quote each adapter already fetches, so it is unit-testable against static fixtures and never touches the network:</p>
+
+<pre><code class="language-python"># Off-chain RFQ / PMM venues fill via a signed order, so they revert
+# under fork-simulation. Detect them from the quote's own route and
+# measure them on-chain instead of discarding the sample.
+RFQ_MARKERS = (
+    "rfq", "hashflow", "bebop", "native", "wintermute",
+    "dexalot", "airswap", "uniswapx", "dutch",
+)
+
+def is_rfq_routed(raw_quote: dict, source: str) -> bool:
+    """True if any venue on the route is an RFQ/PMM market maker."""
+    venues = extract_venues(raw_quote, source)
+    return any(m in v.lower() for v in venues for m in RFQ_MARKERS)</code></pre>
+
+            <p>
+                You can read the result directly in the <a href="https://cleartracedata.com/research/execution-quality" target="_blank" rel="noopener noreferrer">interactive execution-quality explainer</a>, which replays the identical trade across seven aggregators and four trade sizes against a mainnet fork, and reports reliability, realized cost, and off-chain RFQ routing side by side rather than collapsing them into one figure.
+            </p>
+
+            <h2>What It Shows</h2>
+            <p>
+                Turning a measurement gap into a labeled dimension rather than a dropped row. The rare skill on display is knowing the difference between three things that all look identical in a log, a route that failed, a route that filled off-chain, and a route that only fails in your test harness, and building the pipeline so each one is counted as what it actually is. That is the honest-measurement discipline underneath every ClearTrace number.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That the numbers survive scrutiny. Any team can publish a slippage chart; the hard part is not overstating your own coverage when the data fights back. ClearTrace separates real execution outcomes from artifacts of the measurement method, which is what makes it usable by foundations and protocol teams as neutral proof rather than marketing. It runs today as a free dashboard and public API, with paid per-chain integrity reports and standing monthly monitoring engagements.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship — on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
