@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClearTrace — On-Chain Execution Intelligence | Rantum Studio</title>
-    <meta name="description" content="Neutral, third-party proof of where DEX volume really originates — surfacing hidden, untagged orderflow plus execution quality and MEV across Ethereum, Base, Arbitrum, and Optimism.">
-    <meta property="og:title" content="ClearTrace — On-Chain Execution Intelligence | Rantum Studio">
-    <meta property="og:description" content="Neutral, third-party proof of where DEX volume really originates — hidden orderflow, execution quality, and MEV across four chains. Live API + dashboard.">
+    <title>ClearTrace: On-Chain Execution Intelligence | Rantum Studio</title>
+    <meta name="description" content="Neutral, third-party proof of where DEX volume really originates, surfacing hidden, untagged orderflow plus execution quality and MEV across Ethereum, Base, Arbitrum, and Optimism.">
+    <meta property="og:title" content="ClearTrace: On-Chain Execution Intelligence | Rantum Studio">
+    <meta property="og:description" content="Neutral, third-party proof of where DEX volume really originates: hidden orderflow, execution quality, and MEV across four chains. Live API + dashboard.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -33,7 +33,7 @@
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "ClearTrace — On-Chain Execution Intelligence",
+      "headline": "ClearTrace: On-Chain Execution Intelligence",
       "author": {
         "@type": "Person",
         "name": "Andrew Maury"
@@ -77,7 +77,7 @@
                 ClearTrace
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                Neutral, third-party proof of where DEX volume really originates — surfacing hidden, untagged orderflow plus execution quality and MEV across Ethereum, Base, Arbitrum, and Optimism.
+                Neutral, third-party proof of where DEX volume really originates, surfacing hidden, untagged orderflow plus execution quality and MEV across Ethereum, Base, Arbitrum, and Optimism.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -112,7 +112,7 @@
 
             <h2>The Challenge</h2>
             <p>
-                The decentralized exchange (DEX) ecosystem routes enormous volume, but attributing that volume to the frontend that actually originated it — the Uniswap UI, a wallet-native swap, an aggregator, an institutional desk — is notoriously hard. There is no standard way for a frontend to "announce" itself on-chain.
+                The decentralized exchange (DEX) ecosystem routes enormous volume, but attributing that volume to the frontend that actually originated it (the Uniswap UI, a wallet-native swap, an aggregator, an institutional desk) is notoriously hard. There is no standard way for a frontend to "announce" itself on-chain.
             </p>
             <p>
                 That gap matters most to the people funding growth. L2 foundations and grant programs hand out incentives based on volume numbers that are easy to game: wash trading, proxy routing, and MEV-farm flow all look like "adoption" in standard dashboards. Without neutral attribution, incentives reward the wrong behavior.
@@ -120,12 +120,12 @@
 
             <h2>What We Built</h2>
             <p>
-                ClearTrace is a live, neutral, third-party execution-intelligence engine built on Dune Analytics' granular <code>trace</code> and <code>call</code> tables — building on our open-source contributions to Dune, including 67 contracts we submitted for decoding. It attributes trade origin, benchmarks execution quality, and measures MEV exposure across Ethereum, Base, Arbitrum, and Optimism — using 172K+ attributed contracts — and serves it through a public dashboard and REST API at <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer">cleartracedata.com</a>.
+                ClearTrace is a live, neutral, third-party execution-intelligence engine built on Dune Analytics' granular <code>trace</code> and <code>call</code> tables, building on our open-source contributions to Dune, including 67 contracts we submitted for decoding. It attributes trade origin, benchmarks execution quality, and measures MEV exposure across Ethereum, Base, Arbitrum, and Optimism (using 172K+ attributed contracts) and serves it through a public dashboard and REST API at <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer">cleartracedata.com</a>.
             </p>
 
             <h3>Four attribution vectors for hidden orderflow</h3>
             <ul>
-                <li><strong>Call-data suffix trapper:</strong> parses static hex suffixes appended to router calldata that standard contract decoders ignore — catching meta-frontends and wallet-native swap extensions.</li>
+                <li><strong>Call-data suffix trapper:</strong> parses static hex suffixes appended to router calldata that standard contract decoders ignore, catching meta-frontends and wallet-native swap extensions.</li>
                 <li><strong>Proxy-router hunt:</strong> flags <code>tx_to</code> / pool-address mismatches to reveal custom enterprise frontends and institutional smart wallets bypassing public tracking.</li>
                 <li><strong>Multi-hop origin trace:</strong> uses window functions (<code>LAG</code>/<code>LEAD</code>) over per-wallet interaction sequences to map interface hops and user churn across chains.</li>
                 <li><strong>Fee-recipient vector:</strong> clusters anonymous frontends by the basis-point fees they route to static on-chain identifiers during execution.</li>
@@ -133,14 +133,14 @@
 
             <h3>Execution quality, measured neutrally</h3>
             <p>
-                ClearTrace scores execution by comparing each trade's realized price against a 1-minute Volume-Weighted Average Price (VWAP) oracle — the true cost of a trade, not the quoted price the aggregator advertises. Across the chains it covers, the best-performing aggregators land around a <strong>~7.5 bps median</strong> effective slippage. It separately detects sandwich attacks (frontrun → victim → backrun) by scanning in-block transaction ordering, and reports both the number of attacks and total value sandwiched as a distinct MEV-exposure metric rather than folding it into the slippage score.
+                ClearTrace scores execution by comparing each trade's realized price against a 1-minute Volume-Weighted Average Price (VWAP) oracle: the true cost of a trade, not the quoted price the aggregator advertises. Across the chains it covers, the best-performing aggregators land around a <strong>~7.5 bps median</strong> effective slippage. It separately detects sandwich attacks (frontrun → victim → backrun) by scanning in-block transaction ordering, and reports both the number of attacks and total value sandwiched as a distinct MEV-exposure metric rather than folding it into the slippage score.
             </p>
             <p>
                 Explore it directly in the <a href="https://cleartracedata.com/research/execution-quality" target="_blank" rel="noopener noreferrer">interactive execution-quality explainer</a>, which replays the identical trade across seven aggregators and four trade sizes against a mainnet fork, so you can isolate any venue and read reliability, realized cost, and off-chain RFQ routing side by side.
             </p>
 
             <h3>Illustrative extraction</h3>
-            <p>A simplified shape of the attribution pass — isolating frontend codes while filtering proxy noise and known bot flow:</p>
+            <p>A simplified shape of the attribution pass, isolating frontend codes while filtering proxy noise and known bot flow:</p>
 
 <pre><code class="language-sql">-- Attribute trades to originating frontend, net of proxy/bot noise
 SELECT
@@ -157,12 +157,12 @@ WHERE success = true
 
             <h2>What It Shows</h2>
             <p>
-                Finding signal in deliberately adversarial data — flow that is obfuscated, unlabeled, or actively trying not to be measured — and shipping it as live, defensible infrastructure with a public API. It is the on-chain expression of Rantum's through-line: rare-data attribution and detection turned into a product.
+                Finding signal in deliberately adversarial data (flow that is obfuscated, unlabeled, or actively trying not to be measured) and shipping it as live, defensible infrastructure with a public API. It is the on-chain expression of Rantum's through-line: rare-data attribution and detection turned into a product.
             </p>
 
             <h2>What It Proves to a Client</h2>
             <p>
-                That we can build data infrastructure others can't easily replicate. ClearTrace gives foundations, grant programs, and protocol teams neutral proof of organic-versus-wash/proxy/bot volume for named recipients — the basis for spending incentives on real adoption. It runs today as a free dashboard and public API, with paid per-chain integrity reports and standing monthly monitoring engagements.
+                That we can build data infrastructure others can't easily replicate. ClearTrace gives foundations, grant programs, and protocol teams neutral proof of organic-versus-wash/proxy/bot volume for named recipients, the basis for spending incentives on real adoption. It runs today as a free dashboard and public API, with paid per-chain integrity reports and standing monthly monitoring engagements.
             </p>
 
         </article>
@@ -170,7 +170,7 @@ WHERE success = true
         <!-- Call to Action -->
         <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
             <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship — on-chain and beyond.</p>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
             <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
                 Work with us
             </a>

@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detecting MEV & Sandwich Attacks On-Chain | Rantum Studio</title>
-    <meta name="description" content="A practical methodology for detecting MEV and sandwich attacks on-chain — separating real slippage from adversarial extraction, across Ethereum, Base, Arbitrum, and Optimism.">
+    <meta name="description" content="A practical methodology for detecting MEV and sandwich attacks on-chain, separating real slippage from adversarial extraction, across Ethereum, Base, Arbitrum, and Optimism.">
     <meta property="og:title" content="Detecting MEV & Sandwich Attacks On-Chain | Rantum Studio">
-    <meta property="og:description" content="How ClearTrace detects sandwich attacks and MEV exposure in DEX trades — including why tx_hash ordering fails as a sequencer proxy, and why Arbitrum shows near-zero sandwich activity.">
+    <meta property="og:description" content="How ClearTrace detects sandwich attacks and MEV exposure in DEX trades, including why tx_hash ordering fails as a sequencer proxy, and why Arbitrum shows near-zero sandwich activity.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -75,7 +75,7 @@
                 Detecting MEV &amp; Sandwich Attacks On-Chain
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                A practical methodology for separating adversarial extraction from normal execution cost — and why the naive approach gets it badly wrong.
+                A practical methodology for separating adversarial extraction from normal execution cost, and why the naive approach gets it badly wrong.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -110,26 +110,26 @@
 
             <h2>The Challenge</h2>
             <p>
-                Sandwich attacks are the most common form of on-chain MEV against retail traders. A bot spots a pending swap in the mempool, inserts a frontrun buy just before it and a backrun sell just after — capturing the price impact the victim caused, at the victim's expense. The victim's trade executes at a worse price than expected, and the difference flows to the bot.
+                Sandwich attacks are the most common form of on-chain MEV against retail traders. A bot spots a pending swap in the mempool, inserts a frontrun buy just before it and a backrun sell just after, capturing the price impact the victim caused, at the victim's expense. The victim's trade executes at a worse price than expected, and the difference flows to the bot.
             </p>
             <p>
-                The problem for anyone trying to measure this: sandwich attacks are invisible in standard analytics. They look like normal slippage. A $10,000 swap that gets sandwiched shows up in a dashboard as "executed at 42 bps of slippage" — indistinguishable from a large trade in a thin pool. Without a methodology that isolates the adversarial component, every slippage number is a mix of real execution cost and extraction, and you can't act on either.
+                The problem for anyone trying to measure this: sandwich attacks are invisible in standard analytics. They look like normal slippage. A $10,000 swap that gets sandwiched shows up in a dashboard as "executed at 42 bps of slippage", indistinguishable from a large trade in a thin pool. Without a methodology that isolates the adversarial component, every slippage number is a mix of real execution cost and extraction, and you can't act on either.
             </p>
             <p>
-                This matters most to DEX aggregators, L2 foundations, and grant programs that are trying to evaluate which protocols actually protect their users — and which ones quietly route flow into sandwichable positions.
+                This matters most to DEX aggregators, L2 foundations, and grant programs that are trying to evaluate which protocols actually protect their users, and which ones quietly route flow into sandwichable positions.
             </p>
 
             <h2>What We Built</h2>
             <p>
-                ClearTrace's MEV detection layer runs as part of the broader <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer">ClearTrace</a> execution-intelligence engine, covering Ethereum, Base, Arbitrum, and Optimism. It identifies victim swaps, quantifies the volume sandwiched over rolling 7-day windows, and reports MEV exposure as a distinct metric — kept separate from the execution quality score so they can be read independently.
+                ClearTrace's MEV detection layer runs as part of the broader <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer">ClearTrace</a> execution-intelligence engine, covering Ethereum, Base, Arbitrum, and Optimism. It identifies victim swaps, quantifies the volume sandwiched over rolling 7-day windows, and reports MEV exposure as a distinct metric, kept separate from the execution quality score so they can be read independently.
             </p>
 
             <h3>The v1 mistake: tx_hash is not execution order</h3>
             <p>
-                The first cut at sandwich detection tried to reconstruct in-block ordering directly from <code>dex.trades</code>, using <code>tx_hash</code> comparisons as a proxy for sequencer position — treating a lower hash as an earlier transaction. That logic is wrong: <code>tx_hash</code> is a cryptographic hash, not a sequence number. Sorting by hash produces an arbitrary permutation of transactions, not the order they were actually included in the block. A "sandwich" identified this way is noise.
+                The first cut at sandwich detection tried to reconstruct in-block ordering directly from <code>dex.trades</code>, using <code>tx_hash</code> comparisons as a proxy for sequencer position, treating a lower hash as an earlier transaction. That logic is wrong: <code>tx_hash</code> is a cryptographic hash, not a sequence number. Sorting by hash produces an arbitrary permutation of transactions, not the order they were actually included in the block. A "sandwich" identified this way is noise.
             </p>
             <p>
-                The correct source is Dune's curated <code>dex.sandwiched</code> table, built from Dune's Spellbook detection macro — which uses actual <code>evt_index</code> (on-chain event position) to reconstruct frontrun → victim → backrun triples across every block. Switching to this source eliminated the false positives entirely.
+                The correct source is Dune's curated <code>dex.sandwiched</code> table, built from Dune's Spellbook detection macro, which uses actual <code>evt_index</code> (on-chain event position) to reconstruct frontrun → victim → backrun triples across every block. Switching to this source eliminated the false positives entirely.
             </p>
 
             <h3>The detection query</h3>
@@ -164,15 +164,15 @@ ORDER BY block_time DESC
 LIMIT 500;</code></pre>
 
             <p>
-                The window columns mean the 7-day KPIs are accurate across the full dataset — not just the 500-row page — so a per-chain breakdown shows the right totals without a second query.
+                The window columns mean the 7-day KPIs are accurate across the full dataset, not just the 500-row page, so a per-chain breakdown shows the right totals without a second query.
             </p>
 
             <h3>Separating MEV from slippage in the execution quality score</h3>
             <p>
-                Slippage and MEV exposure are both costs, but they have different causes and different remedies. ClearTrace scores them separately. Execution quality compares each fill's realized price against a 1-minute VWAP oracle — both the sold leg and the bought leg valued explicitly against <code>prices.usd</code>, avoiding the circular-pricing trap of comparing against Dune's internally derived <code>amount_usd</code>. The MEV score layers on top: it reports sandwich victim counts and sandwiched volume as a distinct column, so a protocol's execution quality score is not contaminated by the MEV it fails to prevent.
+                Slippage and MEV exposure are both costs, but they have different causes and different remedies. ClearTrace scores them separately. Execution quality compares each fill's realized price against a 1-minute VWAP oracle: both the sold leg and the bought leg valued explicitly against <code>prices.usd</code>, avoiding the circular-pricing trap of comparing against Dune's internally derived <code>amount_usd</code>. The MEV score layers on top: it reports sandwich victim counts and sandwiched volume as a distinct column, so a protocol's execution quality score is not contaminated by the MEV it fails to prevent.
             </p>
             <p>
-                The benchmark this produces across major aggregators — using the same $100–$10M notional band and a 2,000 bps junk filter to exclude pricing errors — is the kind of number no aggregator's own dashboard will publish about itself:
+                The benchmark this produces across major aggregators, using the same $100–$10M notional band and a 2,000 bps junk filter to exclude pricing errors, is the kind of number no aggregator's own dashboard will publish about itself:
             </p>
 
             <div class="not-prose overflow-x-auto rounded-xl border border-gray-800 mb-6">
@@ -213,17 +213,17 @@ LIMIT 500;</code></pre>
                 ClearTrace covers Arbitrum and Optimism, and their sandwich numbers are near-zero compared to Ethereum. This is a fact worth stating carefully, because two very different things can produce near-zero attack counts: the detector runs and finds little (structural protection), or the detector simply has no data for that chain (a coverage gap that would be wrong to call protection).
             </p>
             <p>
-                The verification query checks both: it looks at <code>active_days</code> (how many days in the trailing 30 the chain has data) alongside <code>sandwich_victims_30d</code>. If <code>active_days ≈ 30</code> and <code>sandwich_victims_30d</code> is tiny, the detector is running and genuinely finding almost nothing — this is the Arbitrum case, consistent with its FCFS (first-come-first-served) private-mempool sequencing that eliminates the pending mempool window bots need to frontrun. A foundation citing "Arbitrum is sandwich-protected" can point to this as the empirical basis.
+                The verification query checks both: it looks at <code>active_days</code> (how many days in the trailing 30 the chain has data) alongside <code>sandwich_victims_30d</code>. If <code>active_days ≈ 30</code> and <code>sandwich_victims_30d</code> is tiny, the detector is running and genuinely finding almost nothing. This is the Arbitrum case, consistent with its FCFS (first-come-first-served) private-mempool sequencing that eliminates the pending mempool window bots need to frontrun. A foundation citing "Arbitrum is sandwich-protected" can point to this as the empirical basis.
             </p>
 
             <h2>What It Shows</h2>
             <p>
-                The ability to detect adversarial extraction in data that's structured to hide it — and to distinguish a real signal (the chain genuinely has fewer attacks) from an absence of data. The v1 → v2 rewrite is the concrete example: the wrong model produced confident-looking numbers that were meaningless; identifying <em>why</em> they were meaningless (hash ≠ sequence) required understanding the underlying data structure deeply enough to know what to use instead.
+                The ability to detect adversarial extraction in data that's structured to hide it, and to distinguish a real signal (the chain genuinely has fewer attacks) from an absence of data. The v1 → v2 rewrite is the concrete example: the wrong model produced confident-looking numbers that were meaningless; identifying <em>why</em> they were meaningless (hash ≠ sequence) required understanding the underlying data structure deeply enough to know what to use instead.
             </p>
 
             <h2>What It Proves to a Client</h2>
             <p>
-                That we build measurement infrastructure that holds up to scrutiny. ClearTrace's MEV layer gives L2 foundations, DEX aggregators, and grant programs a neutral, third-party answer to the question their own analytics can't answer honestly: how much of the slippage users are paying is real execution cost, and how much is being extracted by bots? The methodology is auditable — the detection source, the intra-aggregator dedup logic, and the L2 verification approach are all documented and grounded in the actual on-chain data structures.
+                That we build measurement infrastructure that holds up to scrutiny. ClearTrace's MEV layer gives L2 foundations, DEX aggregators, and grant programs a neutral, third-party answer to the question their own analytics can't answer honestly: how much of the slippage users are paying is real execution cost, and how much is being extracted by bots? The methodology is auditable: the detection source, the intra-aggregator dedup logic, and the L2 verification approach are all documented and grounded in the actual on-chain data structures.
             </p>
 
         </article>
@@ -231,7 +231,7 @@ LIMIT 500;</code></pre>
         <!-- Call to Action -->
         <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
             <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship — on-chain and beyond.</p>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
             <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
                 Work with us
             </a>

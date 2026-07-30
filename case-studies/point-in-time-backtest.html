@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Designing a Point-in-Time Backtest You Can Actually Trust | Rantum Studio</title>
-    <meta name="description" content="Most predictive-ML backtests quietly leak the future and report a number that falls apart in production. Here is the point-in-time discipline that separates a defensible model from a flattering demo — the as-of-T rule, time-based folds, rare-event metrics, label independence, and a pre-registered go/no-go.">
+    <meta name="description" content="Most predictive-ML backtests quietly leak the future and report a number that falls apart in production. Here is the point-in-time discipline that separates a defensible model from a flattering demo: the as-of-T rule, time-based folds, rare-event metrics, label independence, and a pre-registered go/no-go.">
     <meta property="og:title" content="Designing a Point-in-Time Backtest You Can Actually Trust | Rantum Studio">
     <meta property="og:description" content="The rigor that separates a shippable predictive model from a demo that falls apart in production: point-in-time features, time-based folds, lift over accuracy, label independence, and a pre-registered go/no-go.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
@@ -88,7 +88,7 @@
                 Designing a Point-in-Time Backtest You Can Actually Trust
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                Almost any predictive model can be made to look good on historical data. The hard part is a backtest that reports what was actually knowable at decision time — so the number survives contact with production. Here is the discipline we hold every model to, and the worked example where it walked a flattering 5.3x result down to an honest 2x.
+                Almost any predictive model can be made to look good on historical data. The hard part is a backtest that reports what was actually knowable at decision time, so the number survives contact with production. Here is the discipline we hold every model to, and the worked example where it walked a flattering 5.3x result down to an honest 2x.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -106,7 +106,7 @@
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">&lt;1<span class="text-base text-gray-500">%</span></div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Base rate — why lift, not accuracy</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Base rate: why lift, not accuracy</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">&ge;5<span class="text-base text-gray-500">x</span></div>
@@ -123,30 +123,30 @@
 
             <h2>The Challenge</h2>
             <p>
-                Every predictive product is sold on a backtest: "our model would have caught X% of these events in advance." The trouble is that a backtest is the easiest thing in machine learning to fake — usually by accident. Read a feature that was only knowable after the fact, shuffle your train and test sets at random, or report accuracy on an event that almost never happens, and you can produce an impressive number that means nothing. The model then ships, and the edge that looked real on paper quietly disappears in production.
+                Every predictive product is sold on a backtest: "our model would have caught X% of these events in advance." The trouble is that a backtest is the easiest thing in machine learning to fake, usually by accident. Read a feature that was only knowable after the fact, shuffle your train and test sets at random, or report accuracy on an event that almost never happens, and you can produce an impressive number that means nothing. The model then ships, and the edge that looked real on paper quietly disappears in production.
             </p>
             <p>
-                The gap between a flattering backtest and a defensible one is not a modeling trick. It is a set of disciplines about <em>time</em>: what was knowable, when, and whether the test respects that. Below is the checklist we run on every predictive engagement, and a worked example — a teardown-probability model inside <a href="teardown-probability-model.html">AddressIntel</a>, our real-estate intelligence platform — where following it changed the answer.
+                The gap between a flattering backtest and a defensible one is not a modeling trick. It is a set of disciplines about <em>time</em>: what was knowable, when, and whether the test respects that. Below is the checklist we run on every predictive engagement, and a worked example (a teardown-probability model inside <a href="teardown-probability-model.html">AddressIntel</a>, our real-estate intelligence platform) where following it changed the answer.
             </p>
 
             <h2>What We Built</h2>
             <p>
-                A repeatable point-in-time backtesting discipline, applied here to predicting which aging houses on the San Francisco Peninsula get demolished and rebuilt. Teardowns are rare (well under 1% of parcels a year), the outcome is only visible in fragmented municipal permit records, and the features tempt you to cheat at every turn — which makes it a good stress test for a method meant to travel to any domain with rare events and messy history. Five rules do the work.
+                A repeatable point-in-time backtesting discipline, applied here to predicting which aging houses on the San Francisco Peninsula get demolished and rebuilt. Teardowns are rare (well under 1% of parcels a year), the outcome is only visible in fragmented municipal permit records, and the features tempt you to cheat at every turn, which makes it a good stress test for a method meant to travel to any domain with rare events and messy history. Five rules do the work.
             </p>
 
-            <h3>1. Score as-of <code>T</code> — features from data dated <code>&le; T</code>, nothing else</h3>
+            <h3>1. Score as-of <code>T</code>: features from data dated <code>&le; T</code>, nothing else</h3>
             <p>
-                Pick a set of historical scoring dates <code>T</code>, and at each one, build every feature using only information that existed on or before that date. This sounds obvious and is constantly violated, because the most predictive-looking features are exactly the ones that leak. A teardown <em>changes the structure</em>: score a parcel as of 2018 but read its <code>year_built</code>, square footage, or listing photos as they stand today, and every one of those attributes describes the <em>new</em> house that replaced the old one. The feature would silently encode the answer. Only dated history — assessment rolls, sales, and permits, each stamped with the year it was true — reconstructs cleanly as-of <code>T</code>. This is the point-in-time leakage principle, and enforcing it disqualifies most of the obvious features before a single metric is computed.
+                Pick a set of historical scoring dates <code>T</code>, and at each one, build every feature using only information that existed on or before that date. This sounds obvious and is constantly violated, because the most predictive-looking features are exactly the ones that leak. A teardown <em>changes the structure</em>: score a parcel as of 2018 but read its <code>year_built</code>, square footage, or listing photos as they stand today, and every one of those attributes describes the <em>new</em> house that replaced the old one. The feature would silently encode the answer. Only dated history (assessment rolls, sales, and permits, each stamped with the year it was true) reconstructs cleanly as-of <code>T</code>. This is the point-in-time leakage principle, and enforcing it disqualifies most of the obvious features before a single metric is computed.
             </p>
 
             <h3>2. Time-based folds, never random cross-validation</h3>
             <p>
-                Standard <em>k</em>-fold cross-validation shuffles rows at random into train and test sets. For anything with a time dimension, that is leakage by construction: the model trains on rows from 2020 and is tested on rows from 2018, learning from a future it would not have had. Pool observations across several as-of dates instead, and split on time — fit on <code>T &le; 2018</code>, test on <code>T = 2020</code>. Use enough distinct dates (we like six or more) that no single lucky window can carry the result, and report the metrics per fold so temporal instability shows up instead of hiding in an average.
+                Standard <em>k</em>-fold cross-validation shuffles rows at random into train and test sets. For anything with a time dimension, that is leakage by construction: the model trains on rows from 2020 and is tested on rows from 2018, learning from a future it would not have had. Pool observations across several as-of dates instead, and split on time: fit on <code>T &le; 2018</code>, test on <code>T = 2020</code>. Use enough distinct dates (we like six or more) that no single lucky window can carry the result, and report the metrics per fold so temporal instability shows up instead of hiding in an average.
             </p>
 
             <h3>3. Lead with the base rate; measure lift, not accuracy</h3>
             <p>
-                When positives are rare, accuracy is worse than useless: a model that predicts "no teardown, ever" is 99%+ accurate and completely worthless. The honest frame is the base rate first, then <strong>lift</strong> — how much richer the top-ranked slice is than chance — alongside precision-at-<em>k</em>, capture (recall) at <em>k</em>, and the area under the precision-recall curve. Because positives are few, bootstrap a confidence interval on every figure so you don't over-read noise.
+                When positives are rare, accuracy is worse than useless: a model that predicts "no teardown, ever" is 99%+ accurate and completely worthless. The honest frame is the base rate first, then <strong>lift</strong> (how much richer the top-ranked slice is than chance) alongside precision-at-<em>k</em>, capture (recall) at <em>k</em>, and the area under the precision-recall curve. Because positives are few, bootstrap a confidence interval on every figure so you don't over-read noise.
             </p>
 
 <pre><code class="language-python"># Rare positives (teardowns run &lt;1% of parcels): accuracy is a trap —
@@ -163,10 +163,10 @@ def evaluate(observations, score):        # observations: (features, label), eac
 
             <h3>4. The label must be independent of the feature it validates</h3>
             <p>
-                This is the rule that saved the AddressIntel model from shipping a lie. The first teardown label was a cheap proxy: California's Proposition 13 caps assessed-value growth except on new construction, so a teardown-rebuild shows up as a sharp jump in a parcel's <em>building</em> value. Scored against that label, a single heuristic — sort parcels by their land-to-improvement value ratio — looked spectacular: a 5.3x lift at the top decile, capturing over half of all "teardowns," on 17,589 observations at a 0.72% base rate. It read as an undefeated baseline.
+                This is the rule that saved the AddressIntel model from shipping a lie. The first teardown label was a cheap proxy: California's Proposition 13 caps assessed-value growth except on new construction, so a teardown-rebuild shows up as a sharp jump in a parcel's <em>building</em> value. Scored against that label, a single heuristic (sort parcels by their land-to-improvement value ratio) looked spectacular: a 5.3x lift at the top decile, capturing over half of all "teardowns," on 17,589 observations at a 0.72% base rate. It read as an undefeated baseline.
             </p>
             <p>
-                It was an artifact. The proxy label <em>is</em> a building-value spike, and the winning feature <em>is</em> land divided by building value. Both are functions of the same number, so scoring by the ratio was, in effect, scoring against a shadow of the label it was supposed to predict. We caught it two ways. First, a direct cross-validation: of 140 proxy-flagged rebuilds, exactly one had a confirming demolition or new-build permit at the same parcel. Second, rebuilding the label from real, independent data — actual San Jose demolition and new-single-family permits, keyed to the parcel number across a 36,896-parcel universe. On that clean, non-circular test the ratio's edge as a standalone score evaporated to no signal at all, though the underlying lot-size economics still carried a smaller, defensible signal (about 2x lift), which is the number the shipped model stands on.
+                It was an artifact. The proxy label <em>is</em> a building-value spike, and the winning feature <em>is</em> land divided by building value. Both are functions of the same number, so scoring by the ratio was, in effect, scoring against a shadow of the label it was supposed to predict. We caught it two ways. First, a direct cross-validation: of 140 proxy-flagged rebuilds, exactly one had a confirming demolition or new-build permit at the same parcel. Second, rebuilding the label from real, independent data: actual San Jose demolition and new-single-family permits, keyed to the parcel number across a 36,896-parcel universe. On that clean, non-circular test the ratio's edge as a standalone score evaporated to no signal at all, though the underlying lot-size economics still carried a smaller, defensible signal (about 2x lift), which is the number the shipped model stands on.
             </p>
 
             <div class="not-prose glass-panel rounded-xl stat-row">
@@ -176,27 +176,27 @@ def evaluate(observations, score):        # observations: (features, label), eac
             </div>
 
             <p>
-                The rule generalizes past this one case: whenever a label is derived from the same source as a feature — a churn label inferred from the activity you also feed the model, a fraud label built from the rules you're scoring against — the backtest measures arithmetic, not prediction. Build the label from a source the features can't see, or the number is a mirror.
+                The rule generalizes past this one case: whenever a label is derived from the same source as a feature (a churn label inferred from the activity you also feed the model, a fraud label built from the rules you're scoring against), the backtest measures arithmetic, not prediction. Build the label from a source the features can't see, or the number is a mirror.
             </p>
 
             <h3>5. Pre-register the go/no-go, and build a gate that lets you fail cheap</h3>
             <p>
-                Write down the bar for success before you look at any results, so you can't move the goalposts to fit the number you got. Ours here was concrete: on out-of-sample dates, a top-decile lift of at least 5x, <em>and</em> a material margin over the best single heuristic (not within noise), <em>and</em> a positive median lead time so the call is early enough to act on. Just as important is a cheap feasibility gate up front. Before running any metrics, we counted teardown positives in the candidate windows; the pre-set rule was that fewer than ~30 to 50 positives is dead on arrival. The first pass returned zero strict positives against a ceiling of 19 — so the metrics were never run on noise, and the real work (assembling an independent permit label) was correctly identified as the project rather than a detour.
+                Write down the bar for success before you look at any results, so you can't move the goalposts to fit the number you got. Ours here was concrete: on out-of-sample dates, a top-decile lift of at least 5x, <em>and</em> a material margin over the best single heuristic (not within noise), <em>and</em> a positive median lead time so the call is early enough to act on. Just as important is a cheap feasibility gate up front. Before running any metrics, we counted teardown positives in the candidate windows; the pre-set rule was that fewer than ~30 to 50 positives is dead on arrival. The first pass returned zero strict positives against a ceiling of 19, so the metrics were never run on noise, and the real work (assembling an independent permit label) was correctly identified as the project rather than a detour.
             </p>
 
             <h3>Backtest &ne; live model</h3>
             <p>
-                The final piece of the discipline is knowing what the backtest does and does not license. The leakage that disqualifies <code>year_built</code>, square footage, and photos is a property of scoring a parcel that was <em>already rebuilt</em> in the historical window. Score a house that is still standing today, and those same attributes describe the actual candidate structure — no leak, and they are strong features. So the backtest validates the economic and assessment layer under strict point-in-time rules, while the live product can honestly be richer than the backtest could ever prove. Conflating the two is how teams either cripple a live model with backtest-only caution or ship a backtest number the production features quietly violate.
+                The final piece of the discipline is knowing what the backtest does and does not license. The leakage that disqualifies <code>year_built</code>, square footage, and photos is a property of scoring a parcel that was <em>already rebuilt</em> in the historical window. Score a house that is still standing today, and those same attributes describe the actual candidate structure: no leak, and they are strong features. So the backtest validates the economic and assessment layer under strict point-in-time rules, while the live product can honestly be richer than the backtest could ever prove. Conflating the two is how teams either cripple a live model with backtest-only caution or ship a backtest number the production features quietly violate.
             </p>
 
             <h2>What It Shows</h2>
             <p>
-                The unglamorous core of trustworthy predictive ML: reconstructing features as-of a decision date, splitting on time rather than at random, measuring rare events by lift instead of accuracy, keeping the label independent of what it validates, and pre-committing to a bar. None of it is exotic. All of it is routinely skipped, because skipping it produces better-looking numbers. It is the same through-line as the rest of Rantum's work — finding real signal in messy data — turned inward on the measurement itself.
+                The unglamorous core of trustworthy predictive ML: reconstructing features as-of a decision date, splitting on time rather than at random, measuring rare events by lift instead of accuracy, keeping the label independent of what it validates, and pre-committing to a bar. None of it is exotic. All of it is routinely skipped, because skipping it produces better-looking numbers. It is the same through-line as the rest of Rantum's work, finding real signal in messy data, turned inward on the measurement itself.
             </p>
 
             <h2>What It Proves to a Client</h2>
             <p>
-                That we will tell you whether a model works before you bet a roadmap on it. This case study is the proof: a 5.3x result that looked ready to ship as a "proprietary teardown score" got walked back to a defensible 2x lot-size signal once a clean test was possible — and we would rather deliver the smaller true number than the larger false one. Anyone can produce a flattering backtest by leaking the future into the features; the value is in the rigor that refuses to. For a business sitting on fragmented, underused data, that is the difference between a predictive product you can defend to a customer and a demo that falls apart in production. The method transfers directly to any domain with rare outcomes and messy history: insurance, lending, fraud, marketplaces, logistics, churn.
+                That we will tell you whether a model works before you bet a roadmap on it. This case study is the proof: a 5.3x result that looked ready to ship as a "proprietary teardown score" got walked back to a defensible 2x lot-size signal once a clean test was possible, and we would rather deliver the smaller true number than the larger false one. Anyone can produce a flattering backtest by leaking the future into the features; the value is in the rigor that refuses to. For a business sitting on fragmented, underused data, that is the difference between a predictive product you can defend to a customer and a demo that falls apart in production. The method transfers directly to any domain with rare outcomes and messy history: insurance, lending, fraud, marketplaces, logistics, churn.
             </p>
 
         </article>
@@ -204,7 +204,7 @@ def evaluate(observations, score):        # observations: (features, label), eac
         <!-- Call to Action -->
         <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
             <h3 class="text-2xl font-bold text-white mb-4">Betting a roadmap on a model?</h3>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We build and validate predictive models with real point-in-time rigor — so the backtest survives production, not just the demo.</p>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We build and validate predictive models with real point-in-time rigor, so the backtest survives production, not just the demo.</p>
             <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
                 Work with us
             </a>

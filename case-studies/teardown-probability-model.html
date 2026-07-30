@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>From Fragmented Permit Data to a Teardown-Probability Model | Rantum Studio</title>
-    <meta name="description" content="How AddressIntel turns permit records scattered across four municipal systems into an APN-joined, point-in-time teardown label — and an honest backtest that knows the difference between a real signal and leakage.">
+    <meta name="description" content="How AddressIntel turns permit records scattered across four municipal systems into an APN-joined, point-in-time teardown label, and an honest backtest that knows the difference between a real signal and leakage.">
     <meta property="og:title" content="From Fragmented Permit Data to a Teardown-Probability Model | Rantum Studio">
-    <meta property="og:description" content="Unifying four municipal permit systems on the parcel APN, engineering a non-circular teardown label, and backtesting it point-in-time — the hard part of predictive PropTech.">
+    <meta property="og:description" content="Unifying four municipal permit systems on the parcel APN, engineering a non-circular teardown label, and backtesting it point-in-time: the hard part of predictive PropTech.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -121,7 +121,7 @@
                 From Fragmented Permit Data to a Teardown-Probability Model
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                Building permits are the earliest signal of a teardown — and the messiest data in real estate. Here is how AddressIntel unifies four municipal systems on the parcel APN, engineers a teardown label that doesn't cheat, and backtests it the only way that means anything: point-in-time.
+                Building permits are the earliest signal of a teardown, and the messiest data in real estate. Here is how AddressIntel unifies four municipal systems on the parcel APN, engineers a teardown label that doesn't cheat, and backtests it the only way that means anything: point-in-time.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -159,7 +159,7 @@
                 A teardown is worth knowing about early. A developer who can spot, a year or two ahead, which aging house on an outsized lot is likely to be demolished and rebuilt has a real edge over the market. The signal that precedes almost every teardown is a building permit: a demolition filing, then a new single-family-residence filing on the same parcel.
             </p>
             <p>
-                The trouble is that permits are the messiest data in real estate. On the San Francisco Peninsula alone they are filed across four different portal technologies — Accela ACA (Palo Alto, Cupertino, Santa Clara), Tyler EnerGov CSS (San Mateo, San Carlos), eTRAKiT (Hillsborough, Atherton, Woodside, Burlingame), and San Jose's open-data CKAN API. Each has its own schema, its own free-text vocabulary for what a permit <em>is</em>, its own history depth, and no shared identifier that ties a permit to a specific parcel or listing. The hard part is not the model. It is making the underlying data joinable and trustworthy at all.
+                The trouble is that permits are the messiest data in real estate. On the San Francisco Peninsula alone they are filed across four different portal technologies: Accela ACA (Palo Alto, Cupertino, Santa Clara), Tyler EnerGov CSS (San Mateo, San Carlos), eTRAKiT (Hillsborough, Atherton, Woodside, Burlingame), and San Jose's open-data CKAN API. Each has its own schema, its own free-text vocabulary for what a permit <em>is</em>, its own history depth, and no shared identifier that ties a permit to a specific parcel or listing. The hard part is not the model. It is making the underlying data joinable and trustworthy at all.
             </p>
 
             <h2>What We Built</h2>
@@ -169,12 +169,12 @@
 
             <h3>One schema, joined on the parcel APN</h3>
             <p>
-                The parcel Assessor's Parcel Number (APN) is the join key that makes everything else possible. San Jose's open-data API carries the APN natively on every permit, along with clean fields for permit type, issue and final dates, valuation, and contractor — the highest-volume market, unlocked with a free JSON call rather than a brittle scrape. For the Selenium-scraped portals, the APN is recovered from the assessor record and used to stitch permits, sales, and listings onto a single parcel timeline. Permit type descriptions, which range from <code>"NEW SINGLE FAMILY RESIDENCE"</code> to <code>"Single Family (New) - New"</code> to a bare <code>"Demolition"</code>, are classified into a stable taxonomy (demolition, new construction, addition, remodel, roof, ADU, and so on) so a query means the same thing in every city.
+                The parcel Assessor's Parcel Number (APN) is the join key that makes everything else possible. San Jose's open-data API carries the APN natively on every permit, along with clean fields for permit type, issue and final dates, valuation, and contractor, the highest-volume market, unlocked with a free JSON call rather than a brittle scrape. For the Selenium-scraped portals, the APN is recovered from the assessor record and used to stitch permits, sales, and listings onto a single parcel timeline. Permit type descriptions, which range from <code>"NEW SINGLE FAMILY RESIDENCE"</code> to <code>"Single Family (New) - New"</code> to a bare <code>"Demolition"</code>, are classified into a stable taxonomy (demolition, new construction, addition, remodel, roof, ADU, and so on) so a query means the same thing in every city.
             </p>
 
             <h3>A label that doesn't cheat</h3>
             <p>
-                The first version of the label was a proxy: California's Proposition 13 caps assessed-value growth except on new construction, so a teardown-rebuild shows up as a sharp jump in a parcel's <em>building</em> value. It was cheap to compute and looked plausible. We cross-validated it against real permits anyway — and it failed. Of 140 proxy-flagged rebuilds, exactly one had a confirming demolition or new-build permit at the same APN. The proxy was catching ownership resets and additions, not teardowns.
+                The first version of the label was a proxy: California's Proposition 13 caps assessed-value growth except on new construction, so a teardown-rebuild shows up as a sharp jump in a parcel's <em>building</em> value. It was cheap to compute and looked plausible. We cross-validated it against real permits anyway, and it failed. Of 140 proxy-flagged rebuilds, exactly one had a confirming demolition or new-build permit at the same APN. The proxy was catching ownership resets and additions, not teardowns.
             </p>
 
             <div class="not-prose glass-panel rounded-xl stat-row">
@@ -184,12 +184,12 @@
             </div>
 
             <p>
-                So the real label comes from the permits themselves: a parcel is a teardown if it has a demolition or new-single-family permit in the forward window. Because that label is built from permits rather than assessed value, it is <em>independent</em> of the model's strongest feature (the land-to-improvement value ratio) — which means the backtest measures prediction, not an artifact of the label sharing arithmetic with the feature.
+                So the real label comes from the permits themselves: a parcel is a teardown if it has a demolition or new-single-family permit in the forward window. Because that label is built from permits rather than assessed value, it is <em>independent</em> of the model's strongest feature (the land-to-improvement value ratio), which means the backtest measures prediction, not an artifact of the label sharing arithmetic with the feature.
             </p>
 
             <h3>Point-in-time, or it means nothing</h3>
             <p>
-                A teardown changes the structure, and that is the whole trap. Score a parcel as of 2018, but read its <code>year_built</code>, square footage, or listing photos today, and every one of those attributes describes the <em>new</em> house that replaced it. The features would silently encode the answer. This is the point-in-time leakage principle, and it disqualifies most of the obvious features from the backtest: only dated history — assessment rolls, sales, and permits, each stamped with the year it was true — is clean.
+                A teardown changes the structure, and that is the whole trap. Score a parcel as of 2018, but read its <code>year_built</code>, square footage, or listing photos today, and every one of those attributes describes the <em>new</em> house that replaced it. The features would silently encode the answer. This is the point-in-time leakage principle, and it disqualifies most of the obvious features from the backtest: only dated history (assessment rolls, sales, and permits, each stamped with the year it was true) is clean.
             </p>
             <p>The label construction, reduced to its essentials, makes the discipline explicit:</p>
 
@@ -254,7 +254,7 @@ for T in (2016, 2018, 2020):                    # historical scoring dates
 
             <h2>What It Shows</h2>
             <p>
-                The hard, unglamorous discipline underneath predictive ML: unifying fragmented public records onto a single joinable spine, engineering a label that is independent of the feature it validates, and enforcing point-in-time hygiene so a backtest reports what was actually knowable at scoring time. It is the same through-line as ClearTrace — finding signal in messy, real-world data — applied to civic records instead of on-chain flow.
+                The hard, unglamorous discipline underneath predictive ML: unifying fragmented public records onto a single joinable spine, engineering a label that is independent of the feature it validates, and enforcing point-in-time hygiene so a backtest reports what was actually knowable at scoring time. It is the same through-line as ClearTrace (finding signal in messy, real-world data) applied to civic records instead of on-chain flow.
             </p>
 
             <h2>What It Proves to a Client</h2>
@@ -267,7 +267,7 @@ for T in (2016, 2018, 2020):                    # historical scoring dates
         <!-- Call to Action -->
         <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
             <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship — validated properly, not just prototyped.</p>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, validated properly, not just prototyped.</p>
             <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
                 Work with us
             </a>
