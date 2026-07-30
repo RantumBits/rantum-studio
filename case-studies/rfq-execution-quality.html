@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Measuring Off-Chain RFQ Execution Quality | Rantum Studio</title>
-    <meta name="description" content="How ClearTrace measures DEX execution quality for trades routed through off-chain RFQ and private-market-maker venues that cannot be fork-simulated, using an on-chain fill and realized-slippage read instead of discarding the sample.">
-    <meta property="og:title" content="Measuring Off-Chain RFQ Execution Quality | Rantum Studio">
-    <meta property="og:description" content="Off-chain RFQ and PMM fills revert under fork-simulation. ClearTrace detects them from the route and measures them honestly on-chain, so the leaderboard is not biased toward AMM-only flow.">
+    <title>Detecting Off-Chain RFQ Routing | Rantum Studio</title>
+    <meta name="description" content="Off-chain RFQ and private-market-maker fills revert under fork-simulation. ClearTrace detects them from the quote's own route and sends them to an on-chain read instead of discarding the sample, so the execution-quality leaderboard is not biased toward AMM-only flow.">
+    <meta property="og:title" content="Detecting Off-Chain RFQ Routing | Rantum Studio">
+    <meta property="og:description" content="Off-chain RFQ and PMM fills revert under fork-simulation. ClearTrace detects them from the route and sends them to an on-chain read, so the leaderboard is not biased toward AMM-only flow.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -33,7 +33,7 @@
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "Measuring Off-Chain RFQ Execution Quality",
+      "headline": "Detecting Off-Chain RFQ Routing in DEX Execution Data",
       "author": {
         "@type": "Person",
         "name": "Andrew Maury"
@@ -77,7 +77,7 @@
                 When You Can't Simulate the Fill
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                A large share of DEX aggregator volume settles through off-chain RFQ and private-market-maker venues that revert under fork-simulation. Discarding those samples would bias any execution-quality leaderboard toward simple AMM routes. Here is how ClearTrace detects them and measures them honestly instead.
+                At large order sizes, a meaningful share of DEX aggregator flow settles through off-chain RFQ and private-market-maker venues that revert under fork-simulation. Discarding those samples would bias any execution-quality leaderboard toward the simple AMM routes that happen to simulate. Here is how ClearTrace detects them and routes them to an honest on-chain read instead.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -102,8 +102,8 @@
                 <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Trade sizes replayed</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">~3.8<span class="text-base text-gray-500">%</span></div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Real revert vs ~57% in-sim</div>
+                <div class="text-2xl font-bold text-white font-mono">9</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">RFQ / PMM markers</div>
             </div>
         </div>
 
@@ -115,10 +115,10 @@
                 ClearTrace benchmarks DEX aggregator execution quality by comparing each quote to the price a trade actually realizes. The breadth method for that comparison is fork-and-simulate: take the aggregator's own swap calldata, replay it against current chain state with <code>eth_simulateV1</code>, and read the bought-token transfer to the taker. That works cleanly for a trade that settles through an on-chain automated market maker.
             </p>
             <p>
-                It does not work for how a growing share of size actually fills. At scale, aggregators route through RFQ and private-market-maker venues (Hashflow, Wintermute, Bebop, Dexalot, AirSwap) and through off-chain filler flows like UniswapX Dutch auctions. Those fills depend on a signed off-chain order that does not exist inside a fork. Replay them and the router reverts. A naive benchmark then faces a bad choice: score the revert as a quote failure, which is wrong, or silently drop the sample, which quietly biases the whole leaderboard toward the simple AMM routes that happen to simulate.
+                It does not work for how much large-size flow actually fills. At institutional size, aggregators route through RFQ and private-market-maker venues (Hashflow, Wintermute, Native, Dexalot, AirSwap) and through off-chain filler flows like UniswapX Dutch auctions. Those fills depend on a signed off-chain order that does not exist inside a fork. Replay them and the router reverts. A naive benchmark then faces a bad choice: score the revert as a quote failure, which is wrong, or silently drop the sample, which quietly biases the whole leaderboard toward the simple AMM routes that happen to simulate.
             </p>
             <p>
-                Neither is acceptable for a tool whose entire value is being a neutral, honest scorecard. The routes that are hardest to measure are exactly the ones large traders care about most.
+                Neither is acceptable for a tool whose entire value is being a neutral, honest scorecard, and RFQ-heavy routing concentrates at exactly the large order sizes an institutional desk cares about.
             </p>
 
             <h2>What We Built</h2>
@@ -141,7 +141,7 @@
                 Off-chain RFQ is not the only source of a misleading revert. A separate class of venues settles fully on-chain and works for real users, yet still reverts in a naive fork simulation: Uniswap V4 hook pools (including MEV-protection hooks like Angstrom), Fluid DEX, and several next-generation AMMs. Our <code>[approve, swap]</code> bundle on a latest-block fork, with a generic caller and no builder or hook context, trips their leg and the router fails.
             </p>
             <p>
-                The size of that gap is easy to underestimate. Sampling KyberSwap routes on one date, the in-simulation revert rate was roughly <strong>57%</strong>, while Kyber's real on-chain revert rate over the same routes was about <strong>3.8%</strong>. The entire difference was these unsimulatable-but-valid venues. If we reported the sim number, we would be publishing a 15x overstatement of how often Kyber's routing fails. ClearTrace flags these routes as a coverage gap, not a quote failure, and stores the route venue names so the classification sharpens over time rather than hard-coding a guess.
+                Left uncorrected, that gap distorts the leaderboard in the same direction as the RFQ one: a naive sampler scores these routes as failing far more often than they do for real users, when the reverts are an artifact of the simulation rather than the routing. ClearTrace flags them as a coverage gap rather than a quote failure, and stores the route venue names so the classification sharpens over time instead of hard-coding a guess.
             </p>
 
             <h3>Detecting the route</h3>
@@ -166,7 +166,7 @@ def is_rfq_routed(raw_quote: dict, source: str) -> bool:
 
             <h2>What It Shows</h2>
             <p>
-                Turning a measurement gap into a labeled dimension rather than a dropped row. The rare skill on display is knowing the difference between three things that all look identical in a log, a route that failed, a route that filled off-chain, and a route that only fails in your test harness, and building the pipeline so each one is counted as what it actually is. That is the honest-measurement discipline underneath every ClearTrace number.
+                Turning a measurement gap into a labeled dimension rather than a dropped row. Three outcomes look identical in a raw log: a route that genuinely failed, a route that filled off-chain, and a route that only fails inside the test harness. ClearTrace tells them apart and counts each as what it is, so a simulation artifact never gets published as a real failure.
             </p>
 
             <h2>What It Proves to a Client</h2>
@@ -179,7 +179,7 @@ def is_rfq_routed(raw_quote: dict, source: str) -> bool:
         <!-- Call to Action -->
         <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
             <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship — on-chain and beyond.</p>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
             <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
                 Work with us
             </a>
