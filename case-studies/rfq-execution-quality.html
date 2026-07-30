@@ -118,7 +118,7 @@
                 It does not work for how much large-size flow actually fills. At institutional size, aggregators route through RFQ and private-market-maker venues (Hashflow, Wintermute, Native, Dexalot, AirSwap) and through off-chain filler flows like UniswapX Dutch auctions. Those fills depend on a signed off-chain order that does not exist inside a fork. Replay them and the router reverts. A naive benchmark then faces a bad choice: score the revert as a quote failure, which is wrong, or silently drop the sample, which quietly biases the whole leaderboard toward the simple AMM routes that happen to simulate.
             </p>
             <p>
-                Neither is acceptable for a tool whose entire value is being a neutral, honest scorecard, and RFQ-heavy routing concentrates at exactly the large order sizes an institutional desk cares about.
+                Neither is acceptable for a tool whose entire value is being a neutral, honest scorecard, and RFQ routing concentrates at exactly the large order sizes an institutional desk cares about: in a recent 30-day sample, the share of KyberSwap quotes whose route includes an off-chain RFQ leg climbs from about 2% at $1,000 to 86% at $1M.
             </p>
 
             <h2>What We Built</h2>
@@ -136,7 +136,7 @@
                 The classification is deliberately conservative. Bebop, for example, settles on-chain through its own settlement contract with maker signatures embedded directly in the transaction, so a direct Bebop quote does fork-simulate and is measured on the breadth path; the RFQ marker only fires when a Bebop leg appears inside another aggregator's route, where the signed settlement calldata is absent. Under-claiming beats over-claiming: a route that can be measured properly is, and only the ones that genuinely cannot are moved off the sim path.
             </p>
             <p>
-                That on-chain read, not the revert rate, is the honest signal for an off-chain fill. Because an unfilled RFQ or intent order never becomes a transaction, the on-chain revert rate for these execution models is structurally near zero and says nothing about reliability, so ClearTrace does not rank it across models. What the chain can measure is realized cost. On the current Ethereum leaderboard, the RFQ-based venue Tokenlon carries a realized execution cost (median slippage against a 1-minute VWAP) near <strong>73 bps</strong> over 2,140 on-chain fills, while a batch-auction venue like CoW Protocol sits near <strong>12 bps</strong> over 10,638. Both post a near-zero revert rate; only the realized-cost read, taken on-chain, tells them apart.
+                That on-chain read, not the revert rate, is the honest signal for an off-chain fill. Because an unfilled order on a batch-auction or intent venue never becomes a transaction, its on-chain revert rate is structurally near zero and says nothing about reliability, so ClearTrace does not rank revert across execution models. What the chain can measure is realized cost. On the current Ethereum leaderboard, a batch-auction venue like CoW Protocol settles near <strong>12 bps</strong> of realized execution cost (median slippage against a 1-minute VWAP) over 10,638 on-chain fills, while another off-chain-quoted venue, Tokenlon, runs near <strong>73 bps</strong> over 2,140. Both post a near-zero revert rate; only the realized-cost read, taken on-chain, tells them apart.
             </p>
 
             <h3>A second gap: on-chain venues a fork can't replay</h3>
