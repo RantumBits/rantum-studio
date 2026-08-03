@@ -51,6 +51,26 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://rantum.xyz/case-studies/rfq-execution-quality.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rantum.xyz/case-studies/onchain-entity-resolution.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rantum.xyz/case-studies/point-in-time-backtest.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rantum.xyz/case-studies/what-wont-change.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://rantum.xyz/quickstart/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

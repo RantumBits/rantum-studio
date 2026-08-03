@@ -143,6 +143,45 @@
                 </div>
             </a>
 
+            <!-- Item 8: On-Chain Entity Resolution (Case Study) -->
+            <a href="onchain-entity-resolution.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <h3 class="text-2xl font-semibold text-white group-hover:text-purple-400 transition-colors">On-Chain Entity Resolution: Naming the "Unknown Proxy" <span class="text-[10px] font-mono align-middle ml-1 px-1.5 py-0.5 rounded bg-gray-800/60 text-gray-400 border border-gray-700">Case Study</span></h3>
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-6 max-w-3xl">How ClearTrace turns anonymous, high-volume "Unknown Proxy (0x…)" contracts into named entities with a cheapest-first resolution ladder across a dozen sources: on-chain registries, bytecode fingerprints, proxy slots, and paid APIs tried last.</p>
+                <div class="flex gap-2">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Entity Resolution</span>
+                </div>
+            </a>
+
+            <!-- Item 9: Off-Chain RFQ Execution Quality (Case Study) -->
+            <a href="rfq-execution-quality.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <h3 class="text-2xl font-semibold text-white group-hover:text-purple-400 transition-colors">When You Can't Simulate the Fill: Off-Chain RFQ Execution Quality <span class="text-[10px] font-mono align-middle ml-1 px-1.5 py-0.5 rounded bg-gray-800/60 text-gray-400 border border-gray-700">Case Study</span></h3>
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-6 max-w-3xl">Off-chain RFQ and private-market-maker fills revert under fork-simulation. ClearTrace detects them from the quote's own route and sends them to an on-chain read instead of discarding the sample, so the execution-quality leaderboard is not biased toward AMM-only flow.</p>
+                <div class="flex gap-2">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Execution Quality</span>
+                </div>
+            </a>
+
+            <!-- Item 10: Point-in-Time Backtest (Case Study) -->
+            <a href="point-in-time-backtest.html" class="block glass-panel p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-300 group cursor-pointer">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <h3 class="text-2xl font-semibold text-white group-hover:text-purple-400 transition-colors">Designing a Point-in-Time Backtest You Can Actually Trust <span class="text-[10px] font-mono align-middle ml-1 px-1.5 py-0.5 rounded bg-gray-800/60 text-gray-400 border border-gray-700">Case Study</span></h3>
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform translate-x-0 group-hover:translate-x-1 -translate-y-0 group-hover:-translate-y-1 transition-all hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-6 max-w-3xl">Most predictive-ML backtests quietly leak the future and report a number that falls apart in production. Here is the point-in-time discipline that separates a defensible model from a flattering demo: the as-of-T rule, time-based folds, rare-event metrics, label independence, and a pre-registered go/no-go.</p>
+                <div class="flex gap-2">
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Predictive ML</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Point-in-Time</span>
+                </div>
+            </a>
+
         </div>
     </main>
 
