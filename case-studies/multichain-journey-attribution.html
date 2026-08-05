@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time | Rantum Studio</title>
-    <meta name="description" content="A blockchain has no sessions and no user IDs, only a flat log of swap legs. The SQL that rebuilds each wallet's ordered path between DEX entrypoints with window functions, and the four guards that keep bots and multi-hop routing artifacts out of the result.">
+    <meta name="description" content="A blockchain has no sessions and no user IDs, only a flat log of swap legs. The SQL that rebuilds each wallet's ordered path between DEX entrypoints with window functions, the five guards that keep bots and multi-hop routing artifacts out of the result, and what one real run on Ethereum returned.">
     <meta property="og:title" content="Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time | Rantum Studio">
     <meta property="og:description" content="Window functions rebuild each wallet's ordered path between DEX entrypoints. The hard part is what you filter first: swap legs, arbitrage bots, and the temptation to stitch chains together.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
@@ -77,7 +77,7 @@
                 Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                A blockchain has no sessions and no user IDs, only a flat log of swap legs. This is the SQL that rebuilds each wallet's ordered path between entrypoints, and the four guards that decide whether the result describes users or arbitrage bots.
+                A blockchain has no sessions and no user IDs, only a flat log of swap legs. This is the SQL that rebuilds each wallet's ordered path between entrypoints, the five guards that decide whether the result describes users or arbitrage bots, and what one real run on Ethereum returned.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -94,15 +94,15 @@
         <!-- Key Stats -->
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">2.15<span class="text-base text-gray-500">x</span></div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Leg inflation removed first</div>
+                <div class="text-2xl font-bold text-white font-mono">40<span class="text-base text-gray-500">%</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Of first-pass hops were sub-minute</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">1</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Chain per run, never stitched</div>
+                <div class="text-2xl font-bold text-white font-mono">58<span class="text-base text-gray-500">%</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Of hops touch an unresolved entrypoint</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">4</div>
+                <div class="text-2xl font-bold text-white font-mono">5</div>
                 <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Guards before a hop counts</div>
             </div>
         </div>
@@ -173,7 +173,7 @@ WITH base_trades AS (
     FROM dex.trades t
     LEFT JOIN {CHAIN}.contracts c ON c.address = t.tx_to
     WHERE t.blockchain = '{CHAIN}'
-      AND t.block_time >= NOW() - INTERVAL '{{Days_Back}}' DAY
+      AND t.block_time &gt;= NOW() - INTERVAL '{{Days_Back}}' DAY
 ),
 per_tx AS (
     -- Collapse legs to ONE row per transaction before any sequencing.
@@ -200,7 +200,7 @@ eligible_wallets AS (
     -- whose swap count over the window is implausible for a human.
     SELECT tx_from
     FROM per_tx
-    WHERE notional_usd >= {{min_notional_usd}}
+    WHERE notional_usd &gt;= {{min_notional_usd}}
     GROUP BY 1
     HAVING COUNT(*) &lt;= {{max_swaps_per_wallet}}
 ),
@@ -243,6 +243,13 @@ FROM ordered_swaps
 WHERE previous_entrypoint IS NOT NULL
     -- A journey is movement between entrypoints; ignore consecutive self-swaps.
     AND current_entrypoint != previous_entrypoint
+    -- Minimum dwell. A wallet that lands on a second entrypoint inside the same
+    -- minute did not decide anything; that is automation, and on ethereum/7d it
+    -- is what a swap-count cap alone leaves behind -- the top of the unfiltered
+    -- table came back as near-symmetric A-&gt;B / B-&gt;A pairs at a 0-minute median
+    -- (pool-to-router and back), which is the shape of in-block bot activity
+    -- rather than navigation. Costs the fastest legitimate users; worth it.
+    AND DATE_DIFF('minute', previous_swap_time, block_time) &gt;= {{min_gap_mins}}
 GROUP BY 1, 2
 -- Suppress edges thin enough to be one wallet's habit rather than a pattern.
 HAVING COUNT(DISTINCT tx_from) &gt;= {{min_wallets}}
@@ -253,12 +260,122 @@ ORDER BY wallets DESC;</code></pre>
                 Two small choices at the end carry most of the interpretive weight. Counting rows lets a single wallet that crosses the same pair five hundred times read as five hundred users, so the headline column counts distinct wallets and keeps the raw event count beside it as a separate, clearly labelled number. And dwell time is a long-tailed distribution: one wallet returning three weeks later drags a mean far past anything typical, so the query reports a median. Neither choice makes the chart look better, and both make it hold up when someone checks it.
             </p>
 
-            <h2>What This Does Not Claim</h2>
+            <h2>What One Run Returns</h2>
             <p>
-                This case study is the method and the query, not a published result. No transition table from a production run appears here, and the figures above describe the engineering (the measured 2.15x leg inflation the collapse removes, the per-chain scope, the four guards), not findings about any named frontend. Within ClearTrace, the live surface today covers routing-edge and wallet-retention views backed by synced tables and a public API; this trace is the analysis query behind the transition map rather than a scheduled pipeline feeding that dashboard.
+                Run against Ethereum on 5 August 2026 over a 7-day window, with a $100 minimum trade size, wallets capped at 50 swaps for the week, a one-minute minimum gap between hops, and edges suppressed below 20 wallets. The query returned 103 entrypoint-to-entrypoint edges covering 19,518 hops in about seven seconds. These are the ten largest by distinct wallets:
+            </p>
+
+            <div class="not-prose overflow-x-auto rounded-xl border border-gray-800 mb-6">
+                <table class="w-full text-sm font-mono">
+                    <thead>
+                        <tr class="border-b border-gray-800 text-gray-500 text-xs uppercase tracking-wide">
+                            <th class="text-left px-4 py-3">From entrypoint</th>
+                            <th class="text-left px-4 py-3">To entrypoint</th>
+                            <th class="text-right px-4 py-3">Wallets</th>
+                            <th class="text-right px-4 py-3">Hops</th>
+                            <th class="text-right px-4 py-3">Median gap</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800/60">
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-white font-semibold">UniversalRouter</td>
+                            <td class="px-4 py-3 text-right">935</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,233</td>
+                            <td class="px-4 py-3 text-right">2h 39m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">UniversalRouter</td>
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-right">893</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,165</td>
+                            <td class="px-4 py-3 text-right">3h 39m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-white font-semibold">Router02</td>
+                            <td class="px-4 py-3 text-right">765</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,278</td>
+                            <td class="px-4 py-3 text-right">2h 30m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
+                            <td class="px-4 py-3 text-right">762</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,216</td>
+                            <td class="px-4 py-3 text-right">2h 14m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-right">720</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,210</td>
+                            <td class="px-4 py-3 text-right">3h 49m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">Router02</td>
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-right">716</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,176</td>
+                            <td class="px-4 py-3 text-right">3h 19m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
+                            <td class="px-4 py-3 text-white font-semibold">Router02</td>
+                            <td class="px-4 py-3 text-right">628</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,112</td>
+                            <td class="px-4 py-3 text-right">2h 14m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">Router02</td>
+                            <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
+                            <td class="px-4 py-3 text-right">619</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,104</td>
+                            <td class="px-4 py-3 text-right">2h 12m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">FWA</td>
+                            <td class="px-4 py-3 text-white font-semibold">UniversalRouter</td>
+                            <td class="px-4 py-3 text-right">292</td>
+                            <td class="px-4 py-3 text-right text-gray-500">506</td>
+                            <td class="px-4 py-3 text-right">6h 50m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-white font-semibold">DexRouter</td>
+                            <td class="px-4 py-3 text-right">285</td>
+                            <td class="px-4 py-3 text-right text-gray-500">379</td>
+                            <td class="px-4 py-3 text-right">3h 29m</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                Names are Dune's decoded contract labels, verbatim. Several of them describe a contract rather than a product (<code>Router02</code>, <code>UniswapV2Factory</code>), which is a useful reminder that a decoded name is not a brand; mapping those to the interface a user actually touched is the job of the <a href="onchain-entity-resolution.html">entity-resolution ladder</a>, and it is why <code>Unknown Proxy</code> is left standing here instead of being guessed at.
+            </p>
+
+            <h3>The bot guard earning its place</h3>
+            <p>
+                An earlier pass of the same run used only a swap-count cap (100 for the week) and no minimum gap. It returned 115 edges and 34,674 hops, and the top of the table looked like this:
+            </p>
+            <ul>
+                <li><code>UniswapV2Factory</code> &rarr; <code>Router02</code>, 2,269 wallets, median gap <strong>0 minutes</strong></li>
+                <li><code>Router02</code> &rarr; <code>UniswapV2Factory</code>, 2,265 wallets, median gap <strong>0 minutes</strong></li>
+            </ul>
+            <p>
+                A near-perfectly symmetric pair, in both directions, with no time passing between the hops. That is not a person moving between two interfaces; it is automated in-block activity, and a swap-count cap alone never caught it because each individual wallet stayed under the threshold. Across the whole first pass, edges with a zero-minute median carried 40% of all hops. Adding the one-minute floor removed them entirely, and that same Uniswap pair fell to 628 wallets at a 2h 14m median, which is a number that behaves like a person deciding something.
             </p>
             <p>
-                Two more limits worth stating. Entrypoint resolution inherits whatever the chain's decoded contract set knows, so a genuinely unresolved router stays <code>Unknown Proxy</code> and appears in the map as an unknown node. And the bot guard is a heuristic threshold, not a classifier: it removes wallets whose swap frequency is implausible for a person, which will also drop the busiest legitimate power users. Both thresholds are query parameters so a reader can move them and watch the answer change, which is why they are exposed at all.
+                The other thing the run says plainly: 58% of the surviving hops still touch an <code>Unknown Proxy</code> on one side. Journey reconstruction inherits whatever the labeling layer knows, and on this window the largest single destination in DEX navigation is a contract nobody has named yet.
+            </p>
+
+            <h2>What This Does Not Claim</h2>
+            <p>
+                The table above is one query execution on one chain over one week, which is enough to demonstrate the method and not enough to characterise anybody's product. A single seven-day window on Ethereum says nothing about seasonality, nothing about the other three chains, and nothing about any named venue's quality. Within ClearTrace, the live surface today covers routing-edge and wallet-retention views backed by synced tables and a public API; this trace is the analysis query behind the transition map, and it runs on demand rather than as a scheduled pipeline feeding that dashboard.
+            </p>
+            <p>
+                Two more limits worth stating. Entrypoint resolution inherits whatever the chain's decoded contract set knows, so a genuinely unresolved router stays <code>Unknown Proxy</code> and appears in the map as an unknown node, which on this run is most of the map. And the bot guards are heuristic thresholds, not a classifier: a swap-count cap and a minimum dwell remove wallets whose behaviour is implausible for a person, and they will also drop the fastest legitimate power users along the way. Every threshold is a query parameter, so a reader can move them and watch the answer change, which is why they are exposed at all. The 40% figure above is exactly what moving one of them cost.
             </p>
 
             <h2>What It Shows</h2>
