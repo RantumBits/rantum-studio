@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time | Rantum Studio</title>
+    <meta name="description" content="A blockchain has no sessions and no user IDs, only a flat log of swap legs. The SQL that rebuilds each wallet's ordered path between DEX entrypoints with window functions, the five guards that keep bots and multi-hop routing artifacts out of the result, and what one real run on Ethereum returned.">
+    <meta property="og:title" content="Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time | Rantum Studio">
+    <meta property="og:description" content="Window functions rebuild each wallet's ordered path between DEX entrypoints. The hard part is what you filter first: swap legs, arbitrage bots, and the temptation to stitch chains together.">
+    <meta property="og:image" content="https://rantum.xyz/og-multichain-journey-attribution.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/multichain-journey-attribution.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-multichain-journey-attribution.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/multichain-journey-attribution.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Methodology</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">User Journey</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">SQL</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                A blockchain has no sessions and no user IDs, only a flat log of swap legs. This is the SQL that rebuilds each wallet's ordered path between entrypoints, the five guards that decide whether the result describes users or arbitrage bots, and what one real run on Ethereum returned.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">40<span class="text-base text-gray-500">%</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Of first-pass hops were sub-minute</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">58<span class="text-base text-gray-500">%</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Of hops touch an unresolved entrypoint</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">5</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Guards before a hop counts</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                A product analyst asks a simple question: after someone swaps on our frontend, where do they go next, and where did they come from? On a normal app that is a session query. On-chain there are no sessions. There is no user ID, no login, no ordered clickstream, just a wide flat table where each row is one swap leg by some address at some block time. The ordering that a journey is made of does not exist as a column. It has to be reconstructed.
+            </p>
+            <p>
+                Reconstructing it with window functions is the easy part, and it is where most write-ups on this stop. The work that decides whether the output means anything happens before the first <code>LAG</code>, in three places where the raw data will happily produce a confident, wrong answer.
+            </p>
+
+            <h3>Trap 1: a leg is not a trade</h3>
+            <p>
+                Dune's <code>dex.trades</code> stores one row per swap leg. A single aggregator route through three pools writes three rows for one user action. Sequence those rows directly and you manufacture hops the user never made, several within the same second, separated by a zero-minute gap. ClearTrace measured this leg inflation at 2.15x on Odos/Ethereum while building the attribution engine, which is why every volume path in that engine collapses to one row per transaction before any arithmetic. A journey query needs the same collapse for the same reason.
+            </p>
+
+            <h3>Trap 2: the busiest wallets are not users</h3>
+            <p>
+                On an unfiltered transition count, MEV searchers and arbitrage bots take the entire top of the table. They hop venues thousands of times a day, which is exactly the behaviour the query is built to surface, and they are not people whose journey anyone wants to understand. Any transition map published without a bot guard is largely a map of arbitrage routing wearing the label "user behaviour."
+            </p>
+
+            <h3>Trap 3: the chains are separate timelines</h3>
+            <p>
+                It is tempting to run one query over every chain at once and call the output a cross-chain journey. <code>dex.trades</code> spans all chains, so partitioning by wallet without a chain filter interleaves that wallet's Ethereum, Base, Arbitrum, and Optimism swaps into one sequence, then reports the gaps between unrelated chains as dwell time. The wallet did not travel from a Base entrypoint to an Arbitrum one because a bridge, a different key, and a different session sat in between. The honest unit of reconstruction is one wallet on one chain. Cross-chain behaviour is a separate problem, and answering it takes bridge-level evidence that a timestamp sort cannot supply.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                A per-chain reconstruction query with the guards in front of the window function. It resolves the <em>entrypoint</em> of each trade (the router or frontend contract the transaction was sent to) rather than the venue it settled on, collapses legs to one row per transaction, drops dust and implausible wallets, then lets each remaining swap read its own predecessor. The output is a ranked edge list: for every ordered pair of entrypoints, how many distinct wallets crossed, how many times, and the median wait in between.
+            </p>
+            <p>
+                One detail worth naming: <code>project</code> in <code>dex.trades</code> is the DEX venue (Uniswap, Curve), not the interface a user touched. Building hops from it reports venue routing as user behaviour. Resolving <code>tx_to</code> against the chain's decoded contracts, and leaving anything unresolved as <code>Unknown Proxy</code>, keeps the map about interfaces and keeps the unknowns visible instead of silently absorbed into a named venue.
+            </p>
+
+<pre><code class="language-sql">-- Dune SQL (Trino) query for the Multi-Hop Origin Trace (Vector #3)
+-- Reconstructs each wallet's ordered path between ENTRYPOINTS (the router or
+-- frontend contract a swap was sent to) and rolls the hops up into a ranked
+-- transition map: which entrypoint feeds which, for how many distinct wallets,
+-- and how long they wait before the next swap.
+--
+-- SCOPE IS ONE CHAIN PER RUN. dex.trades spans every chain, so an unfiltered
+-- PARTITION BY tx_from interleaves a wallet's Ethereum, Base, Arbitrum and
+-- Optimism swaps into a single timeline that never happened, and reports the
+-- gaps between them as user dwell time. {CHAIN} is substituted per chain the
+-- same way queries/master_attribution_query_template.sql is templated
+-- (ethereum | base | arbitrum | optimism); {{Params}} are Dune runtime params.
+
+WITH base_trades AS (
+    SELECT
+        t.tx_hash,
+        t.tx_from,
+        t.block_time,
+        t.amount_usd,
+        -- The entrypoint is the contract the user's transaction was sent TO.
+        -- Resolve it to a name the same way queries/sankey_routing_edges.sql
+        -- does, and leave it as 'Unknown Proxy' when nothing resolves it rather
+        -- than substituting the venue it happened to settle on.
+        --
+        -- NOTE: t.project is the DEX VENUE (uniswap, curve), NOT the interface
+        -- that originated the trade. Building hops out of t.project reports
+        -- venue routing as if it were user behaviour: a single aggregator route
+        -- that touches three pools looks like a user visiting three frontends.
+        REPLACE(COALESCE(c.name, 'Unknown Proxy'), '{CHAIN}: ', '') AS entrypoint
+    FROM dex.trades t
+    LEFT JOIN {CHAIN}.contracts c ON c.address = t.tx_to
+    WHERE t.blockchain = '{CHAIN}'
+      AND t.block_time &gt;= NOW() - INTERVAL '{{Days_Back}}' DAY
+),
+per_tx AS (
+    -- Collapse legs to ONE row per transaction before any sequencing.
+    -- dex.trades stores one row PER SWAP LEG; a multi-hop route prices several
+    -- legs for ONE user trade (measured at 2.15x inflation on Odos/ethereum,
+    -- see master_attribution_query_template.sql). Sequencing raw legs invents
+    -- transitions the user never made, several per second, separated by a
+    -- 0-minute gap. tx_to is the transaction's `to` field, so the entrypoint is
+    -- constant per tx and one row survives the collapse.
+    SELECT
+        tx_hash,
+        tx_from,
+        entrypoint,
+        MIN(block_time) AS block_time,
+        MAX(amount_usd) AS notional_usd
+    FROM base_trades
+    GROUP BY 1, 2, 3
+),
+eligible_wallets AS (
+    -- Bot and dust guard. An unfiltered transition count is dominated by MEV
+    -- and arbitrage wallets that hop venues thousands of times a day. That is
+    -- real on-chain activity, but it is not a user journey, and left in it sets
+    -- the entire top of the table. Drop dust trades first, then drop any wallet
+    -- whose swap count over the window is implausible for a human.
+    SELECT tx_from
+    FROM per_tx
+    WHERE notional_usd &gt;= {{min_notional_usd}}
+    GROUP BY 1
+    HAVING COUNT(*) &lt;= {{max_swaps_per_wallet}}
+),
+ordered_swaps AS (
+    -- The reconstruction: partition by wallet, order by time, and let each swap
+    -- read its own predecessor. tx_hash breaks ties so two swaps in the same
+    -- block order deterministically instead of shuffling between runs.
+    --
+    -- LAG alone is enough for the transition map: every ordered pair in a
+    -- wallet's path is emitted once as (previous -&gt; current), so adding LEAD
+    -- would restate the same edges in the opposite direction and double-count
+    -- them. LEAD is the same primitive for a forward-looking per-wallet view.
+    SELECT
+        p.tx_from,
+        p.block_time,
+        p.entrypoint AS current_entrypoint,
+        LAG(p.entrypoint, 1) OVER (
+            PARTITION BY p.tx_from ORDER BY p.block_time, p.tx_hash
+        ) AS previous_entrypoint,
+        LAG(p.block_time, 1) OVER (
+            PARTITION BY p.tx_from ORDER BY p.block_time, p.tx_hash
+        ) AS previous_swap_time
+    FROM per_tx p
+    JOIN eligible_wallets e ON e.tx_from = p.tx_from
+    WHERE p.notional_usd &gt;= {{min_notional_usd}}
+)
+SELECT
+    previous_entrypoint AS from_entrypoint,
+    current_entrypoint  AS to_entrypoint,
+    -- Distinct wallets is the honest headline: COUNT(*) alone lets one wallet
+    -- that crosses the same pair 500 times read as 500 users.
+    COUNT(DISTINCT tx_from) AS wallets,
+    COUNT(*) AS transitions,
+    -- Median, not mean: one wallet returning three weeks later drags an average
+    -- dwell time far past anything a typical user did.
+    APPROX_PERCENTILE(
+        DATE_DIFF('minute', previous_swap_time, block_time), 0.5
+    ) AS median_gap_mins
+FROM ordered_swaps
+WHERE previous_entrypoint IS NOT NULL
+    -- A journey is movement between entrypoints; ignore consecutive self-swaps.
+    AND current_entrypoint != previous_entrypoint
+    -- Minimum dwell. A wallet that lands on a second entrypoint inside the same
+    -- minute did not decide anything; that is automation, and on ethereum/7d it
+    -- is what a swap-count cap alone leaves behind -- the top of the unfiltered
+    -- table came back as near-symmetric A-&gt;B / B-&gt;A pairs at a 0-minute median
+    -- (pool-to-router and back), which is the shape of in-block bot activity
+    -- rather than navigation. Costs the fastest legitimate users; worth it.
+    AND DATE_DIFF('minute', previous_swap_time, block_time) &gt;= {{min_gap_mins}}
+GROUP BY 1, 2
+-- Suppress edges thin enough to be one wallet's habit rather than a pattern.
+HAVING COUNT(DISTINCT tx_from) &gt;= {{min_wallets}}
+ORDER BY wallets DESC;</code></pre>
+
+            <h3>Why distinct wallets and a median</h3>
+            <p>
+                Two small choices at the end carry most of the interpretive weight. Counting rows lets a single wallet that crosses the same pair five hundred times read as five hundred users, so the headline column counts distinct wallets and keeps the raw event count beside it as a separate, clearly labelled number. And dwell time is a long-tailed distribution: one wallet returning three weeks later drags a mean far past anything typical, so the query reports a median. Neither choice makes the chart look better, and both make it hold up when someone checks it.
+            </p>
+
+            <h2>What One Run Returns</h2>
+            <p>
+                Run against Ethereum on 5 August 2026 over a 7-day window, with a $100 minimum trade size, wallets capped at 50 swaps for the week, a one-minute minimum gap between hops, and edges suppressed below 20 wallets. The query returned 103 entrypoint-to-entrypoint edges covering 19,518 hops in about seven seconds. These are the ten largest by distinct wallets:
+            </p>
+
+            <div class="not-prose overflow-x-auto rounded-xl border border-gray-800 mb-6">
+                <table class="w-full text-sm font-mono">
+                    <thead>
+                        <tr class="border-b border-gray-800 text-gray-500 text-xs uppercase tracking-wide">
+                            <th class="text-left px-4 py-3">From entrypoint</th>
+                            <th class="text-left px-4 py-3">To entrypoint</th>
+                            <th class="text-right px-4 py-3">Wallets</th>
+                            <th class="text-right px-4 py-3">Hops</th>
+                            <th class="text-right px-4 py-3">Median gap</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800/60">
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-white font-semibold">UniversalRouter</td>
+                            <td class="px-4 py-3 text-right">935</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,233</td>
+                            <td class="px-4 py-3 text-right">2h 39m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">UniversalRouter</td>
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-right">893</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,165</td>
+                            <td class="px-4 py-3 text-right">3h 39m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-white font-semibold">Router02</td>
+                            <td class="px-4 py-3 text-right">765</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,278</td>
+                            <td class="px-4 py-3 text-right">2h 30m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
+                            <td class="px-4 py-3 text-right">762</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,216</td>
+                            <td class="px-4 py-3 text-right">2h 14m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-right">720</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,210</td>
+                            <td class="px-4 py-3 text-right">3h 49m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">Router02</td>
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-right">716</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,176</td>
+                            <td class="px-4 py-3 text-right">3h 19m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
+                            <td class="px-4 py-3 text-white font-semibold">Router02</td>
+                            <td class="px-4 py-3 text-right">628</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,112</td>
+                            <td class="px-4 py-3 text-right">2h 14m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">Router02</td>
+                            <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
+                            <td class="px-4 py-3 text-right">619</td>
+                            <td class="px-4 py-3 text-right text-gray-500">1,104</td>
+                            <td class="px-4 py-3 text-right">2h 12m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-white font-semibold">FWA</td>
+                            <td class="px-4 py-3 text-white font-semibold">UniversalRouter</td>
+                            <td class="px-4 py-3 text-right">292</td>
+                            <td class="px-4 py-3 text-right text-gray-500">506</td>
+                            <td class="px-4 py-3 text-right">6h 50m</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02]">
+                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-white font-semibold">DexRouter</td>
+                            <td class="px-4 py-3 text-right">285</td>
+                            <td class="px-4 py-3 text-right text-gray-500">379</td>
+                            <td class="px-4 py-3 text-right">3h 29m</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                Names are Dune's decoded contract labels, verbatim. Several of them describe a contract rather than a product (<code>Router02</code>, <code>UniswapV2Factory</code>), which is a useful reminder that a decoded name is not a brand; mapping those to the interface a user actually touched is the job of the <a href="onchain-entity-resolution.html">entity-resolution ladder</a>, and it is why <code>Unknown Proxy</code> is left standing here instead of being guessed at.
+            </p>
+
+            <h3>The bot guard earning its place</h3>
+            <p>
+                An earlier pass of the same run used only a swap-count cap (100 for the week) and no minimum gap. It returned 115 edges and 34,674 hops, and the top of the table looked like this:
+            </p>
+            <ul>
+                <li><code>UniswapV2Factory</code> &rarr; <code>Router02</code>, 2,269 wallets, median gap <strong>0 minutes</strong></li>
+                <li><code>Router02</code> &rarr; <code>UniswapV2Factory</code>, 2,265 wallets, median gap <strong>0 minutes</strong></li>
+            </ul>
+            <p>
+                A near-perfectly symmetric pair, in both directions, with no time passing between the hops. That is not a person moving between two interfaces; it is automated in-block activity, and a swap-count cap alone never caught it because each individual wallet stayed under the threshold. Across the whole first pass, edges with a zero-minute median carried 40% of all hops. Adding the one-minute floor removed them entirely, and that same Uniswap pair fell to 628 wallets at a 2h 14m median, which is a number that behaves like a person deciding something.
+            </p>
+            <p>
+                The other thing the run says plainly: 58% of the surviving hops still touch an <code>Unknown Proxy</code> on one side. Journey reconstruction inherits whatever the labeling layer knows, and on this window the largest single destination in DEX navigation is a contract nobody has named yet.
+            </p>
+
+            <h2>What This Does Not Claim</h2>
+            <p>
+                The table above is one query execution on one chain over one week, which is enough to demonstrate the method and not enough to characterise anybody's product. A single seven-day window on Ethereum says nothing about seasonality, nothing about the other three chains, and nothing about any named venue's quality. Within ClearTrace, the live surface today covers routing-edge and wallet-retention views backed by synced tables and a public API; this trace is the analysis query behind the transition map, and it runs on demand rather than as a scheduled pipeline feeding that dashboard.
+            </p>
+            <p>
+                Two more limits worth stating. Entrypoint resolution inherits whatever the chain's decoded contract set knows, so a genuinely unresolved router stays <code>Unknown Proxy</code> and appears in the map as an unknown node, which on this run is most of the map. And the bot guards are heuristic thresholds, not a classifier: a swap-count cap and a minimum dwell remove wallets whose behaviour is implausible for a person, and they will also drop the fastest legitimate power users along the way. Every threshold is a query parameter, so a reader can move them and watch the answer change, which is why they are exposed at all. The 40% figure above is exactly what moving one of them cost.
+            </p>
+
+            <h2>What It Shows</h2>
+            <p>
+                Behavioural reconstruction on data that was never designed to answer behavioural questions, with the failure modes handled in the open. The window function is a few lines; the judgment is in collapsing legs before sequencing them, refusing to let bot traffic masquerade as users, keeping each chain's timeline separate, and naming what the output cannot support. That is the same through-line as the rest of ClearTrace: find the signal that is present but not stored, and stop short of what the data will not carry.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That we can build a behavioural analytics layer on raw, unordered event data, and that we will tell you where it stops being trustworthy. Wallets, users, devices, transactions: wherever records exist but the sequence connecting them does not, the same reconstruction applies, and the same three traps decide whether the resulting funnel describes customers or machines. For an L2 ecosystem or a protocol team, the useful deliverable is a transition map whose top rows are people, with the filtering assumptions written down next to it.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>
