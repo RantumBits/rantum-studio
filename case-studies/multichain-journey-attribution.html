@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Chain Journey Attribution: Reconstructing Wallet Paths Across DEX Frontends | Rantum Studio</title>
-    <meta name="description" content="How ClearTrace turns a flat log of DEX trades into a directed map of which frontends feed which, using SQL window functions to reconstruct each wallet's ordered path, run across Ethereum, Base, Arbitrum, and Optimism.">
-    <meta property="og:title" content="Multi-Chain Journey Attribution: Reconstructing Wallet Paths | Rantum Studio">
-    <meta property="og:description" content="Window functions (LAG/LEAD) reconstruct each wallet's ordered sequence of DEX frontends into a directed transition graph, across Ethereum, Base, Arbitrum, and Optimism.">
+    <title>Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time | Rantum Studio</title>
+    <meta name="description" content="A blockchain has no sessions and no user IDs, only a flat log of swap legs. The SQL that rebuilds each wallet's ordered path between DEX entrypoints with window functions, and the four guards that keep bots and multi-hop routing artifacts out of the result.">
+    <meta property="og:title" content="Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time | Rantum Studio">
+    <meta property="og:description" content="Window functions rebuild each wallet's ordered path between DEX entrypoints. The hard part is what you filter first: swap legs, arbitrage bots, and the temptation to stitch chains together.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -33,7 +33,7 @@
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "Multi-Chain Journey Attribution: Reconstructing Wallet Paths Across DEX Frontends",
+      "headline": "Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time",
       "author": {
         "@type": "Person",
         "name": "Andrew Maury"
@@ -68,16 +68,16 @@
         <!-- Article Header -->
         <header class="mb-16">
             <div class="flex flex-wrap gap-2 mb-6">
-                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Methodology</span>
                 <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
                 <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">User Journey</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Engineering</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">SQL</span>
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
-                Reconstructing a Wallet's Journey Across DEX Frontends
+                Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                A blockchain has no sessions and no user IDs, just a flat log of trades. ClearTrace's Multi-Hop Origin Trace uses SQL window functions to reconstruct each wallet's ordered path between frontends into a directed transition map, run across Ethereum, Base, Arbitrum, and Optimism.
+                A blockchain has no sessions and no user IDs, only a flat log of swap legs. This is the SQL that rebuilds each wallet's ordered path between entrypoints, and the four guards that decide whether the result describes users or arbitrage bots.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -94,16 +94,16 @@
         <!-- Key Stats -->
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">2.15<span class="text-base text-gray-500">x</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Leg inflation removed first</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">1</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Chain per run, never stitched</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">4</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Chains traced</div>
-            </div>
-            <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">172K+</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Contracts attributed</div>
-            </div>
-            <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">60–70%</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Lower query cost</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Guards before a hop counts</div>
             </div>
         </div>
 
@@ -112,71 +112,163 @@
 
             <h2>The Challenge</h2>
             <p>
-                A product analyst asks a simple question: after someone swaps on our frontend, where do they go next, and where did they come from? On a normal app that is a session query. On-chain there are no sessions. There is no user ID, no login, no ordered clickstream. There is one wide, flat table of trades, each row a swap by some wallet at some block time, with no notion of "before" or "after" attached to it. The ordering that a journey is made of does not exist in the data. It has to be constructed.
+                A product analyst asks a simple question: after someone swaps on our frontend, where do they go next, and where did they come from? On a normal app that is a session query. On-chain there are no sessions. There is no user ID, no login, no ordered clickstream, just a wide flat table where each row is one swap leg by some address at some block time. The ordering that a journey is made of does not exist as a column. It has to be reconstructed.
             </p>
             <p>
-                That construction is where the useful signal lives. Which frontend feeds which. Where a wallet lands right after it leaves a platform. How long it dwells before the next swap. Whether a burst of volume on a new interface is fresh users or the same wallets rotating over from an incumbent. None of that is a column you can select. And the moment you want it on more than one chain, a naive approach reaches for Dune's cross-chain <code>evms.*</code> tables, which span billions of rows and bill accordingly. The hard part is reconstructing an ordered, per-wallet journey out of an unordered log, and doing it across four chains without the query cost running away from you.
+                Reconstructing it with window functions is the easy part, and it is where most write-ups on this stop. The work that decides whether the output means anything happens before the first <code>LAG</code>, in three places where the raw data will happily produce a confident, wrong answer.
+            </p>
+
+            <h3>Trap 1: a leg is not a trade</h3>
+            <p>
+                Dune's <code>dex.trades</code> stores one row per swap leg. A single aggregator route through three pools writes three rows for one user action. Sequence those rows directly and you manufacture hops the user never made, several within the same second, separated by a zero-minute gap. ClearTrace measured this leg inflation at 2.15x on Odos/Ethereum while building the attribution engine, which is why every volume path in that engine collapses to one row per transaction before any arithmetic. A journey query needs the same collapse for the same reason.
+            </p>
+
+            <h3>Trap 2: the busiest wallets are not users</h3>
+            <p>
+                On an unfiltered transition count, MEV searchers and arbitrage bots take the entire top of the table. They hop venues thousands of times a day, which is exactly the behaviour the query is built to surface, and they are not people whose journey anyone wants to understand. Any transition map published without a bot guard is largely a map of arbitrage routing wearing the label "user behaviour."
+            </p>
+
+            <h3>Trap 3: the chains are separate timelines</h3>
+            <p>
+                It is tempting to run one query over every chain at once and call the output a cross-chain journey. <code>dex.trades</code> spans all chains, so partitioning by wallet without a chain filter interleaves that wallet's Ethereum, Base, Arbitrum, and Optimism swaps into one sequence, then reports the gaps between unrelated chains as dwell time. The wallet did not travel from a Base entrypoint to an Arbitrum one because a bridge, a different key, and a different session sat in between. The honest unit of reconstruction is one wallet on one chain. Cross-chain behaviour is a separate problem, and answering it takes bridge-level evidence that a timestamp sort cannot supply.
             </p>
 
             <h2>What We Built</h2>
             <p>
-                The Multi-Hop Origin Trace: a window-function pass that turns the flat trade log into a directed graph of frontend-to-frontend transitions. The core is one idea. Partition every trade by the wallet that sent it, order those trades by time, and let each swap look at its own neighbors. <code>LAG</code> reads the frontend the wallet used on its previous swap; <code>LEAD</code> reads the one it used next; a second <code>LAG</code> on the timestamp measures the gap between them. A row that knew nothing about sequence now carries its own before and after.
+                A per-chain reconstruction query with the guards in front of the window function. It resolves the <em>entrypoint</em> of each trade (the router or frontend contract the transaction was sent to) rather than the venue it settled on, collapses legs to one row per transaction, drops dust and implausible wallets, then lets each remaining swap read its own predecessor. The output is a ranked edge list: for every ordered pair of entrypoints, how many distinct wallets crossed, how many times, and the median wait in between.
             </p>
-
-            <h3>The window-function core</h3>
             <p>
-                Once each swap knows its previous and next frontend, aggregating the transitions is a group-by. Self-transitions (a wallet making two swaps in a row on the same interface) are dropped, because a journey is about movement between frontends, not repeat activity on one. What remains is a ranked edge list: for every ordered pair of frontends, how many wallets crossed from one to the other, and how long they waited on average before doing it.
+                One detail worth naming: <code>project</code> in <code>dex.trades</code> is the DEX venue (Uniswap, Curve), not the interface a user touched. Building hops from it reports venue routing as user behaviour. Resolving <code>tx_to</code> against the chain's decoded contracts, and leaving anything unresolved as <code>Unknown Proxy</code>, keeps the map about interfaces and keeps the unknowns visible instead of silently absorbed into a named venue.
             </p>
 
-<pre><code class="language-sql">-- Multi-Hop Origin Trace: reconstruct each wallet's ordered path between
--- frontends from an unordered trade log, then roll the hops up into a ranked
--- transition map (which frontend feeds which, and how fast).
-WITH ordered_swaps AS (
+<pre><code class="language-sql">-- Dune SQL (Trino) query for the Multi-Hop Origin Trace (Vector #3)
+-- Reconstructs each wallet's ordered path between ENTRYPOINTS (the router or
+-- frontend contract a swap was sent to) and rolls the hops up into a ranked
+-- transition map: which entrypoint feeds which, for how many distinct wallets,
+-- and how long they wait before the next swap.
+--
+-- SCOPE IS ONE CHAIN PER RUN. dex.trades spans every chain, so an unfiltered
+-- PARTITION BY tx_from interleaves a wallet's Ethereum, Base, Arbitrum and
+-- Optimism swaps into a single timeline that never happened, and reports the
+-- gaps between them as user dwell time. {CHAIN} is substituted per chain the
+-- same way queries/master_attribution_query_template.sql is templated
+-- (ethereum | base | arbitrum | optimism); {{Params}} are Dune runtime params.
+
+WITH base_trades AS (
     SELECT
+        t.tx_hash,
+        t.tx_from,
+        t.block_time,
+        t.amount_usd,
+        -- The entrypoint is the contract the user's transaction was sent TO.
+        -- Resolve it to a name the same way queries/sankey_routing_edges.sql
+        -- does, and leave it as 'Unknown Proxy' when nothing resolves it rather
+        -- than substituting the venue it happened to settle on.
+        --
+        -- NOTE: t.project is the DEX VENUE (uniswap, curve), NOT the interface
+        -- that originated the trade. Building hops out of t.project reports
+        -- venue routing as if it were user behaviour: a single aggregator route
+        -- that touches three pools looks like a user visiting three frontends.
+        REPLACE(COALESCE(c.name, 'Unknown Proxy'), '{CHAIN}: ', '') AS entrypoint
+    FROM dex.trades t
+    LEFT JOIN {CHAIN}.contracts c ON c.address = t.tx_to
+    WHERE t.blockchain = '{CHAIN}'
+      AND t.block_time >= NOW() - INTERVAL '{{Days_Back}}' DAY
+),
+per_tx AS (
+    -- Collapse legs to ONE row per transaction before any sequencing.
+    -- dex.trades stores one row PER SWAP LEG; a multi-hop route prices several
+    -- legs for ONE user trade (measured at 2.15x inflation on Odos/ethereum,
+    -- see master_attribution_query_template.sql). Sequencing raw legs invents
+    -- transitions the user never made, several per second, separated by a
+    -- 0-minute gap. tx_to is the transaction's `to` field, so the entrypoint is
+    -- constant per tx and one row survives the collapse.
+    SELECT
+        tx_hash,
         tx_from,
-        block_time,
-        project AS current_frontend,
-        LAG(project, 1)  OVER (PARTITION BY tx_from ORDER BY block_time) AS previous_frontend,
-        LEAD(project, 1) OVER (PARTITION BY tx_from ORDER BY block_time) AS next_frontend,
-        LAG(block_time, 1) OVER (PARTITION BY tx_from ORDER BY block_time) AS previous_swap_time
-    FROM dex.trades
-    WHERE block_time >= NOW() - INTERVAL '{{Days_Back}}' DAY
+        entrypoint,
+        MIN(block_time) AS block_time,
+        MAX(amount_usd) AS notional_usd
+    FROM base_trades
+    GROUP BY 1, 2, 3
+),
+eligible_wallets AS (
+    -- Bot and dust guard. An unfiltered transition count is dominated by MEV
+    -- and arbitrage wallets that hop venues thousands of times a day. That is
+    -- real on-chain activity, but it is not a user journey, and left in it sets
+    -- the entire top of the table. Drop dust trades first, then drop any wallet
+    -- whose swap count over the window is implausible for a human.
+    SELECT tx_from
+    FROM per_tx
+    WHERE notional_usd >= {{min_notional_usd}}
+    GROUP BY 1
+    HAVING COUNT(*) &lt;= {{max_swaps_per_wallet}}
+),
+ordered_swaps AS (
+    -- The reconstruction: partition by wallet, order by time, and let each swap
+    -- read its own predecessor. tx_hash breaks ties so two swaps in the same
+    -- block order deterministically instead of shuffling between runs.
+    --
+    -- LAG alone is enough for the transition map: every ordered pair in a
+    -- wallet's path is emitted once as (previous -&gt; current), so adding LEAD
+    -- would restate the same edges in the opposite direction and double-count
+    -- them. LEAD is the same primitive for a forward-looking per-wallet view.
+    SELECT
+        p.tx_from,
+        p.block_time,
+        p.entrypoint AS current_entrypoint,
+        LAG(p.entrypoint, 1) OVER (
+            PARTITION BY p.tx_from ORDER BY p.block_time, p.tx_hash
+        ) AS previous_entrypoint,
+        LAG(p.block_time, 1) OVER (
+            PARTITION BY p.tx_from ORDER BY p.block_time, p.tx_hash
+        ) AS previous_swap_time
+    FROM per_tx p
+    JOIN eligible_wallets e ON e.tx_from = p.tx_from
+    WHERE p.notional_usd &gt;= {{min_notional_usd}}
 )
 SELECT
-    current_frontend,
-    previous_frontend,
-    COUNT(*) AS transition_count,
-    AVG(DATE_DIFF('minute', previous_swap_time, block_time)) AS avg_time_between_hops_mins
+    previous_entrypoint AS from_entrypoint,
+    current_entrypoint  AS to_entrypoint,
+    -- Distinct wallets is the honest headline: COUNT(*) alone lets one wallet
+    -- that crosses the same pair 500 times read as 500 users.
+    COUNT(DISTINCT tx_from) AS wallets,
+    COUNT(*) AS transitions,
+    -- Median, not mean: one wallet returning three weeks later drags an average
+    -- dwell time far past anything a typical user did.
+    APPROX_PERCENTILE(
+        DATE_DIFF('minute', previous_swap_time, block_time), 0.5
+    ) AS median_gap_mins
 FROM ordered_swaps
-WHERE previous_frontend IS NOT NULL
-  -- A journey is movement between frontends; ignore consecutive self-swaps.
-  AND current_frontend != previous_frontend
+WHERE previous_entrypoint IS NOT NULL
+    -- A journey is movement between entrypoints; ignore consecutive self-swaps.
+    AND current_entrypoint != previous_entrypoint
 GROUP BY 1, 2
-ORDER BY transition_count DESC;</code></pre>
+-- Suppress edges thin enough to be one wallet's habit rather than a pattern.
+HAVING COUNT(DISTINCT tx_from) &gt;= {{min_wallets}}
+ORDER BY wallets DESC;</code></pre>
 
-            <h3>The same engine on four chains</h3>
+            <h3>Why distinct wallets and a median</h3>
             <p>
-                The trace is one of four attribution vectors ClearTrace runs, and every one of them is deployed per chain across Ethereum, Base, Arbitrum, and Optimism from a single templated query with a <code>{CHAIN}</code> placeholder. The deliberate choice is what the template binds to: chain-specific tables (<code>base.contracts</code>, <code>arbitrum.traces</code>, and their peers) rather than the unified <code>evms.*</code> tables that carry every chain at once. The <code>evms.*</code> tables are enormous, and scanning them to answer a question about a single chain means paying for the other three. Reading the chain-scoped tables instead lands the same rows for roughly 60 to 70 percent less credit per run. A wallet's journey is reconstructed within each chain; the map is produced for all four.
+                Two small choices at the end carry most of the interpretive weight. Counting rows lets a single wallet that crosses the same pair five hundred times read as five hundred users, so the headline column counts distinct wallets and keeps the raw event count beside it as a separate, clearly labelled number. And dwell time is a long-tailed distribution: one wallet returning three weeks later drags a mean far past anything typical, so the query reports a median. Neither choice makes the chart look better, and both make it hold up when someone checks it.
             </p>
 
-            <h3>Turning hops into behavior</h3>
+            <h2>What This Does Not Claim</h2>
             <p>
-                The transition map is the primitive the higher-level views are built on. The same ordered-swap idea, widened, becomes a Sankey of routing edges (sender to entrypoint to underlying venue) and monthly wallet-cohort retention that tracks whether a frontend's users are still trading one, three, or six months after their first swap. A single frontend's "growth" reads very differently once you can see whether its new volume is genuinely new wallets or a churn loop rotating over from a competitor. That distinction is exactly what a foundation funding an ecosystem, or a protocol reporting its own traction, needs and rarely has.
+                This case study is the method and the query, not a published result. No transition table from a production run appears here, and the figures above describe the engineering (the measured 2.15x leg inflation the collapse removes, the per-chain scope, the four guards), not findings about any named frontend. Within ClearTrace, the live surface today covers routing-edge and wallet-retention views backed by synced tables and a public API; this trace is the analysis query behind the transition map rather than a scheduled pipeline feeding that dashboard.
             </p>
-
-            <h3>Reading it honestly</h3>
             <p>
-                Reconstructed sequence is an inference, not a logged fact, so the trace is careful about what it claims. It orders swaps strictly by block time within a single wallet on a single chain, and it does not silently stitch one wallet's activity across chains into a single fabricated timeline. Consecutive same-frontend swaps are excluded rather than counted as motion. Frontend names come from the same attribution layer that resolves the rest of ClearTrace, so a transition into "Unknown Proxy" is reported as an unknown, never dressed up as a named venue it was not. The output is a measurement of observed movement, with its limits stated, not a story about intent.
+                Two more limits worth stating. Entrypoint resolution inherits whatever the chain's decoded contract set knows, so a genuinely unresolved router stays <code>Unknown Proxy</code> and appears in the map as an unknown node. And the bot guard is a heuristic threshold, not a classifier: it removes wallets whose swap frequency is implausible for a person, which will also drop the busiest legitimate power users. Both thresholds are query parameters so a reader can move them and watch the answer change, which is why they are exposed at all.
             </p>
 
             <h2>What It Shows</h2>
             <p>
-                Behavioral reconstruction on data that was never designed to answer behavioral questions. The blockchain hands you a flat, sessionless log; window functions impose the ordering that a journey requires, and disciplined table selection makes that affordable across four chains instead of one. It is the same Rantum through-line as the rest of the ClearTrace engine: find the signal that is present but not stored, and extract it without inventing what the data does not support.
+                Behavioural reconstruction on data that was never designed to answer behavioural questions, with the failure modes handled in the open. The window function is a few lines; the judgment is in collapsing legs before sequencing them, refusing to let bot traffic masquerade as users, keeping each chain's timeline separate, and naming what the output cannot support. That is the same through-line as the rest of ClearTrace: find the signal that is present but not stored, and stop short of what the data will not carry.
             </p>
 
             <h2>What It Proves to a Client</h2>
             <p>
-                That we can build a behavioral analytics layer on top of raw, unordered event data, the kind most teams assume requires an instrumented product and a warehouse of sessions. Wallets, users, devices, transactions: wherever the records exist but the sequence connecting them does not, the same technique reconstructs it. For an L2 ecosystem or a protocol, that is the difference between a headline volume number and an actual picture of where users come from, where they go, and which of your growth is real. It runs today inside ClearTrace's live dashboard and public API.
+                That we can build a behavioural analytics layer on raw, unordered event data, and that we will tell you where it stops being trustworthy. Wallets, users, devices, transactions: wherever records exist but the sequence connecting them does not, the same reconstruction applies, and the same three traps decide whether the resulting funnel describes customers or machines. For an L2 ecosystem or a protocol team, the useful deliverable is a transition map whose top rows are people, with the filtering assumptions written down next to it.
             </p>
 
         </article>
