@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Chain Journey Attribution: Reconstructing Wallet Paths Across DEX Frontends | Rantum Studio</title>
+    <meta name="description" content="How ClearTrace turns a flat log of DEX trades into a directed map of which frontends feed which, using SQL window functions to reconstruct each wallet's ordered path, run across Ethereum, Base, Arbitrum, and Optimism.">
+    <meta property="og:title" content="Multi-Chain Journey Attribution: Reconstructing Wallet Paths | Rantum Studio">
+    <meta property="og:description" content="Window functions (LAG/LEAD) reconstruct each wallet's ordered sequence of DEX frontends into a directed transition graph, across Ethereum, Base, Arbitrum, and Optimism.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/multichain-journey-attribution.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/multichain-journey-attribution.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Multi-Chain Journey Attribution: Reconstructing Wallet Paths Across DEX Frontends",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">User Journey</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Engineering</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Reconstructing a Wallet's Journey Across DEX Frontends
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                A blockchain has no sessions and no user IDs, just a flat log of trades. ClearTrace's Multi-Hop Origin Trace uses SQL window functions to reconstruct each wallet's ordered path between frontends into a directed transition map, run across Ethereum, Base, Arbitrum, and Optimism.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">4</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Chains traced</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">172K+</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Contracts attributed</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">60–70%</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Lower query cost</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                A product analyst asks a simple question: after someone swaps on our frontend, where do they go next, and where did they come from? On a normal app that is a session query. On-chain there are no sessions. There is no user ID, no login, no ordered clickstream. There is one wide, flat table of trades, each row a swap by some wallet at some block time, with no notion of "before" or "after" attached to it. The ordering that a journey is made of does not exist in the data. It has to be constructed.
+            </p>
+            <p>
+                That construction is where the useful signal lives. Which frontend feeds which. Where a wallet lands right after it leaves a platform. How long it dwells before the next swap. Whether a burst of volume on a new interface is fresh users or the same wallets rotating over from an incumbent. None of that is a column you can select. And the moment you want it on more than one chain, a naive approach reaches for Dune's cross-chain <code>evms.*</code> tables, which span billions of rows and bill accordingly. The hard part is reconstructing an ordered, per-wallet journey out of an unordered log, and doing it across four chains without the query cost running away from you.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                The Multi-Hop Origin Trace: a window-function pass that turns the flat trade log into a directed graph of frontend-to-frontend transitions. The core is one idea. Partition every trade by the wallet that sent it, order those trades by time, and let each swap look at its own neighbors. <code>LAG</code> reads the frontend the wallet used on its previous swap; <code>LEAD</code> reads the one it used next; a second <code>LAG</code> on the timestamp measures the gap between them. A row that knew nothing about sequence now carries its own before and after.
+            </p>
+
+            <h3>The window-function core</h3>
+            <p>
+                Once each swap knows its previous and next frontend, aggregating the transitions is a group-by. Self-transitions (a wallet making two swaps in a row on the same interface) are dropped, because a journey is about movement between frontends, not repeat activity on one. What remains is a ranked edge list: for every ordered pair of frontends, how many wallets crossed from one to the other, and how long they waited on average before doing it.
+            </p>
+
+<pre><code class="language-sql">-- Multi-Hop Origin Trace: reconstruct each wallet's ordered path between
+-- frontends from an unordered trade log, then roll the hops up into a ranked
+-- transition map (which frontend feeds which, and how fast).
+WITH ordered_swaps AS (
+    SELECT
+        tx_from,
+        block_time,
+        project AS current_frontend,
+        LAG(project, 1)  OVER (PARTITION BY tx_from ORDER BY block_time) AS previous_frontend,
+        LEAD(project, 1) OVER (PARTITION BY tx_from ORDER BY block_time) AS next_frontend,
+        LAG(block_time, 1) OVER (PARTITION BY tx_from ORDER BY block_time) AS previous_swap_time
+    FROM dex.trades
+    WHERE block_time >= NOW() - INTERVAL '{{Days_Back}}' DAY
+)
+SELECT
+    current_frontend,
+    previous_frontend,
+    COUNT(*) AS transition_count,
+    AVG(DATE_DIFF('minute', previous_swap_time, block_time)) AS avg_time_between_hops_mins
+FROM ordered_swaps
+WHERE previous_frontend IS NOT NULL
+  -- A journey is movement between frontends; ignore consecutive self-swaps.
+  AND current_frontend != previous_frontend
+GROUP BY 1, 2
+ORDER BY transition_count DESC;</code></pre>
+
+            <h3>The same engine on four chains</h3>
+            <p>
+                The trace is one of four attribution vectors ClearTrace runs, and every one of them is deployed per chain across Ethereum, Base, Arbitrum, and Optimism from a single templated query with a <code>{CHAIN}</code> placeholder. The deliberate choice is what the template binds to: chain-specific tables (<code>base.contracts</code>, <code>arbitrum.traces</code>, and their peers) rather than the unified <code>evms.*</code> tables that carry every chain at once. The <code>evms.*</code> tables are enormous, and scanning them to answer a question about a single chain means paying for the other three. Reading the chain-scoped tables instead lands the same rows for roughly 60 to 70 percent less credit per run. A wallet's journey is reconstructed within each chain; the map is produced for all four.
+            </p>
+
+            <h3>Turning hops into behavior</h3>
+            <p>
+                The transition map is the primitive the higher-level views are built on. The same ordered-swap idea, widened, becomes a Sankey of routing edges (sender to entrypoint to underlying venue) and monthly wallet-cohort retention that tracks whether a frontend's users are still trading one, three, or six months after their first swap. A single frontend's "growth" reads very differently once you can see whether its new volume is genuinely new wallets or a churn loop rotating over from a competitor. That distinction is exactly what a foundation funding an ecosystem, or a protocol reporting its own traction, needs and rarely has.
+            </p>
+
+            <h3>Reading it honestly</h3>
+            <p>
+                Reconstructed sequence is an inference, not a logged fact, so the trace is careful about what it claims. It orders swaps strictly by block time within a single wallet on a single chain, and it does not silently stitch one wallet's activity across chains into a single fabricated timeline. Consecutive same-frontend swaps are excluded rather than counted as motion. Frontend names come from the same attribution layer that resolves the rest of ClearTrace, so a transition into "Unknown Proxy" is reported as an unknown, never dressed up as a named venue it was not. The output is a measurement of observed movement, with its limits stated, not a story about intent.
+            </p>
+
+            <h2>What It Shows</h2>
+            <p>
+                Behavioral reconstruction on data that was never designed to answer behavioral questions. The blockchain hands you a flat, sessionless log; window functions impose the ordering that a journey requires, and disciplined table selection makes that affordable across four chains instead of one. It is the same Rantum through-line as the rest of the ClearTrace engine: find the signal that is present but not stored, and extract it without inventing what the data does not support.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That we can build a behavioral analytics layer on top of raw, unordered event data, the kind most teams assume requires an instrumented product and a warehouse of sessions. Wallets, users, devices, transactions: wherever the records exist but the sequence connecting them does not, the same technique reconstructs it. For an L2 ecosystem or a protocol, that is the difference between a headline volume number and an actual picture of where users come from, where they go, and which of your growth is real. It runs today inside ClearTrace's live dashboard and public API.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>
