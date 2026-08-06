@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume | Rantum Studio</title>
-    <meta name="description" content="Preprint: four independent heuristics for recovering frontend origin from raw DEX transaction and trace data — calldata-suffix trapping, proxy-router mismatch detection, multi-hop origin tracing, and fee-recipient clustering — with validation results from a live production sampler. DOI 10.5281/zenodo.21513263.">
+    <meta name="description" content="Preprint: four independent heuristics for recovering frontend origin from raw DEX transaction and trace data — calldata-suffix trapping, proxy-router mismatch detection, multi-hop origin tracing, and fee-recipient clustering — with validation results from a live production sampler. DOI 10.5281/zenodo.21513262.">
     <meta property="og:title" content="Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume">
-    <meta property="og:description" content="Preprint on recovering frontend origin from raw DEX transaction data, with the execution-quality scoring layer built on top of it. Published on Zenodo, DOI 10.5281/zenodo.21513263.">
+    <meta property="og:description" content="Preprint on recovering frontend origin from raw DEX transaction data, with the execution-quality scoring layer built on top of it. Published on Zenodo, DOI 10.5281/zenodo.21513262.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -21,7 +21,7 @@
     <meta name="citation_publication_date" content="2026/07/23">
     <meta name="citation_online_date" content="2026/07/23">
     <meta name="citation_pdf_url" content="https://rantum.xyz/research/cross-frontend-attribution-whitepaper.pdf">
-    <meta name="citation_doi" content="10.5281/zenodo.21513263">
+    <meta name="citation_doi" content="10.5281/zenodo.21513262">
     <meta name="citation_abstract_html_url" content="https://rantum.xyz/research/cross-frontend-attribution.html">
     <meta name="citation_language" content="en">
     <meta name="citation_keywords" content="decentralized exchange; MEV; attribution; on-chain analytics; execution quality; blockchain data engineering">
@@ -51,8 +51,10 @@
         }
       },
       "datePublished": "2026-07-23",
-      "sameAs": "https://doi.org/10.5281/zenodo.21513263",
-      "identifier": "https://doi.org/10.5281/zenodo.21513263",
+      "dateModified": "2026-08-06",
+      "version": "v2",
+      "sameAs": "https://doi.org/10.5281/zenodo.21513262",
+      "identifier": "https://doi.org/10.5281/zenodo.21513262",
       "license": "https://creativecommons.org/licenses/by/4.0/",
       "publisher": {
         "@type": "Organization",
@@ -97,9 +99,9 @@
                     <span>Andrew Maury</span>
                 </div>
                 <span>&bull;</span>
-                <span>July 23, 2026</span>
+                <span>July 23, 2026 &middot; v2, August 6, 2026</span>
                 <span>&bull;</span>
-                <a href="https://doi.org/10.5281/zenodo.21513263" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 transition-colors">DOI 10.5281/zenodo.21513263</a>
+                <a href="https://doi.org/10.5281/zenodo.21513262" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 transition-colors">DOI 10.5281/zenodo.21513262</a>
             </div>
         </header>
 
@@ -109,7 +111,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 Download PDF
             </a>
-            <a href="https://zenodo.org/records/21513263" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 border border-gray-700 hover:border-purple-500/50 text-gray-300 hover:text-white font-semibold py-3 px-6 rounded-full transition-colors text-sm">
+            <a href="https://zenodo.org/doi/10.5281/zenodo.21513262" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 border border-gray-700 hover:border-purple-500/50 text-gray-300 hover:text-white font-semibold py-3 px-6 rounded-full transition-colors text-sm">
                 View on Zenodo
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
             </a>
@@ -125,7 +127,7 @@
                 This paper presents the attribution methodology developed for ClearTrace, a neutral, third-party execution-intelligence system covering Ethereum, Base, Arbitrum, and Optimism. We describe four independent heuristics for recovering frontend origin from raw transaction and trace data &mdash; a calldata-suffix trapper, a proxy-router mismatch detector, a multi-hop origin tracer, and a fee-recipient clustering method &mdash; and a companion execution-quality layer that benchmarks realized trade price against a volume-weighted average price (VWAP) oracle, kept deliberately separate from a sandwich/MEV-exposure score.
             </p>
             <p>
-                We report validation results from an in-production quote-accuracy sampler (112 of 168 tracked cells reaching statistical significance over a 9.6-day window), a worked example of a hypothesis reversal under additional data (order-size-dependent quote degradation at a major aggregator), and a structural finding distinguishing genuine sandwich-attack immunity from a coverage gap on Arbitrum. We close with the limitations of single-team validation and the case for treating cross-frontend attribution as a first-class, auditable input to incentive design rather than an afterthought to volume dashboards.
+                We report validation results from an in-production quote-accuracy sampler (112 of 168 tracked cells reaching statistical significance over a 9.6-day window), a worked example of a hypothesis reversal under additional data (order-size-dependent quote degradation at a major aggregator), and a structural finding on Arbitrum, where a near-zero sandwich-attack count is confirmed as genuine structural immunity rather than a coverage gap. We close with the limitations of single-team validation and the case for treating cross-frontend attribution as a first-class, auditable input to incentive design rather than an afterthought to volume dashboards.
             </p>
 
             <h2>Cite</h2>
@@ -137,10 +139,11 @@
   title        = {Cross-Frontend Attribution Methodologies in
                   Decentralized Exchange Volume},
   year         = {2026},
-  month        = jul,
+  month        = aug,
+  version      = {v2},
   publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.21513263},
-  url          = {https://doi.org/10.5281/zenodo.21513263},
+  doi          = {10.5281/zenodo.21513262},
+  url          = {https://doi.org/10.5281/zenodo.21513262},
   note         = {Preprint}
 }</pre>
         </div>
