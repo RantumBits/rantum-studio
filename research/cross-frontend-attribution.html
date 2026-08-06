@@ -51,6 +51,8 @@
         }
       },
       "datePublished": "2026-07-23",
+      "dateModified": "2026-08-06",
+      "version": "v2",
       "sameAs": "https://doi.org/10.5281/zenodo.21513262",
       "identifier": "https://doi.org/10.5281/zenodo.21513262",
       "license": "https://creativecommons.org/licenses/by/4.0/",
@@ -97,7 +99,7 @@
                     <span>Andrew Maury</span>
                 </div>
                 <span>&bull;</span>
-                <span>July 23, 2026</span>
+                <span>July 23, 2026 &middot; v2, August 6, 2026</span>
                 <span>&bull;</span>
                 <a href="https://doi.org/10.5281/zenodo.21513262" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 transition-colors">DOI 10.5281/zenodo.21513262</a>
             </div>
@@ -125,7 +127,7 @@
                 This paper presents the attribution methodology developed for ClearTrace, a neutral, third-party execution-intelligence system covering Ethereum, Base, Arbitrum, and Optimism. We describe four independent heuristics for recovering frontend origin from raw transaction and trace data &mdash; a calldata-suffix trapper, a proxy-router mismatch detector, a multi-hop origin tracer, and a fee-recipient clustering method &mdash; and a companion execution-quality layer that benchmarks realized trade price against a volume-weighted average price (VWAP) oracle, kept deliberately separate from a sandwich/MEV-exposure score.
             </p>
             <p>
-                We report validation results from an in-production quote-accuracy sampler (112 of 168 tracked cells reaching statistical significance over a 9.6-day window), a worked example of a hypothesis reversal under additional data (order-size-dependent quote degradation at a major aggregator), and a structural finding distinguishing genuine sandwich-attack immunity from a coverage gap on Arbitrum. We close with the limitations of single-team validation and the case for treating cross-frontend attribution as a first-class, auditable input to incentive design rather than an afterthought to volume dashboards.
+                We report validation results from an in-production quote-accuracy sampler (112 of 168 tracked cells reaching statistical significance over a 9.6-day window), a worked example of a hypothesis reversal under additional data (order-size-dependent quote degradation at a major aggregator), and a structural finding on Arbitrum, where a near-zero sandwich-attack count is confirmed as genuine structural immunity rather than a coverage gap. We close with the limitations of single-team validation and the case for treating cross-frontend attribution as a first-class, auditable input to incentive design rather than an afterthought to volume dashboards.
             </p>
 
             <h2>Cite</h2>
@@ -137,7 +139,8 @@
   title        = {Cross-Frontend Attribution Methodologies in
                   Decentralized Exchange Volume},
   year         = {2026},
-  month        = jul,
+  month        = aug,
+  version      = {v2},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.21513262},
   url          = {https://doi.org/10.5281/zenodo.21513262},
