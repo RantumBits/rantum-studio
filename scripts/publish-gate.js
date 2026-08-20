@@ -66,19 +66,6 @@ const ALLOWLIST = [
     context: '0x Labs',
     reason: 'Same bio credential, in the prose and the client-logo row. PENDING.',
   },
-  {
-    file: 'case-studies/onchain-entity-resolution.html',
-    context: '0x Settler deployer',
-    reason: 'Names the venue while describing the on-chain registry rung it operates. ' +
-            'Same class as the fee-recipient mention corrected in #23 and probably ' +
-            'wants the same treatment. PENDING a decision to genericize.',
-  },
-  {
-    file: 'case-studies/rfq-execution-quality.html',
-    context: "0x's <code>fills</code>",
-    reason: 'Names the venue in a list of aggregator response shapes. Same class as ' +
-            'above. PENDING a decision to genericize.',
-  },
 ];
 
 function frozenTerms() {
