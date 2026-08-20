@@ -5,7 +5,8 @@
   "description": "Source for rantum.xyz — built with Tailwind CSS",
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./assets/app.css --minify",
-    "watch:css": "tailwindcss -i ./src/input.css -o ./assets/app.css --watch"
+    "watch:css": "tailwindcss -i ./src/input.css -o ./assets/app.css --watch",
+    "gate": "node scripts/publish-gate.js"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
