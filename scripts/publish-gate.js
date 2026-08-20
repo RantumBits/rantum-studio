@@ -51,20 +51,23 @@ const HEX_ADDR = /\b0x[0-9a-fA-F]{6,}\b/g;
 // naming, NOT a false positive, and is listed so the gate can block NEW ones
 // without silently blessing these. They are matched by surrounding context
 // rather than line number, so editing the sentence re-opens the check.
-// Removing an entry after scrubbing the page is the intended direction of travel.
+// Removing an entry after scrubbing the page is what re-arms the gate there, which
+// is how the two case-study namings were retired in #25. The entries that remain
+// are decided keeps, not a backlog.
 const ALLOWLIST = [
   {
     file: 'index.html',
     context: 'ex-0x, Uniswap, Art Blocks',
     reason: "Andrew's own employment history in the studio bio and og:description. " +
-            'A personal credential, not venue data. The 2026-07-02 scrub did remove ' +
-            '"ex-0x Labs" from ClearTrace\'s about.html, so whether rantum.xyz keeps ' +
-            'it is a deliberate call and his alone. PENDING his decision.',
+            'A personal credential, not venue data. DECIDED 2026-08-20: keep. The ' +
+            'employment credential stays on rantum.xyz even though the 2026-07-02 ' +
+            'scrub removed "ex-0x Labs" from ClearTrace\'s about.html — the two ' +
+            'properties differ deliberately, so do not re-raise this as a gap.',
   },
   {
     file: 'index.html',
     context: '0x Labs',
-    reason: 'Same bio credential, in the prose and the client-logo row. PENDING.',
+    reason: 'Same bio credential, in the prose and the client-logo row. DECIDED: keep.',
   },
 ];
 
