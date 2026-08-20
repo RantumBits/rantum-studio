@@ -1,0 +1,23 @@
+# Blocks a publish-excluded venue from being named in prose on rantum.xyz.
+# ClearTrace enforces the same constraint on its own surfaces via
+# leaderboard.PUBLISH_EXCLUDE and newsletter_gate.py check (A); this site sat
+# outside both, which is how the fee-recipient case study shipped naming the
+# venue (#21, corrected in #23). See scripts/publish-gate.js.
+name: Publish gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  publish-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      # No dependencies on purpose: the gate must not be able to fail open
+      # because an install broke.
+      - run: node scripts/publish-gate.js
