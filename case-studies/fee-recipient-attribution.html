@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient | Rantum Studio</title>
-    <meta name="description" content="There is no fee event on a swap. A frontend's cut is an ordinary ERC-20 transfer hiding among the swap's own token movements, so identifying it is a problem of exclusion, not decoding. The five exclusions, the asymmetry that makes a fee sink a signal in one direction only, and why this vector is capped at medium confidence.">
+    <meta name="description" content="There is no standard fee event on a swap. A frontend's cut is an ordinary ERC-20 transfer hiding among the swap's own token movements, so identifying it is a problem of exclusion rather than decoding. The five exclusions, a fifty-swap run with every survivor inspected, and why this vector is capped at medium confidence on purpose.">
     <meta property="og:title" content="Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient | Rantum Studio">
-    <meta property="og:description" content="A frontend's cut is an ordinary ERC-20 transfer hiding among the swap's own token movements. Identifying it is exclusion, not decoding, and it is capped at medium confidence on purpose.">
+    <meta property="og:description" content="A frontend's cut is an ordinary ERC-20 transfer hiding among the swap's own token movements. Identifying it is exclusion rather than decoding. We ran it on fifty real swaps, inspected every survivor, and published what the inspection found.">
     <meta property="og:image" content="https://rantum.xyz/og-fee-recipient-attribution.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -77,7 +77,7 @@
                 Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                A swap arrives through a generic router with nothing in its calldata to say who sent it. But somebody took a cut, and that payment is on-chain. This is the vector that reads a frontend's identity out of who got paid, the five exclusions that decide what counts as a fee at all, and why the answer is capped at medium confidence on purpose.
+                A swap arrives through a generic router with nothing in its calldata to say who sent it. But somebody took a cut, and that payment is on-chain. This is the vector that reads a frontend's identity out of who got paid, when the payee is an address someone has already labelled: the five exclusions that decide what counts as a fee at all, what happened when we ran it over fifty real swaps and inspected every survivor, and why the answer is capped at medium confidence on purpose.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -94,16 +94,16 @@
         <!-- Key Stats -->
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">5</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Exclusions before a transfer counts as a fee</div>
+                <div class="text-2xl font-bold text-white font-mono">39<span class="text-base text-gray-500">/50</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Real swaps where a transfer survived the exclusions</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">Medium</div>
+                <div class="text-2xl font-bold text-white font-mono">0<span class="text-base text-gray-500">/5</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Fee-vector attributions that survived inspection</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">Med</div>
                 <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Confidence ceiling, never high</div>
-            </div>
-            <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">0</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Basis-point rates computed</div>
             </div>
         </div>
 
@@ -115,15 +115,15 @@
                 Most swaps do not announce their origin. A meta-frontend, a wallet's in-app swap tab, and a Telegram trading bot can all route through the same public router, emit the same <code>Swap</code> event, and leave calldata that looks generic. Three of ClearTrace's four attribution vectors work on routing evidence: was the entrypoint a known aggregator, did the user call a pool directly or through a proxy, is there a fingerprint appended to the calldata. When all three come up empty, the transaction is anonymous by every structural measure.
             </p>
             <p>
-                But an anonymous frontend is usually still a business, and a business takes a cut. That cut has to move on-chain, inside the same transaction as the swap, and it is the one piece of evidence a frontend cannot route around without giving up its revenue. The fourth vector reads it.
+                But an anonymous frontend is usually still a business, and a business takes a cut. When that cut is taken inside the swap transaction itself, the way affiliate and referral skims are, it has to move on-chain where the receipt records it. That is the evidence the fourth vector reads. A frontend that sweeps its revenue later, or monetizes off-chain entirely, leaves nothing here; the limits section returns to that. And one dependency shapes everything downstream: finding who got paid is mechanical, but naming them requires a label somebody has already attached to that address.
             </p>
             <p>
-                The problem is that the cut does not identify itself. There is no fee standard on Ethereum, no <code>FeeCollected</code> event a decoder can key on, no convention for marking one token movement as revenue and another as settlement. A frontend's revenue is an ordinary ERC-20 <code>Transfer</code> log sitting in a receipt beside the swap's own transfers, structurally identical to them. You cannot decode it, because there is nothing to decode. You can only work out which transfers are <em>not</em> part of the swap and see who is left.
+                The problem is that the cut does not identify itself. There is no fee standard on Ethereum. Individual projects emit their own fee events, LiFi's collector contract logs a <code>FeesCollected</code> event a decoder can subscribe to, but nothing generic marks one token movement as revenue and another as settlement across the long tail of routers this vector exists for. A frontend's revenue is an ordinary ERC-20 <code>Transfer</code> log sitting in a receipt beside the swap's own transfers, structurally identical to them. You cannot decode it, because there is nothing to decode. You can only work out which transfers are <em>not</em> part of the swap and see who is left.
             </p>
 
             <h3>Trap 1: identification by exclusion puts every error in the exclusion set</h3>
             <p>
-                Turning "which transfer is the fee" into "which transfers are not the swap" is the only available move, and it relocates all of the risk into the exclusion list. Every category you forget to exclude becomes a false frontend. The user receiving their own output tokens is not a fee. The contract that was called is not a fee. A pool receiving the input side of the trade is not a fee. A token contract receiving its own token, which happens on rebasing and fee-on-transfer tokens, is not a fee. A burn address is not a fee. Miss any one of those and the vector confidently reports a counterparty as the frontend that originated the trade.
+                Turning "which transfer is the fee" into "which transfers are not the swap" is the move available here, and it relocates all of the risk into the exclusion list. Every category you forget to exclude becomes a false frontend. The user receiving their own output tokens is not a fee. The contract that was called is not a fee. A pool receiving the input side of the trade is not a fee. A token contract receiving its own token, which some fee-on-transfer designs do, is not a fee. A burn address is not a fee. Miss any one of those and the vector confidently reports a counterparty as the frontend that originated the trade.
             </p>
 
             <h3>Trap 2: a fee sink is a signal in one direction only</h3>
@@ -167,7 +167,7 @@ for token, recipient, raw_amount in transfers:
 </code></pre>
 
             <p>
-                Two decisions in that block are worth pulling out, because they are the ones that took the longest to get right.
+                Two decisions in that block are worth pulling out.
             </p>
             <p>
                 <strong>The amount is stored exactly and never converted.</strong> <code>raw_amount</code> is the integer from the transfer's data field, kept as a string, with no token decimals applied and no USD price attached. That looks like an omission and is a refusal. Converting it requires the token's decimals and a price at that block, and both of those are lookups that can fail quietly and produce a number that is wrong by orders of magnitude while still looking plausible in a table. The vector's job is attribution, and attribution does not need the fee's value. Anything downstream that genuinely needs a denominated figure can do the conversion where the failure is visible.
@@ -176,12 +176,12 @@ for token, recipient, raw_amount in transfers:
                 <strong>Recipients are deduplicated within a transaction.</strong> A single address can receive several transfers in one swap, on a multi-hop route or when both sides of a trade pay the same collector. Reporting it repeatedly would imply several fee events where there was one relationship.
             </p>
 
-            <h3>The confidence tier, and the bug that set it</h3>
+            <h3>The confidence tier, and the bug that made the case for it</h3>
             <p>
                 A matched recipient is handed to the frontend taxonomy, which resolves the label into a kind (wallet, frontend, MEV bot, or nothing) and returns a bucket with an explicit confidence. A calldata-suffix match returns <code>high</code>. A fee-recipient match returns <code>medium</code>, always, by construction: it is described in the code as indirect but specific, which is exactly what an affiliate payment is.
             </p>
             <p>
-                That tiering is not decorative, and the repository records what happened when the name matching underneath it was too loose. An earlier version treated <code>0x</code> as a plain substring marker for the 0x protocol. But <code>0x</code> is also the prefix of every hex address, and the labeler routinely embeds addresses in names, rendering them as <code>Wintermute (0x51c7…8ac2)</code> or emitting heuristic labels like <code>Ethereum First Funder: 0xa4aF…</code>. Every such label matched. The comment in the source states the damage plainly: any suffix-tagged transaction carrying any non-MEV, non-wallet label was booked as a named frontend at high confidence. A one-substring matching rule silently promoted a large class of unknowns into confident, named, wrong attributions.
+                The tiering earns its keep, and the repository records what happened when the name matching underneath it was too loose. An earlier version treated <code>0x</code> as a plain substring marker for the 0x protocol. But <code>0x</code> is also the prefix of every hex address, and the labeler routinely embeds addresses in names, rendering them as <code>Wintermute (0x51c7…8ac2)</code> or emitting heuristic labels like <code>Ethereum First Funder: 0xa4aF…</code>. Every such label matched. The comment in the source states the damage plainly: any suffix-tagged transaction carrying any non-MEV, non-wallet label was booked as a named frontend at high confidence. A one-substring matching rule silently promoted a large class of unknowns into confident, named, wrong attributions.
             </p>
             <p>
                 The fix was a stricter entity pattern, but the durable lesson is about tiering. A system that only emits identities cannot be audited after a matching bug; a system that emits identities with the evidence class attached lets you find every attribution that rested on the broken rung and re-evaluate exactly those.
@@ -195,12 +195,26 @@ for token, recipient, raw_amount in transfers:
                 The fee vector sits below the suffix check in that cascade and above the generic router heuristic. A recipient whose label resolves to a wallet returns wallet embedded; one that resolves to a frontend returns named frontend; anything that resolves to neither falls through to the next rung rather than being forced into a bucket. Knowing that a fee was paid to an address nobody has labelled is not an attribution, and the system says so.
             </p>
 
-            <h2>What This Does Not Claim</h2>
+            <h2>What One Real Run Returns</h2>
             <p>
-                It does not cluster frontends by fee rate. The obvious next step from "who got paid" is "how much, as a rate," on the theory that a consistent basis-point cut is a fingerprint that would group several anonymous routers under one operator. That is not implemented, and the reason is in the design above: the vector deliberately holds the amount as a raw integer, so a rate would require the decimals-and-price conversion it exists to avoid, applied to both the fee and the trade notional, before any two swaps could be compared. A fee rate is also weak identity evidence in a way an address is not, since a 30 basis point cut is a convention rather than a signature, shared by a large number of unrelated products. The address is the identifier. The amount is recorded because it is free to record, not because a rate has been validated as a clustering key.
+                Method pieces are cheap without a run, so here is one: the 50 most recent Ethereum swaps in ClearTrace's synced <code>dex.trades</code> sample, a seven-minute window from 2026-07-01, receipts refetched from an archive node on 2026-08-20 and pushed through the kernel in receipt-only mode with ClearTrace's own label store answering <code>resolve_name</code>. All 50 classified. On 39 of them, at least one transfer survived the five exclusions. The calldata-suffix vector settled 23, the aggregator and bot rungs took four each, fourteen resolved nothing, and the fee vector decided the final attribution on five.
             </p>
             <p>
-                It also inherits every limit of the labeling layer beneath it. The vector can isolate a fee recipient perfectly and still return nothing useful, because <code>resolve_name</code> has no label for that address, which is the common case for exactly the anonymous frontends this vector is aimed at. When it works, it works because someone has already named the collector. And the exclusion set is a fixed list of five categories, not a learned classifier: a fee routed through an intermediate contract that resembles a pool, or paid in a later transaction rather than inside the swap, is invisible to this pass by construction.
+                Then we inspected the five, and this is the part of the piece that earns the confidence tier. Every one of them rested on a label attached to routing infrastructure rather than to a monetizing interface. Two resolved through an adapter contract whose name contains a venue string, so the frontend marker matched plumbing. And the three we dissected transfer by transfer were not fees at all. In a $4,165 stablecoin swap routed through TransitSwapRouterV5, the surviving recipients were a market-making counterparty that received 2.655 WETH and paid back 4,165 USDC, a routing contract that both received and forwarded funds, and an address carrying an aggregator label that received the full trade notional as an intermediate hop. The taxonomy walked the list, hit the aggregator label, and booked a named frontend at medium confidence. In a $172k swap the pattern was cruder still: three surviving recipients received the identical amount, which is not three fees, it is the notional in flight.
+            </p>
+            <p>
+                So the run's honest summary is: in receipt-only mode, the exclusion set cannot tell a fee from a hop. The five categories remove the user, the entry contract, the pools, the token contracts, and the burns, and everything else in a multi-hop route survives, wearing whatever label it has. The vector found the route, not the revenue. The structural fix is known and not yet built: exclude every address that also <em>sends</em> within the same receipt, or use trace data to remove the whole call path, and both are recorded in the repo as the hardening step this run argues for.
+            </p>
+            <p>
+                What the tier system did do is exactly its job. All five wrong names went out the door marked medium and <code>fee_recipient</code>, which means one query finds every attribution that rests on this rung, and re-evaluating them after the exclusion fix touches nothing booked on suffix or aggregator evidence. An untiered system would have published the same five names as flat facts and left no seam to find them by. That is the difference the bug story above already paid for once.
+            </p>
+
+            <h2>What This Does Not Claim</h2>
+            <p>
+                It does not cluster frontends by fee rate. The obvious next step from "who got paid" is "how much, as a rate," on the theory that a consistent basis-point cut is a fingerprint that would group several anonymous routers under one operator. That is not implemented, and the reason is in the design above: the vector deliberately holds the amount as a raw integer, so a rate would require the decimals-and-price conversion it exists to avoid, applied to both the fee and the trade notional, before any two swaps could be compared. A fee rate is also weak identity evidence in a way an address is not: interface fees cluster around a handful of conventional sizes, so a rate is a habit shared across unrelated products, where an address belongs to exactly one operator. The address is the identifier. The amount is recorded because it is free to record, not because a rate has been validated as a clustering key.
+            </p>
+            <p>
+                It also inherits every limit of the labeling layer beneath it. The vector can isolate a recipient cleanly and still return nothing, because <code>resolve_name</code> has no label for that address, and the run above adds the sharper failure: when the store's labels are attached to infrastructure, or simply wrong, the vector inherits those errors at medium confidence. Whatever it names, it names because someone already labelled the collector, so its recall on genuinely anonymous frontends, the ones in this piece's title, is bounded by the label store and on this sample was zero. And the exclusion set is a fixed list of five categories, not a learned classifier: a fee routed through an intermediate contract that resembles a pool, or paid in a later transaction rather than inside the swap, is invisible to this pass by construction.
             </p>
             <p>
                 Finally, the confidence ceiling is real and permanent. No fee-recipient match will ever be promoted to high confidence, however clean it looks, because the underlying inference is indirect. A frontend that wants to be identified precisely can append a calldata suffix, which is what the high tier is for.
@@ -208,12 +222,12 @@ for token, recipient, raw_amount in transfers:
 
             <h2>What It Shows</h2>
             <p>
-                Reading a fact that was never recorded as a fact. Nothing in a swap receipt is labelled as revenue; the fee is legible only as the transfer left over once everything structural has been ruled out, and the engineering is almost entirely in the ruling out. The same shape recurs whenever a system's most interesting quantity is a side effect rather than a field: the work is defining the exclusions precisely, keeping the raw value raw, and attaching an evidence class so a later mistake in the matching layer is findable instead of baked in.
+                The vector reads a fact that was never recorded as a fact, and the run above prices that honestly. Nothing in a swap receipt is labelled as revenue; the fee is legible only as the transfer left over once everything structural has been ruled out, so the exclusions are the entire product, and every category they miss walks into the output wearing a name. The same shape recurs whenever a system's most interesting quantity is a side effect rather than a field: define the exclusions precisely, keep the raw value raw, attach an evidence class so a mistake in the matching layer is findable instead of baked in, and then run it on real data and publish what the inspection found, including when what it found is your own false-positive channel.
             </p>
 
             <h2>What It Proves to a Client</h2>
             <p>
-                That we can build identity resolution on evidence that was never intended to identify anyone, and that we will hand you the confidence tier alongside the answer. For a protocol or an L2 measuring where its order flow actually originates, the deliverable is not a list of names; it is a list of names with the evidence class next to each, an explicit unattributed share that has not been quietly redistributed into the named rows, and a written account of what the method cannot see. That is the difference between a dashboard that survives an audit and one that survives until someone checks it.
+                That we can build identity resolution on evidence that was never intended to identify anyone, and that we will hand you the confidence tier alongside the answer. For a protocol or an L2 measuring where its order flow actually originates, the deliverable is the names with the evidence class next to each, an explicit unattributed share that has not been quietly redistributed into the named rows, and a written account of what the method cannot see, including, when a run turns one up, the failure it has not fixed yet. The fifty-swap inspection above is that account for this vector, published rather than filed.
             </p>
 
         </article>
