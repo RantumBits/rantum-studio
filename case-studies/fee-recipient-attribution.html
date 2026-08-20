@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient | Rantum Studio</title>
+    <meta name="description" content="There is no standard fee event on a swap. A frontend's cut is an ordinary ERC-20 transfer hiding among the swap's own token movements, so identifying it is a problem of exclusion rather than decoding. The five exclusions, a fifty-swap run with every survivor inspected, and why this vector is capped at medium confidence on purpose.">
+    <meta property="og:title" content="Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient | Rantum Studio">
+    <meta property="og:description" content="A frontend's cut is an ordinary ERC-20 transfer hiding among the swap's own token movements. Identifying it is exclusion rather than decoding. We ran it on fifty real swaps, inspected every survivor, and published what the inspection found.">
+    <meta property="og:image" content="https://rantum.xyz/og-fee-recipient-attribution.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/fee-recipient-attribution.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-fee-recipient-attribution.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/fee-recipient-attribution.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Methodology</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Attribution</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Python</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                A swap arrives through a generic router with nothing in its calldata to say who sent it. But somebody took a cut, and that payment is on-chain. This is the vector that reads a frontend's identity out of who got paid, when the payee is an address someone has already labelled: the five exclusions that decide what counts as a fee at all, what happened when we ran it over fifty real swaps and inspected every survivor, and why the answer is capped at medium confidence on purpose.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">39<span class="text-base text-gray-500">/50</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Real swaps where a transfer survived the exclusions</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">0<span class="text-base text-gray-500">/5</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Fee-vector attributions that survived inspection</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">Med</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Confidence ceiling, never high</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                Most swaps do not announce their origin. A meta-frontend, a wallet's in-app swap tab, and a Telegram trading bot can all route through the same public router, emit the same <code>Swap</code> event, and leave calldata that looks generic. Three of ClearTrace's four attribution vectors work on routing evidence: was the entrypoint a known aggregator, did the user call a pool directly or through a proxy, is there a fingerprint appended to the calldata. When all three come up empty, the transaction is anonymous by every structural measure.
+            </p>
+            <p>
+                But an anonymous frontend is usually still a business, and a business takes a cut. When that cut is taken inside the swap transaction itself, the way affiliate and referral skims are, it has to move on-chain where the receipt records it. That is the evidence the fourth vector reads. A frontend that sweeps its revenue later, or monetizes off-chain entirely, leaves nothing here; the limits section returns to that. And one dependency shapes everything downstream: finding who got paid is mechanical, but naming them requires a label somebody has already attached to that address.
+            </p>
+            <p>
+                The problem is that the cut does not identify itself. There is no fee standard on Ethereum. Individual projects emit their own fee events, LiFi's collector contract logs a <a href="https://github.com/lifinance/contracts/blob/main/src/Periphery/FeeCollector.sol" target="_blank" rel="noopener noreferrer"><code>FeesCollected</code></a> event a decoder can subscribe to, but nothing generic marks one token movement as revenue and another as settlement across the long tail of routers this vector exists for. A frontend's revenue is an ordinary ERC-20 <code>Transfer</code> log sitting in a receipt beside the swap's own transfers, structurally identical to them. You cannot decode it, because there is nothing to decode. You can only work out which transfers are <em>not</em> part of the swap and see who is left.
+            </p>
+
+            <h3>Trap 1: identification by exclusion puts every error in the exclusion set</h3>
+            <p>
+                Turning "which transfer is the fee" into "which transfers are not the swap" is the move available here, and it relocates all of the risk into the exclusion list. Every category you forget to exclude becomes a false frontend. The user receiving their own output tokens is not a fee. The contract that was called is not a fee. A pool receiving the input side of the trade is not a fee. A token contract receiving its own token, which some fee-on-transfer designs do, is not a fee. A burn address is not a fee. Miss any one of those and the vector confidently reports a counterparty as the frontend that originated the trade.
+            </p>
+
+            <h3>Trap 2: a fee sink is a signal in one direction only</h3>
+            <p>
+                This one is not obvious until it breaks something. Once a candidate recipient is found, its identity comes from a resolved label, and the labels contain infrastructure names as well as product names. A contract labelled as a fee vault is strong evidence when it is <em>receiving</em> the skim: something paid it, and that something is the monetization path you are trying to name. The same label on the contract the user <em>called</em> means the opposite, or rather it means nothing, because a fee vault is not a user interface and treating it as one invents a frontend out of plumbing.
+            </p>
+            <p>
+                So the same marker has to be a positive signal in one position and no signal in the other. In the taxonomy this is a single boolean, <code>as_fee_recipient</code>, threaded through the name classifier to select which exclusion set applies. It is one flag standing in for a real asymmetry: evidence about who got paid does not transfer to evidence about who was called.
+            </p>
+
+            <h3>Trap 3: getting paid is not the same as being the frontend</h3>
+            <p>
+                Even a clean recipient with a clean label is indirect evidence. Referral programs pay addresses that belong to partners rather than to the interface. A single fee address can serve several products from the same team. An affiliate skim names whoever holds the affiliate relationship, which is often but not always the surface the user actually touched. The vector answers "who monetized this trade," and that is a strong hint about the frontend rather than a proof of it. The system is built so that the difference between a hint and a proof is recorded rather than flattened.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                A per-transaction pass over the receipt's <code>Transfer</code> logs that assembles the exclusion set first, then reports every surviving recipient with the exact amount it received. It runs inside the same kernel as the other three vectors, over the same decoded logs, so a transaction gets all four verdicts from one parse.
+            </p>
+
+<pre><code class="language-python"># app/attribution_kernel.py: the fee-recipient vector.
+# ERC20 transfers to an address that is not the user, not the called
+# contract, not a pool, not a token contract, and not a burn sink —
+# i.e. a party skimming a fee out of the swap.
+excluded = {tx_from, tx_to} | BURN_ADDRESSES | pools
+token_contracts = {t[0] for t in transfers}
+fee_recipients = []
+seen = set()
+for token, recipient, raw_amount in transfers:
+    if not recipient or recipient in excluded or recipient in token_contracts:
+        continue
+    if recipient in seen:
+        continue
+    seen.add(recipient)
+    fee_recipients.append({
+        "address": recipient,
+        "name": resolve_name(recipient),
+        "token_contract": token,
+        "raw_amount": str(raw_amount),  # exact; no USD/decimals applied
+    })
+</code></pre>
+
+            <p>
+                Two decisions in that block are worth pulling out.
+            </p>
+            <p>
+                <strong>The amount is stored exactly and never converted.</strong> <code>raw_amount</code> is the integer from the transfer's data field, kept as a string, with no token decimals applied and no USD price attached. That looks like an omission and is a refusal. Converting it requires the token's decimals and a price at that block, and both of those are lookups that can fail quietly and produce a number that is wrong by orders of magnitude while still looking plausible in a table. The vector's job is attribution, and attribution does not need the fee's value. Anything downstream that genuinely needs a denominated figure can do the conversion where the failure is visible.
+            </p>
+            <p>
+                <strong>Recipients are deduplicated within a transaction.</strong> A single address can receive several transfers in one swap, on a multi-hop route or when both sides of a trade pay the same collector. Reporting it repeatedly would imply several fee events where there was one relationship.
+            </p>
+
+            <h3>The confidence tier, and the bug that made the case for it</h3>
+            <p>
+                A matched recipient is handed to the frontend taxonomy, which resolves the label into a kind (wallet, frontend, MEV bot, or nothing) and returns a bucket with an explicit confidence. A calldata-suffix match returns <code>high</code>. A fee-recipient match returns <code>medium</code>, always, by construction: it is described in the code as indirect but specific, which is exactly what an affiliate payment is.
+            </p>
+            <p>
+                The tiering earns its keep, and the repository records what happened when the name matching underneath it was too loose. An earlier version treated <code>0x</code> as a plain substring marker for the 0x protocol. But <code>0x</code> is also the prefix of every hex address, and the labeler routinely embeds addresses in names, rendering them as <code>Wintermute (0x51c7…8ac2)</code> or emitting heuristic labels like <code>Ethereum First Funder: 0xa4aF…</code>. Every such label matched. The comment in the source states the damage plainly: any suffix-tagged transaction carrying any non-MEV, non-wallet label was booked as a named frontend at high confidence. A one-substring matching rule silently promoted a large class of unknowns into confident, named, wrong attributions.
+            </p>
+            <p>
+                The fix was a stricter entity pattern, but the durable lesson is about tiering. A system that only emits identities cannot be audited after a matching bug; a system that emits identities with the evidence class attached lets you find every attribution that rested on the broken rung and re-evaluate exactly those.
+            </p>
+
+            <h3>Under-claiming, in code</h3>
+            <p>
+                The taxonomy sorts every transaction into one of five buckets: named frontend, aggregator API direct, wallet embedded, bots and MEV, or unattributed. The interesting one is the last, and specifically a case the code handles separately: a transaction that carries a calldata fingerprint proving some frontend tagged it, where the identity cannot be resolved. The obvious move is to guess from the router. The implemented move is to return <code>unattributed</code> with a <code>fingerprinted</code> flag set, so the leaderboard can show "fingerprinted, unidentified" as its own quantity rather than folding it into either a named frontend or the raw unknown pile.
+            </p>
+            <p>
+                The fee vector sits below the suffix check in that cascade and above the generic router heuristic. A recipient whose label resolves to a wallet returns wallet embedded; one that resolves to a frontend returns named frontend; anything that resolves to neither falls through to the next rung rather than being forced into a bucket. Knowing that a fee was paid to an address nobody has labelled is not an attribution, and the system says so.
+            </p>
+
+            <h2>What One Real Run Returns</h2>
+            <p>
+                Method pieces are cheap without a run, so here is one: the 50 most recent Ethereum swaps in ClearTrace's synced <code>dex.trades</code> sample, a seven-minute window from 2026-07-01, receipts refetched from an archive node on 2026-08-20 and pushed through the kernel in receipt-only mode with ClearTrace's own label store answering <code>resolve_name</code>. All 50 classified. On 39 of them, at least one transfer survived the five exclusions. The calldata-suffix vector settled 23, the aggregator and bot rungs took four each, fourteen resolved nothing, and the fee vector decided the final attribution on five.
+            </p>
+            <p>
+                Then we inspected the five, and this is the part of the piece that earns the confidence tier. Every one of them rested on a label attached to routing infrastructure rather than to a monetizing interface. Two resolved through an adapter contract whose name contains a venue string, so the frontend marker matched plumbing. And the three we dissected transfer by transfer were not fees at all. In a $4,165 stablecoin swap routed through TransitSwapRouterV5, the surviving recipients were a market-making counterparty that received 2.655 WETH and paid back 4,165 USDC, a routing contract that both received and forwarded funds, and an address carrying an aggregator label that received the full trade notional. The taxonomy walked the list, hit the aggregator label, and booked a named frontend at medium confidence. In a $172k swap the pattern was cruder still: three surviving recipients received the identical amount, which is not three fees, it is the notional in flight.
+            </p>
+            <p>
+                So the run's honest summary is: in receipt-only mode, the exclusion set cannot tell a fee from a hop. The five categories remove the user, the entry contract, the pools, the token contracts, and the burns, and everything else in a multi-hop route survives, wearing whatever label it has. The vector found the route, not the revenue. The structural fix is known and not yet built: exclude every address that also <em>sends</em> within the same receipt, or use trace data to remove the whole call path. Neither exists in the kernel today, and the second is not free, since the current trace pass feeds the aggregator match but never the fee exclusions. This run is the argument for building both.
+            </p>
+            <p>
+                What the tier system did do is exactly its job. All five wrong names went out the door marked medium and <code>fee_recipient</code>, which means one query finds every attribution that rests on this rung, and re-evaluating them after the exclusion fix touches nothing booked on suffix or aggregator evidence. An untiered system would have published the same five names as flat facts and left no seam to find them by. That is the difference the bug story above already paid for once.
+            </p>
+            <p>
+                And that is also the honest answer to where this rung lives in production until the fix lands. The receipt-only kernel serves single transactions on demand, with the method and confidence in every response, and feeds no leaderboard. The vector's SQL twin, which does feed the aggregate dashboards, already treats fee-recipient volume as an overlay rather than as truth: the query credits the full trade amount to every qualifying intermediate, reports the result as its own column, and never folds it into the conserved volume total, with a comment in the repo measuring the over-crediting it would otherwise cause at roughly 80% of an Ethereum total. The rung stays because a quarantined hint is still a hint; nothing it produces reaches a published total.
+            </p>
+
+            <h2>What This Does Not Claim</h2>
+            <p>
+                It does not cluster frontends by fee rate. The obvious next step from "who got paid" is "how much, as a rate," on the theory that a consistent basis-point cut is a fingerprint that would group several anonymous routers under one operator. That is not implemented, and the reason is in the design above: the vector deliberately holds the amount as a raw integer, so a rate would require the decimals-and-price conversion it exists to avoid, applied to both the fee and the trade notional, before any two swaps could be compared. A fee rate is also weak identity evidence in a way an address is not: interface fees cluster around a handful of conventional sizes, so a rate is a habit shared across unrelated products, where an address belongs to exactly one operator. The address is the identifier. The amount is recorded because it is free to record, not because a rate has been validated as a clustering key.
+            </p>
+            <p>
+                It also inherits every limit of the labeling layer beneath it. The vector can isolate a recipient cleanly and still return nothing, because <code>resolve_name</code> has no label for that address, and the run above adds the sharper failure: when the store's labels are attached to infrastructure, or simply wrong, the vector inherits those errors at medium confidence. Whatever it names, it names because someone already labelled the collector, so on genuinely anonymous frontends, the ones in this piece's title, it can only ever surface what the label store already holds, and on this sample it correctly named none. And the exclusion set is a fixed list of five categories, not a learned classifier: a fee routed through an intermediate contract that resembles a pool, or paid in a later transaction rather than inside the swap, is invisible to this pass by construction.
+            </p>
+            <p>
+                Finally, the confidence ceiling is real and permanent. No fee-recipient match will ever be promoted to high confidence, however clean it looks, because the underlying inference is indirect. A frontend that wants to be identified precisely can append a calldata suffix, which is what the high tier is for.
+            </p>
+
+            <h2>What It Shows</h2>
+            <p>
+                The vector reads a fact that was never recorded as a fact, and the run above prices that honestly. Nothing in a swap receipt is labelled as revenue; the fee is legible only as the transfer left over once everything structural has been ruled out, so the exclusions are the entire product, and every category they miss walks into the output wearing a name. The same shape recurs whenever a system's most interesting quantity is a side effect rather than a field: define the exclusions precisely, keep the raw value raw, attach an evidence class so a mistake in the matching layer is findable instead of baked in, and then run it on real data and publish what the inspection found, including when what it found is your own false-positive channel.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That we can build identity resolution on evidence that was never intended to identify anyone, and that we will hand you the confidence tier alongside the answer. For a protocol or an L2 measuring where its order flow actually originates, the deliverable is the names with the evidence class next to each, an explicit unattributed share that has not been quietly redistributed into the named rows, and a written account of what the method cannot see, including, when a run turns one up, the failure it has not fixed yet. The fifty-swap inspection above is that account for this vector, published rather than filed.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
