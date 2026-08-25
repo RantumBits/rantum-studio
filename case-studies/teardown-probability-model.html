@@ -210,7 +210,7 @@ for T in (2016, 2018, 2020):                    # historical scoring dates
         # year_built, house sqft, and photos describe the *rebuilt* house — they leak.
         observations.append((point_in_time_features(roll), label))</code></pre>
 
-            <h3>What the honest number turned out to be</h3>
+            <h3>What the number turned out to be</h3>
             <p>
                 The first run, scored on the proxy label before it was cross-validated, looked like a strong result: 17,589 parcel-date observations across three scoring dates, a 0.72% base rate, and a single heuristic (sort parcels by land-to-improvement value ratio) capturing about half of all "teardowns" in the top decile, a 5.3x lift. A hand-blended model, land value alone, and a cheapest-structure heuristic all trailed it. It looked like an undefeated baseline.
             </p>
