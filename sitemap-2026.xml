@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://rantum.xyz/case-studies/cleartrace.html</loc>
-    <lastmod>2026-08-05</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -105,6 +105,12 @@
   <url>
     <loc>https://rantum.xyz/research/cross-frontend-attribution.html</loc>
     <lastmod>2026-07-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rantum.xyz/research/capacity-vs-realized-execution.html</loc>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

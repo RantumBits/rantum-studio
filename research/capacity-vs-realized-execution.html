@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Pool Deep: What Capacity Concentration Means for Realized Execution | Rantum Studio</title>
+    <meta name="description" content="Research note: a public Uniswap-v3 study finds a pair's impact-constrained capacity sits ~96% in one fee tier (median N_eff 1.076). How that supply-side result relates to ClearTrace's realized-fill measurements, and why the two are different objects.">
+    <meta property="og:title" content="One Pool Deep: What Capacity Concentration Means for Realized Execution">
+    <meta property="og:description" content="A public Uniswap-v3 study measures available capacity; ClearTrace measures realized fills. They answer different questions about the same pair, and the distance between them is routing, MEV, and reverts.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/research/capacity-vs-realized-execution.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/research/capacity-vs-realized-execution.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "One Pool Deep: What Capacity Concentration Means for Realized Execution",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "Rantum Studio"
+        }
+      },
+      "datePublished": "2026-08-28",
+      "keywords": "Uniswap v3, DEX liquidity, execution quality, price impact, HHI, on-chain analytics"
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="../case-studies/cleartrace.html" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            The system behind it &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Note Header -->
+        <header class="mb-12">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Research Note</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Execution Quality</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Uniswap v3</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">DEX Liquidity</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                One Pool Deep: What Capacity Concentration Means for Realized Execution
+            </h1>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>August 28, 2026</span>
+            </div>
+        </header>
+
+        <article class="prose prose-invert prose-gray max-w-none">
+            <p>
+                Two measurements of Uniswap execution landed on the same surface this month, and at a glance they look like the same measurement. A public study on ethresear.ch, <a href="https://ethresear.ch/t/when-multiple-pools-behave-like-one-impact-constrained-capacity-concentration-in-uniswap-v3/25823" target="_blank" rel="noopener noreferrer">"When Multiple Pools Behave Like One: Impact-Constrained Capacity Concentration in Uniswap v3,"</a> reconstructs how much liquidity a pair actually holds. ClearTrace measures what a trader's order actually received. A desk evaluating execution needs both, and using one where the other belongs is a mistake worth naming.
+            </p>
+
+            <h2>What the study measured: available capacity</h2>
+            <p>
+                The study reconstructs daily Uniswap-v3 pool state from Mint, Burn, and Swap events, then runs a capacity optimizer: for a given pair on a given day in a given direction, what is the maximum notional you can push at a fixed price-impact tolerance (it tests 10, 25, 50, and 100 bps), on the single best pool versus split across the pair's sibling fee-tier pools? It scores concentration with the Herfindahl index of per-pool capacity shares, HHI = &Sigma; s<sub>p</sub><sup>2</sup>, and reports its reciprocal N<sub>eff</sub> = 1/HHI, the effective number of pools.
+            </p>
+            <p>
+                The headline result, across 293,273 family-day-direction-impact cells over 78 pairs (Ethereum, 2024-01-01 to 2026-06-29): median N<sub>eff</sub> of 1.076, a single fee tier holding a median 96.3% of impact-constrained capacity, capacity-concentration HHI of 0.926. Despite multiple fee-tier pools per pair, the depth that matters at a fixed impact tolerance sits in one of them. Multiple pools behave like one.
+            </p>
+            <p>
+                The author scopes it tightly, and the scope is the whole reason this note exists. The optimizer "measures impact-constrained capacity at the liquidity layer; gas, routing frictions, MEV, and cross-layer causality are out of scope," it "is not a welfare benchmark," and it is a "selected multi-pool pilot, not a representative sample." It is a supply-side, counterfactual measurement: how much could be executed, not what was.
+            </p>
+
+            <h2>What ClearTrace measures: realized fills</h2>
+            <p>
+                ClearTrace starts from the opposite end. It takes an aggregator's quote, <code>quoted_out</code>, and the fill that actually settles, <code>realized_out</code>, and measures the gap, then decomposes it into the pieces that caused it:
+            </p>
+
+<pre><code>output_gap_bps  = (quoted_out &minus; realized_out) / quoted_out &times; 10,000
+slippage_bps    = output_gap_bps &minus; fee_bps &minus; mev_bps</code></pre>
+
+            <p>
+                Reverts are never forced into that formula; a failed trade decomposed nothing, so it is counted as a rate across a batch instead. That decomposition runs at the aggregator and frontend layer, over actual and fork-simulated fills at fixed sizes ($1k / $10k / $100k / $1M). It includes precisely the three things the study sets aside: MEV, reverts, and routing topology. The formula-level version is written up in <a href="https://cleartracedata.com/research/how-execution-quality-works" target="_blank" rel="noopener noreferrer">how the execution-quality numbers actually work</a>.
+            </p>
+            <p>
+                The numbers it produces are realized outcomes. On the 2026-08-26 sampler export, across Ethereum aggregators, the median fill lands at or within a fraction of a basis point of its quote at every size cohort, while fork-verifiable quotes fail to realize at a low single-digit rate that varies by size (3.6% at $1k, 2.2% at $100k, 4.5% at $1M). These are demand-side measurements: what a specific order got, after the router did its work.
+            </p>
+
+            <h2>Why they are different objects</h2>
+            <p>
+                The study reconstructs the liquidity a pair holds. ClearTrace scores the fills a trader received. Available capacity is a ceiling; a realized fill is a result, and the distance between them is exactly the routing, MEV, and reverts the study places out of scope. The author says as much directly: observed flow concentration and reconstructed capacity concentration "are different objects," and the comparison "does not imply that traders fail to use capacity, that observed routing is inefficient, or that the optimizer is efficient."
+            </p>
+            <p>
+                Two consequences follow, and both matter for reading either number correctly. A pair with N<sub>eff</sub> &asymp; 1 can still deliver a clean fill, because a router works around a shallow book by splitting across venues. And a pair with ample impact-constrained capacity can still realize badly, because MEV or a revert lands on the actual trade and never touches the counterfactual optimizer. Neither measurement validates the other's figures. They answer different questions about the same pair.
+            </p>
+            <p>
+                Concretely: ClearTrace runs nothing resembling the study's method. There is no pool-state reconstruction, no Herfindahl of capacity shares, no N<sub>eff</sub>, no impact-constrained optimizer anywhere in its codebase. It never needed one, because it measures the trade rather than the terrain.
+            </p>
+
+            <h2>The one place they connect</h2>
+            <p>
+                There is a real link, and stating it precisely is more useful than overstating it. The study describes the terrain a router faces on Ethereum: at the AMM layer a pair is effectively one deep pool, not a spread of independent ones. ClearTrace's realized data shows median fills holding near their quote across sizes anyway. Those two facts are consistent with each other only if size-aware routers are spreading orders across mechanisms rather than leaning on that one pool, and that is what the per-trade routing data shows: in the same export, 83.7% of sampled $1M routes split across more than one venue (median three distinct venues per route), against 69.0% at $1k.
+            </p>
+            <p>
+                So the study offers a supply-side explanation for why aggressive size-aware routing exists, and ClearTrace measures whether that routing actually delivers. The study explains the terrain; ClearTrace scores the drive. They are independent, they were built by different people for different reasons, and they do not overlap. That is what makes the pairing worth writing down rather than a coincidence to wave at.
+            </p>
+
+            <h2>What it means for a desk</h2>
+            <p>
+                If you evaluate execution, you want both views and you should not substitute one for the other. The supply view tells you how much a venue can absorb before impact bites, which is a property of the pool. The demand view tells you what your order actually received, which is a property of your trade and the route it took. A venue can look deep and fill you badly; a venue can look shallow and fill you well through a router. One number without the other is half the picture.
+            </p>
+
+            <h2>Sources</h2>
+            <p>
+                All capacity-concentration figures (293,273 cells, 78 families, N<sub>eff</sub> 1.076, top-tier share 96.3%, capacity HHI 0.926) are the study author's, reported from <a href="https://ethresear.ch/t/when-multiple-pools-behave-like-one-impact-constrained-capacity-concentration-in-uniswap-v3/25823" target="_blank" rel="noopener noreferrer">the ethresear.ch post</a>, retrieved 2026-08-28; quoted scope language is the author's. All ClearTrace figures (fail-to-realize rates by size, median fill-vs-quote, multi-venue route shares) were re-derived for this note from the 2026-08-26 21:33 UTC sampler export, Ethereum, sim-supported cells; the measurement pipeline is documented in the <a href="https://cleartracedata.com/research/execution-quality" target="_blank" rel="noopener noreferrer">interactive execution-quality explainer</a> and its <a href="https://cleartracedata.com/research/how-execution-quality-works" target="_blank" rel="noopener noreferrer">companion methodology write-up</a>.
+            </p>
+        </article>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">AddressIntel</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
