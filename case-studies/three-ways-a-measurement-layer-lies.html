@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three Ways a Measurement Layer Lies to You | Rantum Studio</title>
+    <meta name="description" content="Three quiet failure modes in analytics platforms: the cost allocation whose residual is zero by construction, the identity join that merges two customers, and the fact table that changes months. Each one runs green.">
+    <meta property="og:title" content="Three Ways a Measurement Layer Lies to You | Rantum Studio">
+    <meta property="og:description" content="Three quiet failure modes in analytics platforms: the cost allocation whose residual is zero by construction, the identity join that merges two customers, and the fact table that changes months. Each one runs green.">
+    <meta property="og:image" content="https://rantum.xyz/og-measurement-layer-lies.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/three-ways-a-measurement-layer-lies.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-measurement-layer-lies.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/three-ways-a-measurement-layer-lies.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Three Ways a Measurement Layer Lies to You",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-indigo-900/20 text-indigo-400/80 border border-indigo-500/20">Perspective</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Platforms</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Engineering</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Three Ways a Measurement Layer Lies to You
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                The expensive data-quality failures are quiet: the number is wrong, nothing is broken, and the tests are green.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>August 2026</span>
+            </div>
+        </header>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <p>
+                Most data quality problems announce themselves. A pipeline fails, a dashboard goes blank, someone files a ticket. Those are the easy ones.
+            </p>
+            <p>
+                The expensive failures are quiet. The number is wrong, nothing is broken, and the tests are green. I want to walk through three of these, because they share a structure: each one produces a plausible number, each one survives the tests people normally write, and each one is fixable once you see the shape.
+            </p>
+            <p>
+                The setting is a usage-based SaaS company. Free tier, paid tier, a cloud bill that dominates cost of goods. Substitute your own nouns; the shapes are the same.
+            </p>
+
+            <h2>1. The cost allocation that cannot fail</h2>
+            <p>
+                You want to split your cloud bill three ways: cost caused by paying customers, cost caused by free users, and cost caused by nobody. That third bucket is the whole reason to build the thing. It is where idle capacity and over-provisioning live, and it is the number a CFO actually wants.
+            </p>
+            <p>So you compute a unit cost from what you know:</p>
+<pre><code>rate      = monthly_bill / total_recorded_seconds
+allocated = rate &times; (paid_seconds + free_seconds)
+residual  = monthly_bill &minus; allocated</code></pre>
+            <p>
+                Put numbers on it. A $1,000 bill, 10,000 recorded compute-seconds, 6,000 from paying customers and 4,000 from free users. The rate is $0.10. Paid absorbs $600, free absorbs $400, and the residual is zero.
+            </p>
+            <p>
+                Change the numbers and the residual is still zero. Change them again. It is zero in every month, for every input, before any data arrives.
+            </p>
+            <p>
+                The reason is that paid and free exhaust the population. Their seconds sum to the total, and the rate was defined by dividing by that same total. Multiply back and you recover the bill exactly. You divided by ten thousand and then multiplied by ten thousand.
+            </p>
+            <p>
+                This is worse than a useless number. If half that bill were idle machines running nothing, the method cannot show it. The idle cost gets absorbed into an inflated rate and smeared across the workloads you <em>can</em> see, so every paying customer looks more expensive than they are and the waste never appears. In cost accounting this is called full absorption. It is a legitimate technique. It is not legitimate when your column headers promise three buckets and the third is structurally empty.
+            </p>
+            <p>And the test people write for this is worse still:</p>
+<pre><code>-- looks rigorous, is not
+abs(paid_cost + free_cost + residual_cost - total_bill) &lt; 0.01</code></pre>
+            <p>
+                That reduces to <code>abs(0) &lt; 0.01</code>. It passes forever. It is a green check mark attached to nothing.
+            </p>
+            <p>
+                <strong>The fix is one move: the price cannot come from your own bill.</strong> Take it from the contract, the rate card, the committed-use agreement. Say the contracted rate is $0.06 per second. Now allocated cost is 10,000 &times; $0.06 = $600, and the residual is $400 of capacity that no workload explains. That number moves month to month. Someone can act on it.
+            </p>
+            <p>
+                It can also come out negative, which is informative rather than broken: either you are paying below rate card, or you are recording more usage than actually ran. Both are worth knowing.
+            </p>
+            <p>
+                <strong>The test that works</strong> asserts the residual is a sane share of the bill, say between &minus;10% and 60%, and it can genuinely fail. When it does, either the rate is wrong or your capacity planning has drifted. Either way you learn something, which is the entire point of a test.
+            </p>
+
+            <h2>2. The identity join that merges two customers</h2>
+            <p>
+                Every company past a certain age has several identifiers for the same human: an auth user id, a billing customer id, an email, a device id, maybe a machine id from a desktop client. None of them span all your tables.
+            </p>
+            <p>
+                So you build a bridge. Where the billing id is missing, you match on email, because email is what you have.
+            </p>
+            <p>
+                The naive version is a join. The slightly better version adds a uniqueness check on one side. Both are dangerous, because they can attach one billing customer to two different people, and when they do, revenue double-counts and nothing complains. The email on an invoice is frequently not the email on the account. Someone signed up with a personal address and pays with a corporate card. That is normal, and it is the exact condition that breaks the join.
+            </p>
+            <p>What I have found works is four guards, all required:</p>
+            <ol>
+                <li>The email maps to exactly one billing customer.</li>
+                <li>That billing customer maps to exactly one email.</li>
+                <li>No second account shares that email.</li>
+                <li>That billing customer is not already claimed by a deterministic link.</li>
+            </ol>
+            <p>
+                The fourth is the one people miss, and it is the one that stops the double-count.
+            </p>
+            <p>
+                The deeper principle matters more than the guards. <strong>Confidence belongs in a column, not in a filter.</strong>
+            </p>
+            <p>
+                You have two options for an uncertain match. You can decide once, at build time, and either keep it or drop it. Either way the uncertainty is destroyed and no downstream consumer can tell which links were guesses. Six months later &ldquo;how solid is our revenue attribution?&rdquo; becomes unanswerable, because the evidence was thrown away.
+            </p>
+            <p>Or you keep the match and keep the doubt, side by side, as data:</p>
+<pre><code>coalesce(link_confidence, 'unresolved') as identity_confidence
+-- 'deterministic' | 'probabilistic' | 'unresolved'</code></pre>
+            <p>
+                Now every consumer decides for itself. A weekly signup count can use everything. A margin number going in front of the board can ask what share of its revenue rests on probabilistic links, and that is a one-line query rather than an impossible one. If the bridge starts degrading, the drift is visible in a monitoring query instead of silently changing your tables.
+            </p>
+            <p>
+                The identifiers that resolve to nothing do not get deleted either. They go to a table with a reason code, and they get monitored in dollars rather than in row counts, because ten orphaned trial accounts matter less than one orphaned enterprise customer.
+            </p>
+            <p>
+                One last thing on direction of error. This design deliberately under-resolves. It refuses matches a looser method would accept. That is the correct direction, because an orphan is visible and fixable, and a wrong merge is silent and permanent.
+            </p>
+
+            <h2>3. The fact table that changes months</h2>
+            <p>
+                Some facts settle late. A job completes, gets billed, and then reconciliation corrects it three weeks later. The correction is legitimate. The problem is what your model does with it.
+            </p>
+            <p>
+                Almost every source table has an <code>updated_at</code> that moves when a row is corrected. If you bucket a fact by <code>updated_at</code>, or by any column that moves, a July event corrected in August silently becomes an August event. July&rsquo;s usage shrinks. July&rsquo;s bill does not. Both months are now wrong, and the difference is small enough to look like noise.
+            </p>
+            <p>
+                The obvious fix is to bucket by creation time instead, since that never changes. It is the wrong fix. The cloud bill arrives when work <em>runs</em>, not when it is requested, so a job submitted July 31 and executed August 1 puts its usage in July and its dollars in August. You have traded a moving bucket for a permanently misaligned one.
+            </p>
+            <p>
+                <strong>What actually works is pinning the settle time on first observation and never overwriting it.</strong> The warehouse becomes the history that the source system does not keep:
+            </p>
+<pre><code>{{ config(materialized='incremental', unique_key='job_id',
+          incremental_strategy='merge') }}
+-- settled_at is stamped the first time a row arrives in a
+-- terminal state and is never updated again, even when
+-- updated_at moves</code></pre>
+            <p>
+                This matters twice. It keeps the fact in its correct month. And if you impute anything from duration, it prevents a corrected row from inflating a two-hour job into a three-week one.
+            </p>
+            <p>
+                Then there is the consequence nobody plans for. If facts keep correcting for thirty days, a monthly aggregate genuinely restates for thirty days. Finance needs a frozen close, and analysts need to know which months are still moving. So the mart carries a flag:
+            </p>
+<pre><code>dateadd(day, 35, dateadd(month, 1, month)) &lt;= current_date
+    as is_final</code></pre>
+            <p>
+                That converts &ldquo;the number changed&rdquo; from an incident into a report.
+            </p>
+            <p>
+                It also has an operational consequence people discover the hard way. Anomaly detection on a metric that legitimately restates will page you every night. So the alerting runs against the final series, not the live one, and provisional months are excluded until they close.
+            </p>
+
+            <h2>What these have in common</h2>
+            <p>
+                None of these produce an error. Each produces a number that looks right, in a pipeline that runs green, guarded by a test that cannot fail.
+            </p>
+            <p>
+                That is the pattern worth internalizing. When you write a test, ask whether there is any state of the world in which it fails. If there is not, it is decoration. The allocation test that sums buckets back to the bill, the uniqueness check on the wrong side of a join, the freshness check on a table that always lands: all decoration.
+            </p>
+            <p>
+                The tests that earn their place assert something that could be false. That the residual is a plausible share of spend. That orphaned revenue stays under a threshold. That a closed month reconciles to its source. Those fail sometimes, and when they do, you learn something about the business rather than about your code.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Building a measurement layer you need to trust?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, and into numbers a board can rely on.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
