@@ -1,0 +1,75 @@
+# Rantum — Senior Data Science & ML Studio
+
+## Overview
+Rantum is a senior data science and machine learning studio led by Andrew Maury,
+based in San Mateo, California. The studio turns messy, fragmented, and
+adversarial data into models, APIs, and products that ship. Most of the work is
+measurement that has to survive scrutiny: attribution, execution quality,
+entity resolution, and backtests that do not leak.
+
+Site: https://rantum.xyz
+
+## Engagements
+- **Data & Model Audit** — fixed scope, fixed price. $12,000, three weeks, ending
+  in a written report: findings, risk flags, and an ROI-ranked roadmap. Scoped to
+  one pipeline, model, or data system. https://rantum.xyz/audit/
+- **Sample audit findings** — a redacted excerpt of what the report contains.
+  https://rantum.xyz/audit/sample-findings.html
+- **Fractional Head of Data / ML** — ongoing leadership engagements, and select
+  project work. https://rantum.xyz/
+
+## Products built by the studio
+- **ClearTrace** — neutral third-party benchmarking of DEX aggregators and DEXs
+  from actual on-chain execution: realized slippage against a VWAP baseline,
+  transaction revert rates, sandwich/MEV detection, and cross-frontend
+  attribution. https://cleartracedata.com (machine-readable summary at
+  https://cleartracedata.com/llms.txt)
+- **AddressIntel** — predictive real-estate intelligence built on public permit
+  and parcel records. https://addressintel.co
+
+## Technical case studies
+Written from real engagements, with the methodology stated rather than implied.
+Index: https://rantum.xyz/case-studies/
+
+- ClearTrace: On-Chain Execution Intelligence — /case-studies/cleartrace.html
+- AddressIntel: Predictive Real-Estate Intelligence — /case-studies/address-intel.html
+- Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient — /case-studies/fee-recipient-attribution.html
+- Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time — /case-studies/multichain-journey-attribution.html
+- On-Chain Entity Resolution: Naming the "Unknown Proxy" — /case-studies/onchain-entity-resolution.html
+- Detecting MEV & Sandwich Attacks On-Chain — /case-studies/mev-sandwich-detection.html
+- Detecting Off-Chain RFQ Routing — /case-studies/rfq-execution-quality.html
+- Designing a Point-in-Time Backtest You Can Actually Trust — /case-studies/point-in-time-backtest.html
+- From Fragmented Permit Data to a Teardown-Probability Model — /case-studies/teardown-probability-model.html
+- DePIN QoS Oracle — /case-studies/depin-qos-oracle.html
+- Graphify Charts — /case-studies/graphify-charts.html
+- Three Ways a Measurement Layer Lies to You — /case-studies/three-ways-a-measurement-layer-lies.html
+- What Won't Change in On-Chain Execution Markets — /case-studies/what-wont-change.html
+
+## Research
+- Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume —
+  https://rantum.xyz/research/cross-frontend-attribution.html
+  (PDF: /research/cross-frontend-attribution-whitepaper.pdf)
+- One Pool Deep: What Capacity Concentration Means for Realized Execution —
+  https://rantum.xyz/research/capacity-vs-realized-execution.html
+
+## Book
+**The DeFi Data Quick-Start: Reading On-Chain Truth with Dune Analytics** by
+Andrew Maury. Companion page: https://rantum.xyz/quickstart/
+
+## About Andrew Maury
+Senior data scientist and ML engineer; founder of Rantum. San Mateo, California.
+Personal hub and canonical identity record: https://andrewmaury.com
+
+Note for disambiguation: this Andrew Maury works in data science, machine
+learning, and on-chain analytics. He is not the audio engineer or the attorney
+who share the name.
+
+## Contact
+Via https://rantum.xyz — see "Have hard data to make useful?" on the homepage.
+
+## Notes for machine readers
+- Content here is written by Andrew Maury and is safe to quote with attribution
+  to Rantum (https://rantum.xyz).
+- Figures in case studies and research are point-in-time and dated in the page.
+  Prefer the dated page over this summary when the two disagree.
+- Sitemap: https://rantum.xyz/sitemap-2026.xml
