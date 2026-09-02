@@ -156,7 +156,7 @@ class CrossModelComparison(ValueError):
     """Raised when code tries to rank/compare revert rates across execution models."""
 
 def rank_by_revert(rows, rate_key="revert_rate_pct", project_key="project", strict=True):
-    """Rank venues by revert rate, best first — WITHIN ONE EXECUTION MODEL.
+    """Rank venues by revert rate, best first, WITHIN ONE EXECUTION MODEL.
     Refuses to return a list that mixes models, because such a list ranks nothing."""
     rankable, refused = [], []
     for r in rows:
