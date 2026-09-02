@@ -149,7 +149,13 @@ slot0().tick              =          -75,180   -- chosen at initialization
 price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code></pre>
 
             <p>
-                A Uniswap V3 pool can be initialized at any price its creator chooses, because the price is a tick, not a consequence of deposited capital. Set the tick, deposit an enormous quantity of a token you minted for free, and add a rounding error of real WETH. DexScreener values those reserves at the pool's spot price and reports the product as liquidity:
+                A Uniswap V3 pool is initialized at whatever price its creator chooses, because that price is a tick rather than a consequence of deposited capital. A V3 position is then defined by a price <em>range</em>, and that is the part that does the work here.</p>
+            <p>
+                The Mint event for this pool provides liquidity across the range <code>[-75180, 887220]</code>. The lower bound is exactly the initialization tick, the price the pool still sits at today. The upper bound, 887220, is the highest tick the 0.3% fee tier permits, so the range runs from the chosen price to effectively infinite price. When the price sits at the very bottom of a range, the position is denominated entirely in token0 and requires none of token1 at all.</p>
+            <p>
+                So the deposit was <strong>2,506,024,276 minted tokens and 0.000000000 WETH</strong>. Not a rounding error of WETH. None. The same structure appears on the CRV, SHIB and COMP pools, each opened with a single-sided position and zero WETH. The 0.000739 WETH sitting in this pool today did not come from the deployer; it is the accumulated dust of the daily cron buying its own token, a few thousandths of a cent at a time.</p>
+            <p>
+                DexScreener values those reserves at the pool's spot price and reports the product as liquidity:
             </p>
             <p>
                 <strong>2,506,024,274 tokens &times; $1.31 = $3,286,019,931 of "liquidity."</strong>
@@ -226,7 +232,7 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
                 The two deployer accounts were not deanonymised, and were not linked to a common funding source in this pass. The <code>MintBurnTeamToken</code> label comes from public contract metadata and was not independently source-verified. The fourteen contracts came from sampling twenty blue-chip tickers, so the fleet is at least fourteen and the true size is unknown.
             </p>
             <p>
-                The pool's liquidity position was not fully characterised. <code>liquidity()</code> is non-zero at the current tick, so the price sits inside an active range, and the reserves are almost entirely the minted token. The exact tick bounds of the position were not retrieved, so this piece does not claim the position is single-sided or out of range.</p>
+                The two deployer accounts were not linked to a common funding source, and the fleet is at least fourteen contracts from a twenty-ticker sample rather than a complete enumeration.</p>
             <p>
                 Every number above was read directly from Ethereum mainnet via <code>eth_getCode</code>, <code>eth_call</code>, pool state and swap logs, or from the public DexScreener and Blockscout APIs, on 2026-09-01 and 2026-09-02. Prices move and pools can be removed; the measurements are timestamped for that reason.
             </p>
