@@ -189,7 +189,7 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
             </div>
 
             <p>
-                Those six pools alone account for <strong>$4,492,017,667</strong> of reported liquidity. All six were created between 24 February and 8 March 2026, and all six were still live, still listed, and still returned by ticker search on 1 September 2026 &mdash; more than six months later.
+                Those six pools alone account for <strong>$4,492,017,667</strong> of reported liquidity. All six were created between 24 February and 8 March 2026, and all six were still live, still listed, and still returned by ticker search on 1 September 2026, more than six months later.
             </p>
 
             <h3>Where the exposure is, and where it isn't</h3>
@@ -205,13 +205,13 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
                 <strong>The chain key is not optional.</strong> Keying on ticker alone flags every legitimately bridged token as an impersonator. The same real PEPE appears on seven chains; the same real CRV on six. A ticker-only check would have called all of them fraudulent on day one.
             </p>
             <p>
-                <strong>Sources are ranked, not pooled.</strong> Curated lists (Uniswap Labs Default, 1inch) decide the canonical address. A permissive source (CoinGecko), which lists essentially every token with a market page, gets no vote &mdash; it only reports how many <em>other</em> projects claim the same ticker on that chain. Treating all sources as equal peers deletes the tickers that matter most: PEPE, SHIB, UNI and APE all vanish, because a permissive list carries "Pepe King Prawn" and "El Sapo Pepe" alongside the real thing. Their presence is not evidence that real PEPE is ambiguous.
+                <strong>Sources are ranked, not pooled.</strong> Curated lists (Uniswap Labs Default, 1inch) decide the canonical address. A permissive source (CoinGecko), which lists essentially every token with a market page, gets no vote on the address. It only reports how many <em>other</em> projects claim the same ticker on that chain. Treating all sources as equal peers deletes the tickers that matter most: PEPE, SHIB, UNI and APE all vanish, because a permissive list carries "Pepe King Prawn" and "El Sapo Pepe" alongside the real thing. Their presence is not evidence that real PEPE is ambiguous.
             </p>
             <p>
                 That second signal then gates the accusation. A red "not the canonical contract" verdict is only issued when every source agrees the ticker has exactly one claimant on that chain. Where a ticker has several legitimate claimants, the verdict degrades to "more than one project uses this ticker, check the address yourself."
             </p>
             <p>
-                That gate exists because the first version did not have it and was wrong twice on a single page. It flagged Milady Cult Coin &mdash; its own project, several million in liquidity, trading since December 2024 &mdash; for not being Cult DAO. It flagged the wojak token doing $202k a day for not being the Wojak Coin doing $5.5k a day, calling the more actively traded asset the fake. Neither was impersonating anything. Both tickers simply have two real claimants, and "the canonical holder of a ticker" is a curator's assignment rather than a fact. A measurement layer that cannot tell those two situations apart should not be issuing verdicts on either.
+                That gate exists because the first version did not have it and was wrong twice on a single page. It flagged Milady Cult Coin, its own project with several million in liquidity and trading since December 2024, for not being Cult DAO. It flagged the wojak token doing $202k a day for not being the Wojak Coin doing $5.5k a day, calling the more actively traded asset the fake. Neither was impersonating anything. Both tickers simply have two real claimants, and "the canonical holder of a ticker" is a curator's assignment rather than a fact. A measurement layer that cannot tell those two situations apart should not be issuing verdicts on either.
             </p>
 
             <h2>What This Does Not Show</h2>
