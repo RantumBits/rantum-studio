@@ -31,7 +31,7 @@ Site: https://rantum.xyz
 Written from real engagements, with the methodology stated rather than implied.
 Index: https://rantum.xyz/case-studies/
 
-- The Liquidity Mirage: $3.28B of Reported Liquidity Backed by $1.78 — /case-studies/liquidity-mirage.html
+- The Liquidity Mirage: $3.28B of Reported Liquidity Backed by 0.0007 ETH — /case-studies/liquidity-mirage.html
 - ClearTrace: On-Chain Execution Intelligence — /case-studies/cleartrace.html
 - AddressIntel: Predictive Real-Estate Intelligence — /case-studies/address-intel.html
 - Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient — /case-studies/fee-recipient-attribution.html

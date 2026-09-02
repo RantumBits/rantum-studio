@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Liquidity Mirage: $3.28B Backed by $1.78 | Rantum Studio</title>
-    <meta name="description" content="Fourteen impersonator tokens on Ethereum mainnet, one shared bytecode, two deployers, and $3.28 billion of reported liquidity backed by $1.78 of real assets, listed for six months.">
-    <meta property="og:title" content="The Liquidity Mirage: $3.28B Backed by $1.78 | Rantum Studio">
-    <meta property="og:description" content="How a Uniswap V3 initialization tick turns $1.78 into a $3.28 billion liquidity listing, and how to detect the fleet doing it at scale.">
+    <title>The Liquidity Mirage: $3.28B Backed by 0.0007 ETH | Rantum Studio</title>
+    <meta name="description" content="Fourteen impersonator tokens on Ethereum mainnet, one shared bytecode, two deployers, and $3.28 billion of reported liquidity backed by 0.000739 WETH of real assets, listed on DexScreener for six months.">
+    <meta property="og:title" content="The Liquidity Mirage: $3.28B Backed by 0.0007 ETH | Rantum Studio">
+    <meta property="og:description" content="How a Uniswap V3 initialization tick turns 0.000739 WETH into a $3.28 billion liquidity listing on DexScreener, and how to detect the fleet doing it at scale.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -31,7 +31,7 @@
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "The Liquidity Mirage: $3.28B of Reported Liquidity, Backed by $1.78",
+      "headline": "The Liquidity Mirage: $3.28B of Reported Liquidity, Backed by 0.0007 ETH",
       "author": {
         "@type": "Person",
         "name": "Andrew Maury"
@@ -75,7 +75,7 @@
                 The Liquidity Mirage
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                Fourteen impersonator tokens on Ethereum mainnet, one shared bytecode, two deployers, and $3.28 billion of reported liquidity backed by $1.78 of real assets. Listed and searchable for six months.
+                Fourteen impersonator tokens on Ethereum mainnet, one shared bytecode, two deployers, and $3.28 billion of reported liquidity backed by 0.000739 WETH of real assets. Listed and searchable on DexScreener for six months.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -98,8 +98,8 @@
                 <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Contracts, one bytecode</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">$1.78</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Real backing</div>
+                <div class="text-2xl font-bold text-white font-mono">0.0007<span class="text-base text-gray-500"> ETH</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Real backing (~$1.78)</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">6<span class="text-base text-gray-500"> mo</span></div>
@@ -123,7 +123,7 @@
 
             <h2>What We Found</h2>
             <p>
-                Searching a handful of blue-chip tickers on an uncurated aggregator returned rows that looked like ordinary duplicates. They were not. Fourteen contracts on Ethereum mainnet impersonate eleven well-known tokens, and they are one operation rather than fourteen coincidences.
+                Searching a handful of blue-chip tickers on DexScreener returned rows that looked like ordinary duplicates. They were not. Fourteen contracts on Ethereum mainnet impersonate eleven well-known tokens, and they are one operation rather than fourteen coincidences.
             </p>
 
             <h3>One bytecode, two deployers</h3>
@@ -131,7 +131,7 @@
                 Every one of the fourteen returns the <strong>same 5,150-byte runtime bytecode</strong>, SHA-256 prefix <code>7ff6feb2ee87face</code>. The tokens they impersonate do not resemble each other at all: real DAI is 7,904 bytes, CRV 4,369, COMP 6,795, PEPE 4,517, each distinct. Identical bytecode across fourteen supposedly unrelated tokens is a deployment fingerprint, not a coincidence.
             </p>
             <p>
-                Public contract metadata names the source <code>MintBurnTeamToken</code>, an off-the-shelf mintable template, and attributes all fourteen to just two externally-owned accounts, split eight and six. No creation transaction is indexed for any of them, which is consistent with factory deployment instead of direct creation.
+                Blockscout's contract metadata names the source <code>MintBurnTeamToken</code>, an off-the-shelf mintable template, and attributes all fourteen to just two externally-owned accounts, split eight and six. No creation transaction is indexed for any of them, which is consistent with factory deployment instead of direct creation.
             </p>
             <p>
                 The tickers spoofed: DAI, CRV, APE, SHIB and LDO twice each, plus COMP, ENS, GRT and SNX.
@@ -149,13 +149,13 @@ slot0().tick              =          -75,180   -- chosen at initialization
 price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code></pre>
 
             <p>
-                A Uniswap V3 pool can be initialized at any price its creator chooses, because the price is a tick, not a consequence of deposited capital. Set the tick, deposit an enormous quantity of a token you minted for free, and add a rounding error of real WETH. An indexer that values the reserves at the pool's spot price then reports the product as liquidity:
+                A Uniswap V3 pool can be initialized at any price its creator chooses, because the price is a tick, not a consequence of deposited capital. Set the tick, deposit an enormous quantity of a token you minted for free, and add a rounding error of real WETH. DexScreener values those reserves at the pool's spot price and reports the product as liquidity:
             </p>
             <p>
                 <strong>2,506,024,274 tokens &times; $1.31 = $3,286,019,931 of "liquidity."</strong>
             </p>
             <p class="text-sm text-gray-500">
-                The displayed price rounds to $1.31; reproducing the indexer's total to the dollar takes the unrounded $1.3112. The rounding is worth $3.1 million on its own, which is a decent illustration of the scale being discussed.
+                The displayed price rounds to $1.31; reproducing DexScreener's total to the dollar takes the unrounded $1.3112. The rounding is worth $3.1 million on its own, which is a decent illustration of the scale being discussed.
             </p>
             <p>
                 The actual withdrawable value of everything real in that pool is 0.000739 WETH, which at $2,410.77/ETH is <strong>$1.78</strong>. The reported figure exceeds the real one by a factor of roughly 1.8 billion to one. Nothing here is a bug in the arithmetic; the arithmetic is correct on inputs that were manufactured.
@@ -194,7 +194,7 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
 
             <h3>Where the exposure is, and where it isn't</h3>
             <p>
-                This is not evenly distributed across venues, and it would be sloppy to imply it is. A live token-picker search for CRV on a curated DEX front end returns six genuine Curve deployments across six chains, plus yCRV and cvxCRV, and <em>none</em> of the fleet. Curation works. The exposure sits on aggregators that index every pool by design, where comprehensiveness is the product and filtering is the user's problem.
+                This is not evenly distributed across venues, and it would be sloppy to imply it is. A live token-picker search for CRV in the Uniswap interface returns six genuine Curve deployments across six chains, plus yCRV and cvxCRV, and <em>none</em> of the fleet. Curation works. The exposure sits on aggregators like DexScreener that index every pool by design, where comprehensiveness is the product and filtering is left to the reader. That is a stated design choice and not an oversight, which is precisely why the filtering has to come from somewhere else.
             </p>
 
             <h2>How We Detect It</h2>
@@ -205,7 +205,7 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
                 <strong>The chain key is not optional.</strong> Keying on ticker alone flags every legitimately bridged token as an impersonator. The same real PEPE appears on seven chains; the same real CRV on six. A ticker-only check would have called all of them fraudulent on day one.
             </p>
             <p>
-                <strong>Sources are ranked, not pooled.</strong> Curated lists decide the canonical address. A permissive aggregator, which lists essentially every token with a market page, gets no vote &mdash; it only reports how many <em>other</em> projects claim the same ticker on that chain. Treating all sources as equal peers deletes the tickers that matter most: PEPE, SHIB, UNI and APE all vanish, because a permissive list carries "Pepe King Prawn" and "El Sapo Pepe" alongside the real thing. Their presence is not evidence that real PEPE is ambiguous.
+                <strong>Sources are ranked, not pooled.</strong> Curated lists (Uniswap Labs Default, 1inch) decide the canonical address. A permissive source (CoinGecko), which lists essentially every token with a market page, gets no vote &mdash; it only reports how many <em>other</em> projects claim the same ticker on that chain. Treating all sources as equal peers deletes the tickers that matter most: PEPE, SHIB, UNI and APE all vanish, because a permissive list carries "Pepe King Prawn" and "El Sapo Pepe" alongside the real thing. Their presence is not evidence that real PEPE is ambiguous.
             </p>
             <p>
                 That second signal then gates the accusation. A red "not the canonical contract" verdict is only issued when every source agrees the ticker has exactly one claimant on that chain. Where a ticker has several legitimate claimants, the verdict degrades to "more than one project uses this ticker, check the address yourself."
@@ -222,7 +222,7 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
                 The two deployer accounts were not deanonymised, and were not linked to a common funding source in this pass. The <code>MintBurnTeamToken</code> label comes from public contract metadata and was not independently source-verified. The fourteen contracts came from sampling twenty blue-chip tickers, so the fleet is at least fourteen and the true size is unknown.
             </p>
             <p>
-                Every number above was read directly from Ethereum mainnet via <code>eth_getCode</code>, <code>eth_call</code> and pool state, or from a public indexer API, on 2026-09-01. Prices move and pools can be removed; the measurements are timestamped for that reason.
+                Every number above was read directly from Ethereum mainnet via <code>eth_getCode</code>, <code>eth_call</code> and pool state, or from the public DexScreener and Blockscout APIs, on 2026-09-01. Prices move and pools can be removed; the measurements are timestamped for that reason.
             </p>
 
             <h2>What It Proves to a Client</h2>
@@ -230,7 +230,7 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
                 That verification and indexing are different jobs, and that conflating them scales badly. An indexer that reports what a pool says about itself is not lying; it is faithfully reporting manufactured inputs. The gap between "reported" and "real" is where the work is, and closing it takes the same discipline as the rest of the <a href="mev-sandwich-detection.html">execution-quality</a> and <a href="fee-recipient-attribution.html">attribution</a> work in this studio: read the underlying state directly, key your joins on identifiers rather than labels, and be willing to return "I don't know" instead of a confident wrong answer.
             </p>
             <p>
-                Fabrication is getting cheaper. $1.78 bought a $3.28 billion listing that survived six months in a major discovery surface. Independent verification gets more valuable in exact proportion.
+                Fabrication is getting cheaper. Seven ten-thousandths of an ETH bought a $3.28 billion listing that survived six months on a major discovery surface. Independent verification gets more valuable in exact proportion.
             </p>
 
         </article>
