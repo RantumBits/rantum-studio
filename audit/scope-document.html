@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Scope Document: Data &amp; Model Audit | Rantum Studio</title>
+    <meta name="description" content="The scope document behind Rantum's $12,000 Data & Model Audit, published in full: what counts as a qualified finding, the severity rubric, the five-finding commitment, and the four grounds a client may reject on.">
+    <meta property="og:title" content="The Scope Document: Data &amp; Model Audit | Rantum Studio">
+    <meta property="og:description" content="The acceptance test for a fixed-scope audit, published before the engagement rather than argued after it: four qualification tests, a severity rubric, a five-finding commitment, and a closed list of rejection grounds.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/audit/scope-document.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/audit/scope-document.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-10Z6J5BWD0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-10Z6J5BWD0');
+    </script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to the Audit
+        </a>
+        <a href="mailto:andrew@andrewmaury.com?subject=Data%20%26%20Model%20Audit" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Scope an audit &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Header -->
+        <header class="mb-12">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Template</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Fixed before week one</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                The Scope Document
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed">
+                The <a href="index.html" class="text-purple-400 hover:text-purple-300 border-b border-purple-500/30 hover:border-purple-400 transition-all">Data &amp; Model Audit</a> is sold against an acceptance test, not a vibe. This is that test, published in full so you can read it before you talk to us rather than after we disagree. Bracketed fields are filled per engagement. Everything else is the same for every client.
+            </p>
+        </header>
+
+        <!-- Meta block -->
+        <div class="glass-panel rounded-2xl p-6 mb-16 font-mono text-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                <div><span class="text-gray-400">Fee:</span> <span class="text-white">$12,000, fixed</span></div>
+                <div><span class="text-gray-400">Term:</span> <span class="text-white">3 weeks to report</span></div>
+                <div><span class="text-gray-400">Findings committed:</span> <span class="text-white">5 qualified</span></div>
+                <div><span class="text-gray-400">Rejection window:</span> <span class="text-white">10 business days</span></div>
+            </div>
+        </div>
+
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <p>
+                This document sets the scope of the engagement and the standard the work is measured against. Both are fixed as of the start date. Neither side may change them while the engagement runs.
+            </p>
+
+            <h2>1. The system under audit</h2>
+            <p>
+                The audit covers one system, named in the signed copy: what it does, where its code lives, which datastores and pipelines it reads and writes, and which outputs depend on it. Named precisely enough that a third party could tell whether a given component is inside or outside the boundary.
+            </p>
+            <p>
+                Anything not named there is out of scope. If the work uncovers a defect in an adjacent system, we tell you it exists, in writing. It does not count as a delivered finding and we do not investigate it under this engagement.
+            </p>
+
+            <h2>2. What you receive</h2>
+            <ul>
+                <li>A data lineage map of the named system, produced in week one.</li>
+                <li>A written report of findings, each meeting the standard in section 3, each rated under section 4, each carrying the evidence in section 7.</li>
+                <li>An ROI-ranked roadmap: what to fix, in what order, and what each fix protects or earns.</li>
+                <li>A walkthrough call on delivery.</li>
+            </ul>
+            <p>
+                The report is yours to keep, use, and act on, whether or not we work together afterward.
+            </p>
+
+            <h2>3. What counts as a qualified finding</h2>
+            <p>
+                A finding counts toward the commitment in section 5 only if it passes all four tests:
+            </p>
+            <ul>
+                <li><strong>In scope.</strong> It concerns the system named in section 1.</li>
+                <li><strong>Reproducible.</strong> You can re-run it yourself, against your own data, and get the same result. Evidence that cannot be re-run is not a finding.</li>
+                <li><strong>Consequential.</strong> It names what the defect costs you: a number that cannot be re-derived, a claim the data does not support, a failure your monitoring will not catch. Preferences about how we would have built it are not findings.</li>
+                <li><strong>Actionable.</strong> It carries a severity rating under section 4 and a specific recommended fix, positioned in the roadmap.</li>
+            </ul>
+
+            <h2>4. Severity rubric</h2>
+            <p>
+                Severity describes consequence, not how hard the fix is. A defect that takes an hour to correct can be High. A rewrite can be Low.
+            </p>
+        </article>
+
+        <!-- Severity rubric -->
+        <div class="glass-panel rounded-2xl overflow-hidden my-8">
+            <table class="w-full text-sm text-left">
+                <thead>
+                    <tr class="border-b border-gray-800 font-mono text-xs uppercase tracking-widest text-gray-400">
+                        <th class="px-6 py-4">Rating</th>
+                        <th class="px-6 py-4">Any one of</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-300">
+                    <tr class="border-b border-gray-800/50" style="vertical-align: top">
+                        <td class="px-6 py-4"><span class="text-xs font-mono px-2 py-1 rounded bg-red-900/30 text-red-400 border border-red-500/30">HIGH</span></td>
+                        <td class="px-6 py-4">
+                            A number already shown to a customer, an investor, a regulator, or a counterparty is wrong, or cannot be supported by the underlying data.<br><br>
+                            The system produces a materially wrong output under conditions that occur in normal operation.<br><br>
+                            A control that is relied on (a check, a reconciliation job, an alert) does not do what it is believed to do.
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-800/50" style="vertical-align: top">
+                        <td class="px-6 py-4"><span class="text-xs font-mono px-2 py-1 rounded bg-amber-900/20 text-amber-400/80 border border-amber-500/20">MEDIUM</span></td>
+                        <td class="px-6 py-4">
+                            A number used internally for decisions is wrong or unsupportable, but has not left the company.<br><br>
+                            A defect produces wrong output only under conditions that are possible but not routine.<br><br>
+                            A failure mode is currently undetectable: it has not occurred, and nothing in place would catch it if it did.
+                        </td>
+                    </tr>
+                    <tr style="vertical-align: top">
+                        <td class="px-6 py-4"><span class="text-xs font-mono px-2 py-1 rounded bg-gray-800/60 text-gray-300 border border-gray-700">LOW</span></td>
+                        <td class="px-6 py-4">
+                            The output is correct today, but the practice that produced it will not stay correct: no point-in-time discipline, an undocumented assumption, a silent dependency.<br><br>
+                            Correctness is not at issue. Cost, latency, or maintainability is.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+            <p>
+                Rantum assigns severity against this rubric. The rubric does not change during the engagement. Disagreement about a rating is not one of the rejection grounds in section 8: if you disagree with a rating, tell us in writing and your objection is appended to the finding in the delivered report, unedited.
+            </p>
+
+            <h2>5. How many findings</h2>
+            <p>
+                <strong>This engagement commits to five qualified findings.</strong>
+            </p>
+            <p>
+                A clean system is a real result and we will not manufacture findings to reach a number. If fewer than five qualified findings are delivered, you choose one: a <strong>$3,000 rebate</strong>, or a <strong>fourth week</strong> against a second system you name, at no additional fee. That remedy exists so that padding the report is never the cheaper option for us.
+            </p>
+            <p>
+                Findings beyond the fifth are delivered at no additional cost. There is no cap.
+            </p>
+
+            <h2>6. What we will not do to reach the number</h2>
+            <p>
+                Splitting one defect into several findings, reporting the same root cause in several places, and reporting known-good behavior as a risk all fail section 3 and do not count. If you believe a finding was manufactured this way, ground 1 in section 8 is what to reject it on.
+            </p>
+
+            <h2>7. Evidence each finding carries</h2>
+            <ul>
+                <li>The query, script, or check that produces it, runnable by your team.</li>
+                <li>The output of that run, dated.</li>
+                <li>The exact input it ran against: table, snapshot, date range.</li>
+                <li>What a passing result looks like, so your team can verify the fix without us.</li>
+            </ul>
+
+            <h2>8. Rejecting a finding</h2>
+            <p>
+                You may reject a finding in writing within <strong>ten business days</strong> of report delivery, on these grounds and only these:
+            </p>
+            <ul>
+                <li><strong>Out of scope.</strong> It concerns a system other than the one named in section 1.</li>
+                <li><strong>Not reproducible.</strong> You run the supplied evidence against the named input and do not get the reported result.</li>
+                <li><strong>Wrong.</strong> The system does not behave as described, and you can show it.</li>
+                <li><strong>Already documented.</strong> It was recorded in your issue tracker or your documentation before the start date, and you can link it.</li>
+            </ul>
+            <p>
+                A rejected finding does not count toward the five, and we replace it at no charge within ten business days.
+            </p>
+            <p>
+                <strong>That list is exhaustive.</strong> A finding cannot be rejected for being unwelcome, for confirming something you had suspected but never written down, or for reaching a conclusion you would rather it did not. The criteria in sections 3, 4 and 8 are set before the work starts and do not move while it runs: we cannot loosen them to inflate the count, and they cannot be tightened to shrink it.
+            </p>
+
+            <h2>9. Access and dependencies</h2>
+            <p>
+                The three-week schedule assumes these are in place on the start date: read access to the source repositories and to the datastores the system reads and writes (production or a faithful replica), access to existing documentation, dashboards and monitoring, and a named technical contact who can answer questions within one business day.
+            </p>
+            <p>
+                Each business day any of those is outstanding after the start date moves the delivery date by one business day. Nothing else changes: the fee, the scope, and the commitment in section 5 all stand. If access is still outstanding ten business days after the start date, either side may pause the engagement and we agree a new start date in writing.
+            </p>
+            <p>
+                We do not require write access to production.
+            </p>
+
+            <h2>10. Out of scope</h2>
+            <p>
+                Systems other than the one named in section 1. Implementing the fixes we recommend, which is a separate engagement this one carries no obligation toward. Security or penetration testing. Legal or regulatory opinions. Ongoing monitoring after delivery.
+            </p>
+
+            <h2>11. Confidentiality</h2>
+            <p>
+                Your code, your data, and the findings are yours and are treated as confidential. We will not name you as a client, quote any figure from your system, or publish anything identifying the engagement without your written permission.
+            </p>
+            <p>
+                We may reuse generalized, non-identifying lessons: a class of defect, a method, a category of failure, with the client, the product, the sector detail, and all figures removed. If you would prefer we not do even that, the signed copy has a box to say so.
+            </p>
+
+            <h2>12. Fee and payment</h2>
+            <p>
+                $12,000, fixed, covering everything in section 2. There are no hourly overages, and no additional charge for findings beyond the fifth.
+            </p>
+            <p>
+                50% on signature, 50% on delivery of the report. Any rebate owed under section 5 is netted against the final payment, which at these terms always covers it.
+            </p>
+
+        </article>
+
+        <!-- Sample report link -->
+        <a href="sample-findings.html" class="block glass-panel p-8 rounded-2xl mt-16 hover:border-purple-500/30 transition-all duration-300 group cursor-pointer border-purple-900/30">
+            <div class="flex justify-between items-start mb-3">
+                <h3 class="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">What a finding looks like in practice</h3>
+                <svg class="w-5 h-5 text-gray-600 group-hover:text-purple-400 transform group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </div>
+            <p class="text-sm text-gray-400 leading-relaxed">Three severity-rated findings from the standing internal audit of ClearTrace, our own live data product, in the format above.</p>
+        </a>
+
+        <!-- Call to Action -->
+        <section class="mt-8 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Questions about a clause?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Better asked now than argued in week three. Tell us which system you would point this at and we will send the scoped version.</p>
+            <a href="mailto:andrew@andrewmaury.com?subject=Data%20%26%20Model%20Audit%20scope%20document" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Scope an audit
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="../case-studies/" class="hover:text-white transition-colors">Case Studies</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
