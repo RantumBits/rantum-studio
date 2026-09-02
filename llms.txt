@@ -15,6 +15,10 @@ Site: https://rantum.xyz
   one pipeline, model, or data system. https://rantum.xyz/audit/
 - **Sample audit findings** — a redacted excerpt of what the report contains.
   https://rantum.xyz/audit/sample-findings.html
+- **Audit scope document**: the acceptance test in full. What counts as a
+  qualified finding, the severity rubric, the five-finding commitment, and the
+  four grounds a client may reject a finding on.
+  https://rantum.xyz/audit/scope-document.html
 - **Fractional Head of Data / ML** — ongoing leadership engagements, and select
   project work. https://rantum.xyz/
 
