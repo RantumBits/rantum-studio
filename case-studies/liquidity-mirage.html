@@ -163,7 +163,11 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
 
             <h3>The fingerprint repeats, exactly</h3>
             <p>
-                What makes this tractable to detect is that the operation did not vary its parameters. Every one of the six pools sampled shows the same signature: a large reported liquidity, one cent of reported 24-hour volume, and precisely one buy and zero sells. Those figures are not moving. Re-read 24 hours later, on 2026-09-02, all six returned identical values to the dollar, with six-hour activity at zero. The pools are inert, and the reported liquidity persists regardless.
+                What makes this tractable to detect is that the operation did not vary its parameters. Every one of the six pools sampled shows the same signature: a large reported liquidity, one cent of reported 24-hour volume, and precisely one buy and zero sells. Re-read 24 hours later, on 2026-09-02, all six returned identical figures.</p>
+            <p>
+                That is not neglect. It is a schedule. The fake DAI pool's full swap history is 103 trades between 24 February and 2 September 2026, and in the last sixty days it traded on <strong>forty out of sixty days, thirty-seven of them between 04:00 and 04:59 UTC</strong>. The other three sampled pools cluster in the same window. Each trade is dust: roughly 0.012 of the fake token out for about 0.0000066 WETH in, about one and a half cents.</p>
+            <p>
+                So the "one buy, $0.01 of volume" reading is not a stale cache and not a dead pool. It is a daily cron job buying a fraction of a cent of its own token, which is exactly enough to keep the pair looking traded to an indexer that sorts on recent activity. The listing is maintained.
             </p>
 
             <div class="not-prose my-8 overflow-x-auto">
@@ -222,7 +226,9 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
                 The two deployer accounts were not deanonymised, and were not linked to a common funding source in this pass. The <code>MintBurnTeamToken</code> label comes from public contract metadata and was not independently source-verified. The fourteen contracts came from sampling twenty blue-chip tickers, so the fleet is at least fourteen and the true size is unknown.
             </p>
             <p>
-                Every number above was read directly from Ethereum mainnet via <code>eth_getCode</code>, <code>eth_call</code> and pool state, or from the public DexScreener and Blockscout APIs, on 2026-09-01. Prices move and pools can be removed; the measurements are timestamped for that reason.
+                The pool's liquidity position was not fully characterised. <code>liquidity()</code> is non-zero at the current tick, so the price sits inside an active range, and the reserves are almost entirely the minted token. The exact tick bounds of the position were not retrieved, so this piece does not claim the position is single-sided or out of range.</p>
+            <p>
+                Every number above was read directly from Ethereum mainnet via <code>eth_getCode</code>, <code>eth_call</code>, pool state and swap logs, or from the public DexScreener and Blockscout APIs, on 2026-09-01 and 2026-09-02. Prices move and pools can be removed; the measurements are timestamped for that reason.
             </p>
 
             <h2>What It Proves to a Client</h2>
