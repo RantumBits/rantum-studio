@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Liquidity Mirage: $3.28B Backed by $1.78 | Rantum Studio</title>
+    <meta name="description" content="Fourteen impersonator tokens on Ethereum mainnet, one shared bytecode, two deployers, and $3.28 billion of reported liquidity backed by $1.78 of real assets, listed for six months.">
+    <meta property="og:title" content="The Liquidity Mirage: $3.28B Backed by $1.78 | Rantum Studio">
+    <meta property="og:description" content="How a Uniswap V3 initialization tick turns $1.78 into a $3.28 billion liquidity listing, and how to detect the fleet doing it at scale.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/liquidity-mirage.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/liquidity-mirage.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "The Liquidity Mirage: $3.28B of Reported Liquidity, Backed by $1.78",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live on-chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Token Integrity</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Data Engineering</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                The Liquidity Mirage
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                Fourteen impersonator tokens on Ethereum mainnet, one shared bytecode, two deployers, and $3.28 billion of reported liquidity backed by $1.78 of real assets. Listed and searchable for six months.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+                <span>&bull;</span>
+                <span>Measured 2026-09-01</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">14</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Contracts, one bytecode</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">$1.78</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Real backing</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">6<span class="text-base text-gray-500"> mo</span></div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Listed and unremoved</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                Token discovery surfaces have a verification problem that price feeds do not. A ticker is not an identifier. Anyone can deploy a contract whose <code>name()</code> returns "Dai Stablecoin" and whose <code>symbol()</code> returns "DAI", and nothing about the resulting row in a search result distinguishes it from the real one. The contract address does, but the address is exactly the field that gets truncated in every list view.
+            </p>
+            <p>
+                The usual answer is a scam blocklist, which is an unwinnable race: new contracts deploy faster than any list is maintained. The inverse works better, and it is the approach used here. Rather than enumerate what is fake, enumerate what is canonical, keyed on <code>(ticker, chainId)</code>, and treat a same-ticker, same-chain, different-address row as the thing worth flagging.
+            </p>
+            <p>
+                Building that check surfaced something more interesting than the check itself.
+            </p>
+
+            <h2>What We Found</h2>
+            <p>
+                Searching a handful of blue-chip tickers on an uncurated aggregator returned rows that looked like ordinary duplicates. They were not. Fourteen contracts on Ethereum mainnet impersonate eleven well-known tokens, and they are one operation rather than fourteen coincidences.
+            </p>
+
+            <h3>One bytecode, two deployers</h3>
+            <p>
+                Every one of the fourteen returns the <strong>same 5,150-byte runtime bytecode</strong>, SHA-256 prefix <code>7ff6feb2ee87face</code>. The tokens they impersonate do not resemble each other at all: real DAI is 7,904 bytes, CRV 4,369, COMP 6,795, PEPE 4,517, each distinct. Identical bytecode across fourteen supposedly unrelated tokens is a deployment fingerprint, not a coincidence.
+            </p>
+            <p>
+                Public contract metadata names the source <code>MintBurnTeamToken</code>, an off-the-shelf mintable template, and attributes all fourteen to just two externally-owned accounts, split eight and six. No creation transaction is indexed for any of them, which is consistent with factory deployment rather than direct creation.
+            </p>
+            <p>
+                The tickers spoofed: DAI, CRV, APE, SHIB and LDO twice each, plus COMP, ENS, GRT and SNX.
+            </p>
+
+            <h3>The mirage: $3.28 billion from an initialization tick</h3>
+            <p>
+                The interesting part is not the impersonation, which is cheap and common. It is the reported liquidity. Take the fake DAI pool, <code>0x90e6…5a87</code>, a Uniswap V3 pool at the 0.3% fee tier. Read its state directly:
+            </p>
+
+<pre><code class="language-sql">-- pool 0x90e6efc95d2fe69ababec75a050b9b2457175a87
+balanceOf(fakeDAI, pool)  = 2,506,024,274.84   -- worthless token
+balanceOf(WETH,    pool)  =         0.000739   -- the entire real backing
+slot0().tick              =          -75,180   -- chosen at initialization
+price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code></pre>
+
+            <p>
+                A Uniswap V3 pool can be initialized at any price its creator chooses, because the price is a tick, not a consequence of deposited capital. Set the tick, deposit an enormous quantity of a token you minted for free, and add a rounding error of real WETH. An indexer that values reserves at the pool's spot price then computes:
+            </p>
+            <p>
+                <strong>2,506,024,274 tokens &times; $1.31 = $3,282,891,800 of "liquidity."</strong>
+            </p>
+            <p>
+                The actual withdrawable value of everything real in that pool is 0.000739 WETH, which at $2,410.77/ETH is <strong>$1.78</strong>. The reported figure exceeds the real one by a factor of roughly 1.8 billion to one. Nothing here is a bug in the arithmetic; the arithmetic is correct on inputs that were manufactured.
+            </p>
+
+            <h3>The fingerprint repeats, exactly</h3>
+            <p>
+                What makes this tractable to detect is that the operation did not vary its parameters. Every pool sampled shows the same signature: a large reported liquidity, one cent of 24-hour volume, and precisely one buy and zero sells.
+            </p>
+
+            <div class="not-prose my-8 overflow-x-auto">
+                <table class="w-full text-sm font-mono border border-gray-800 rounded-lg overflow-hidden">
+                    <thead class="bg-black/40 text-gray-400">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Ticker spoofed</th>
+                            <th class="px-4 py-3 text-left">Pool created</th>
+                            <th class="px-4 py-3 text-right">Reported liquidity</th>
+                            <th class="px-4 py-3 text-right">24h volume</th>
+                            <th class="px-4 py-3 text-right">Buys / sells</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300 divide-y divide-gray-800">
+                        <tr><td class="px-4 py-3">DAI</td><td class="px-4 py-3">2026-02-24</td><td class="px-4 py-3 text-right">$3,286,019,931</td><td class="px-4 py-3 text-right">$0.01</td><td class="px-4 py-3 text-right">1 / 0</td></tr>
+                        <tr><td class="px-4 py-3">CRV</td><td class="px-4 py-3">2026-02-28</td><td class="px-4 py-3 text-right">$431,462,383</td><td class="px-4 py-3 text-right">$0.01</td><td class="px-4 py-3 text-right">1 / 0</td></tr>
+                        <tr><td class="px-4 py-3">ENS</td><td class="px-4 py-3">2026-03-07</td><td class="px-4 py-3 text-right">$389,657,165</td><td class="px-4 py-3 text-right">$0.01</td><td class="px-4 py-3 text-right">1 / 0</td></tr>
+                        <tr><td class="px-4 py-3">LDO</td><td class="px-4 py-3">2026-02-28</td><td class="px-4 py-3 text-right">$212,719,545</td><td class="px-4 py-3 text-right">$0.01</td><td class="px-4 py-3 text-right">1 / 0</td></tr>
+                        <tr><td class="px-4 py-3">COMP</td><td class="px-4 py-3">2026-03-08</td><td class="px-4 py-3 text-right">$130,141,448</td><td class="px-4 py-3 text-right">$0.01</td><td class="px-4 py-3 text-right">1 / 0</td></tr>
+                        <tr><td class="px-4 py-3">SHIB</td><td class="px-4 py-3">2026-03-08</td><td class="px-4 py-3 text-right">$42,017,195</td><td class="px-4 py-3 text-right">$0.01</td><td class="px-4 py-3 text-right">1 / 0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                Those six pools alone account for <strong>$4,492,017,667</strong> of reported liquidity. All six were created between 24 February and 8 March 2026, and all six were still live, still listed, and still returned by ticker search on 1 September 2026 &mdash; more than six months later.
+            </p>
+
+            <h3>Where the exposure is, and where it isn't</h3>
+            <p>
+                This is not evenly distributed across venues, and it would be sloppy to imply it is. A live token-picker search for CRV on a curated DEX front end returns six genuine Curve deployments across six chains, plus yCRV and cvxCRV, and <em>none</em> of the fleet. Curation works. The exposure sits on aggregators that index every pool by design, where comprehensiveness is the product and filtering is the user's problem.
+            </p>
+
+            <h2>How We Detect It</h2>
+            <p>
+                The detector is a canonical allowlist keyed on <code>(ticker, chainId)</code>, built from independently maintained token lists rather than hand-entered: <strong>2,289 tickers and 3,675 ticker-chain pairs</strong>. Two design decisions carry most of the weight.
+            </p>
+            <p>
+                <strong>The chain key is not optional.</strong> Keying on ticker alone flags every legitimately bridged token as an impersonator. The same real PEPE appears on seven chains; the same real CRV on six. A ticker-only check would have called all of them fraudulent on day one.
+            </p>
+            <p>
+                <strong>Sources are ranked, not pooled.</strong> Curated lists decide the canonical address. A permissive aggregator, which lists essentially every token with a market page, gets no vote &mdash; it only reports how many <em>other</em> projects claim the same ticker on that chain. Treating all sources as equal peers deletes the tickers that matter most: PEPE, SHIB, UNI and APE all vanish, because a permissive list carries "Pepe King Prawn" and "El Sapo Pepe" alongside the real thing. Their presence is not evidence that real PEPE is ambiguous.
+            </p>
+            <p>
+                That second signal then gates the accusation. A red "not the canonical contract" verdict is only issued when every source agrees the ticker has exactly one claimant on that chain. Where a ticker has several legitimate claimants, the verdict degrades to "more than one project uses this ticker, check the address yourself."
+            </p>
+            <p>
+                That gate exists because the first version did not have it and was wrong twice on a single page. It flagged Milady Cult Coin &mdash; its own project, several million in liquidity, trading since December 2024 &mdash; for not being Cult DAO. It flagged the wojak token doing $202k a day for not being the Wojak Coin doing $5.5k a day, calling the more actively traded asset the fake. Neither was impersonating anything. Both tickers simply have two real claimants, and "the canonical holder of a ticker" is a curator's assignment rather than a fact. A measurement layer that cannot tell those two situations apart should not be issuing verdicts on either.
+            </p>
+
+            <h2>What This Does Not Show</h2>
+            <p>
+                No victim flow was traced. These contracts are live, findable and misrepresented, but nothing here demonstrates that anyone bought one or lost money doing so.
+            </p>
+            <p>
+                The two deployer accounts were not deanonymised, and were not linked to a common funding source in this pass. The <code>MintBurnTeamToken</code> label comes from public contract metadata and was not independently source-verified. The fourteen contracts came from sampling twenty blue-chip tickers, so the fleet is at least fourteen and the true size is unknown.
+            </p>
+            <p>
+                Every number above was read directly from Ethereum mainnet via <code>eth_getCode</code>, <code>eth_call</code> and pool state, or from a public indexer API, on 2026-09-01. Prices move and pools can be removed; the measurements are timestamped for that reason.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That verification and indexing are different jobs, and that conflating them scales badly. An indexer that reports what a pool says about itself is not lying; it is faithfully reporting manufactured inputs. The gap between "reported" and "real" is where the work is, and closing it takes the same discipline as the rest of the <a href="mev-sandwich-detection.html">execution-quality</a> and <a href="fee-recipient-attribution.html">attribution</a> work in this studio: read the underlying state directly, key your joins on identifiers rather than labels, and be willing to return "I don't know" instead of a confident wrong answer.
+            </p>
+            <p>
+                Fabrication is getting cheaper. $1.78 bought a $3.28 billion listing that survived six months in a major discovery surface. Independent verification gets more valuable in exact proportion.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>
