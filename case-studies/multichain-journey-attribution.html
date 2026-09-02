@@ -69,9 +69,9 @@
         <header class="mb-16">
             <div class="flex flex-wrap gap-2 mb-6">
                 <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Methodology</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">User Journey</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">SQL</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">User Journey</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">SQL</span>
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
                 Reconstructing Wallet Journeys Across DEX Frontends, One Chain at a Time
@@ -79,7 +79,7 @@
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
                 A blockchain has no sessions and no user IDs, only a flat log of swap legs. This is the SQL that rebuilds each wallet's ordered path between entrypoints, the five guards that decide whether the result describes users or arbitrage bots, and what one real run on Ethereum returned.
             </p>
-            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
                         <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
@@ -94,16 +94,16 @@
         <!-- Key Stats -->
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">40<span class="text-base text-gray-500">%</span></div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Of first-pass hops were sub-minute</div>
+                <div class="text-2xl font-bold text-white font-mono">40<span class="text-base text-gray-400">%</span></div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Of first-pass hops were sub-minute</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">58<span class="text-base text-gray-500">%</span></div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Of hops touch an unresolved entrypoint</div>
+                <div class="text-2xl font-bold text-white font-mono">58<span class="text-base text-gray-400">%</span></div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Of hops touch an unresolved entrypoint</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">5</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Guards before a hop counts</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Guards before a hop counts</div>
             </div>
         </div>
 
@@ -268,7 +268,7 @@ ORDER BY wallets DESC;</code></pre>
             <div class="not-prose overflow-x-auto rounded-xl border border-gray-800 mb-6">
                 <table class="w-full text-sm font-mono">
                     <thead>
-                        <tr class="border-b border-gray-800 text-gray-500 text-xs uppercase tracking-wide">
+                        <tr class="border-b border-gray-800 text-gray-400 text-xs uppercase tracking-wide">
                             <th class="text-left px-4 py-3">From entrypoint</th>
                             <th class="text-left px-4 py-3">To entrypoint</th>
                             <th class="text-right px-4 py-3">Wallets</th>
@@ -278,73 +278,73 @@ ORDER BY wallets DESC;</code></pre>
                     </thead>
                     <tbody class="divide-y divide-gray-800/60">
                         <tr class="hover:bg-white/[0.02]">
-                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-gray-400">Unknown Proxy</td>
                             <td class="px-4 py-3 text-white font-semibold">UniversalRouter</td>
                             <td class="px-4 py-3 text-right">935</td>
-                            <td class="px-4 py-3 text-right text-gray-500">1,233</td>
+                            <td class="px-4 py-3 text-right text-gray-400">1,233</td>
                             <td class="px-4 py-3 text-right">2h 39m</td>
                         </tr>
                         <tr class="hover:bg-white/[0.02]">
                             <td class="px-4 py-3 text-white font-semibold">UniversalRouter</td>
-                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-gray-400">Unknown Proxy</td>
                             <td class="px-4 py-3 text-right">893</td>
-                            <td class="px-4 py-3 text-right text-gray-500">1,165</td>
+                            <td class="px-4 py-3 text-right text-gray-400">1,165</td>
                             <td class="px-4 py-3 text-right">3h 39m</td>
                         </tr>
                         <tr class="hover:bg-white/[0.02]">
-                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-gray-400">Unknown Proxy</td>
                             <td class="px-4 py-3 text-white font-semibold">Router02</td>
                             <td class="px-4 py-3 text-right">765</td>
-                            <td class="px-4 py-3 text-right text-gray-500">1,278</td>
+                            <td class="px-4 py-3 text-right text-gray-400">1,278</td>
                             <td class="px-4 py-3 text-right">2h 30m</td>
                         </tr>
                         <tr class="hover:bg-white/[0.02]">
-                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-gray-400">Unknown Proxy</td>
                             <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
                             <td class="px-4 py-3 text-right">762</td>
-                            <td class="px-4 py-3 text-right text-gray-500">1,216</td>
+                            <td class="px-4 py-3 text-right text-gray-400">1,216</td>
                             <td class="px-4 py-3 text-right">2h 14m</td>
                         </tr>
                         <tr class="hover:bg-white/[0.02]">
                             <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
-                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-gray-400">Unknown Proxy</td>
                             <td class="px-4 py-3 text-right">720</td>
-                            <td class="px-4 py-3 text-right text-gray-500">1,210</td>
+                            <td class="px-4 py-3 text-right text-gray-400">1,210</td>
                             <td class="px-4 py-3 text-right">3h 49m</td>
                         </tr>
                         <tr class="hover:bg-white/[0.02]">
                             <td class="px-4 py-3 text-white font-semibold">Router02</td>
-                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-gray-400">Unknown Proxy</td>
                             <td class="px-4 py-3 text-right">716</td>
-                            <td class="px-4 py-3 text-right text-gray-500">1,176</td>
+                            <td class="px-4 py-3 text-right text-gray-400">1,176</td>
                             <td class="px-4 py-3 text-right">3h 19m</td>
                         </tr>
                         <tr class="hover:bg-white/[0.02]">
                             <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
                             <td class="px-4 py-3 text-white font-semibold">Router02</td>
                             <td class="px-4 py-3 text-right">628</td>
-                            <td class="px-4 py-3 text-right text-gray-500">1,112</td>
+                            <td class="px-4 py-3 text-right text-gray-400">1,112</td>
                             <td class="px-4 py-3 text-right">2h 14m</td>
                         </tr>
                         <tr class="hover:bg-white/[0.02]">
                             <td class="px-4 py-3 text-white font-semibold">Router02</td>
                             <td class="px-4 py-3 text-white font-semibold">UniswapV2Factory</td>
                             <td class="px-4 py-3 text-right">619</td>
-                            <td class="px-4 py-3 text-right text-gray-500">1,104</td>
+                            <td class="px-4 py-3 text-right text-gray-400">1,104</td>
                             <td class="px-4 py-3 text-right">2h 12m</td>
                         </tr>
                         <tr class="hover:bg-white/[0.02]">
                             <td class="px-4 py-3 text-white font-semibold">FWA</td>
                             <td class="px-4 py-3 text-white font-semibold">UniversalRouter</td>
                             <td class="px-4 py-3 text-right">292</td>
-                            <td class="px-4 py-3 text-right text-gray-500">506</td>
+                            <td class="px-4 py-3 text-right text-gray-400">506</td>
                             <td class="px-4 py-3 text-right">6h 50m</td>
                         </tr>
                         <tr class="hover:bg-white/[0.02]">
-                            <td class="px-4 py-3 text-gray-500">Unknown Proxy</td>
+                            <td class="px-4 py-3 text-gray-400">Unknown Proxy</td>
                             <td class="px-4 py-3 text-white font-semibold">DexRouter</td>
                             <td class="px-4 py-3 text-right">285</td>
-                            <td class="px-4 py-3 text-right text-gray-500">379</td>
+                            <td class="px-4 py-3 text-right text-gray-400">379</td>
                             <td class="px-4 py-3 text-right">3h 29m</td>
                         </tr>
                     </tbody>
@@ -402,14 +402,14 @@ ORDER BY wallets DESC;</code></pre>
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
         <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <p>&copy; 2026 Rantum Studio</p>
             <div class="flex gap-6">
-                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
-                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
-                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
-                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
             </div>
         </div>
     </footer>
