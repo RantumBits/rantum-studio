@@ -123,7 +123,7 @@
 
             <h2>What We Found</h2>
             <p>
-                Searching a handful of blue-chip tickers on DexScreener returned rows that looked like ordinary duplicates. They were not. Fourteen contracts on Ethereum mainnet impersonate nine well-known tokens, and they are one operation rather than fourteen coincidences.
+                Searching a handful of blue-chip tickers on DexScreener returned rows that looked like ordinary duplicates. They were not. Fourteen contracts on Ethereum mainnet impersonate nine well-known tokens, and they run an identical playbook rather than being fourteen coincidences.
             </p>
 
             <h3>One bytecode, two deployers</h3>
@@ -226,7 +226,9 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
 
             <h2>What This Does Not Show</h2>
             <p>
-                No victim flow was traced. These contracts are live, findable and misrepresented, but nothing here demonstrates that anyone bought one or lost money doing so.
+                Nobody appears to have fallen for it. That is worth stating precisely, because it is stronger than the usual "no victim flow was traced". Reading every swap on four of the pools, the counterparty is always the wallet that deployed the token: 100 of 100 on the fake DAI pool, 99 of 99 on CRV, 93 of 93 on SHIB, 77 of 77 on COMP. In six months these pools have had <strong>no external participants at all</strong>. The contracts are live, findable and misrepresented, and so far the only person trading them is the person who made them.</p>
+            <p>
+                Nor is "one operator" established. The two deployer wallets each service only their own tokens, and no funding link between them was confirmed: both were touched by the same high-volume address early on, but that address has more than 27,000 transactions and is unidentified, so it may be a shared service rather than a controller. What the evidence supports is two wallets running the same playbook with the same template, the same single-sided structure and the same daily schedule.
             </p>
             <p>
                 The two deployer accounts were not deanonymised, and were not linked to a common funding source in this pass. The <code>MintBurnTeamToken</code> label comes from public contract metadata and was not independently source-verified. The fourteen contracts came from sampling twenty blue-chip tickers, so the fleet is at least fourteen and the true size is unknown.
