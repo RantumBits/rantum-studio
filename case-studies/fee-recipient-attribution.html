@@ -69,9 +69,9 @@
         <header class="mb-16">
             <div class="flex flex-wrap gap-2 mb-6">
                 <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Methodology</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Attribution</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Python</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Attribution</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Python</span>
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
                 Who Got Paid: Identifying Anonymous DEX Frontends by Their Fee Recipient
@@ -79,7 +79,7 @@
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
                 A swap arrives through a generic router with nothing in its calldata to say who sent it. But somebody took a cut, and that payment is on-chain. This is the vector that reads a frontend's identity out of who got paid, when the payee is an address someone has already labelled: the five exclusions that decide what counts as a fee at all, what happened when we ran it over fifty real swaps and inspected every survivor, and why the answer is capped at medium confidence on purpose. The failure that run surfaced has since been fixed, and the resolution below carries the before-and-after numbers.
             </p>
-            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
                         <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
@@ -94,16 +94,16 @@
         <!-- Key Stats -->
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">39<span class="text-base text-gray-500">/50</span></div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Real swaps where a transfer survived the exclusions</div>
+                <div class="text-2xl font-bold text-white font-mono">39<span class="text-base text-gray-400">/50</span></div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Real swaps where a transfer survived the exclusions</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">0<span class="text-base text-gray-500">/5</span></div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Fee-vector attributions that survived inspection</div>
+                <div class="text-2xl font-bold text-white font-mono">0<span class="text-base text-gray-400">/5</span></div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Fee-vector attributions that survived inspection</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">Med</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Confidence ceiling, never high</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Confidence ceiling, never high</div>
             </div>
         </div>
 
@@ -255,14 +255,14 @@ for token, recipient, raw_amount in transfers:
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
         <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <p>&copy; 2026 Rantum Studio</p>
             <div class="flex gap-6">
-                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
-                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
-                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
-                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
             </div>
         </div>
     </footer>

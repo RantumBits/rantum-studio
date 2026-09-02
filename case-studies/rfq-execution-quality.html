@@ -69,9 +69,9 @@
         <header class="mb-16">
             <div class="flex flex-wrap gap-2 mb-6">
                 <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Execution Quality</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">RFQ / PMM</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Execution Quality</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">RFQ / PMM</span>
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
                 When You Can't Simulate the Fill
@@ -79,7 +79,7 @@
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
                 At large order sizes, a meaningful share of DEX aggregator flow settles through off-chain RFQ and private-market-maker venues that revert under fork-simulation. Discarding those samples would bias any execution-quality leaderboard toward the simple AMM routes that happen to simulate. Here is how ClearTrace detects them and routes them to an honest on-chain read instead.
             </p>
-            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
                         <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
@@ -95,15 +95,15 @@
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">7</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Aggregators compared</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Aggregators compared</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">$1K&ndash;$1M</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Trade sizes replayed</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Trade sizes replayed</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">9</div>
-                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">RFQ / PMM markers</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">RFQ / PMM markers</div>
             </div>
         </div>
 
@@ -191,14 +191,14 @@ def is_rfq_routed(raw_quote: dict, source: str) -> bool:
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
         <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <p>&copy; 2026 Rantum Studio</p>
             <div class="flex gap-6">
-                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
-                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
-                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
-                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
             </div>
         </div>
     </footer>
