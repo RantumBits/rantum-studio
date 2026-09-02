@@ -123,7 +123,7 @@
 
             <h2>What We Found</h2>
             <p>
-                Searching a handful of blue-chip tickers on DexScreener returned rows that looked like ordinary duplicates. They were not. Fourteen contracts on Ethereum mainnet impersonate eleven well-known tokens, and they are one operation rather than fourteen coincidences.
+                Searching a handful of blue-chip tickers on DexScreener returned rows that looked like ordinary duplicates. They were not. Fourteen contracts on Ethereum mainnet impersonate nine well-known tokens, and they are one operation rather than fourteen coincidences.
             </p>
 
             <h3>One bytecode, two deployers</h3>
@@ -134,7 +134,7 @@
                 Blockscout's contract metadata names the source <code>MintBurnTeamToken</code>, an off-the-shelf mintable template, and attributes all fourteen to just two externally-owned accounts, split eight and six. No creation transaction is indexed for any of them, which is consistent with factory deployment instead of direct creation.
             </p>
             <p>
-                The tickers spoofed: DAI, CRV, APE, SHIB and LDO twice each, plus COMP, ENS, GRT and SNX.
+                The tickers spoofed: DAI, CRV, APE, SHIB and LDO twice each, plus COMP, ENS, GRT and SNX. Nine tickers, fourteen contracts.
             </p>
 
             <h3>The mirage: $3.28 billion from an initialization tick</h3>
@@ -158,12 +158,12 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
                 The displayed price rounds to $1.31; reproducing DexScreener's total to the dollar takes the unrounded $1.3112. The rounding is worth $3.1 million on its own, which is a decent illustration of the scale being discussed.
             </p>
             <p>
-                The actual withdrawable value of everything real in that pool is 0.000739 WETH, which at $2,410.77/ETH is <strong>$1.78</strong>. The reported figure exceeds the real one by a factor of roughly 1.8 billion to one. Nothing here is a bug in the arithmetic; the arithmetic is correct on inputs that were manufactured.
+                The pool holds 0.000739 WETH, and that is a hard ceiling: it is the most anyone could ever extract by selling the token back into it, whatever the quoted price says. At $2,410.77/ETH that ceiling is <strong>$1.78</strong>. The reported figure exceeds the real one by a factor of roughly 1.8 billion to one. Nothing here is a bug in the arithmetic; the arithmetic is correct on inputs that were manufactured.
             </p>
 
             <h3>The fingerprint repeats, exactly</h3>
             <p>
-                What makes this tractable to detect is that the operation did not vary its parameters. Every pool sampled shows the same signature: a large reported liquidity, one cent of 24-hour volume, and precisely one buy and zero sells.
+                What makes this tractable to detect is that the operation did not vary its parameters. Every one of the six pools sampled shows the same signature: a large reported liquidity, one cent of reported 24-hour volume, and precisely one buy and zero sells. Those figures are not moving. Re-read 24 hours later, on 2026-09-02, all six returned identical values to the dollar, with six-hour activity at zero. The pools are inert, and the reported liquidity persists regardless.
             </p>
 
             <div class="not-prose my-8 overflow-x-auto">
@@ -194,7 +194,7 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
 
             <h3>Where the exposure is, and where it isn't</h3>
             <p>
-                This is not evenly distributed across venues, and it would be sloppy to imply it is. A live token-picker search for CRV in the Uniswap interface returns six genuine Curve deployments across six chains, plus yCRV and cvxCRV, and <em>none</em> of the fleet. Curation works. The exposure sits on aggregators like DexScreener that index every pool by design, where comprehensiveness is the product and filtering is left to the reader. That is a stated design choice and not an oversight, which is precisely why the filtering has to come from somewhere else.
+                This is not evenly distributed across venues, and it would be sloppy to imply it is. A live ticker search for CRV in the Uniswap interface returns six genuine Curve deployments across six chains, plus yCRV and cvxCRV, and <em>none</em> of the fleet. Searching by contract address is a different matter: the picker resolves any address pasted into it, fleet contracts included. What the curated list governs is what surfaces when a user types a ticker, and none of the fourteen appear on the Uniswap Labs default list. The exposure sits on aggregators like DexScreener that index every pool by design, where comprehensiveness is the product and filtering is left to the reader. That is a stated design choice and not an oversight, which is precisely why the filtering has to come from somewhere else.
             </p>
 
             <h2>How We Detect It</h2>
