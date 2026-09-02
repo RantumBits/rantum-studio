@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Liquidity Mirage: $3.28B Backed by 0.0007 ETH | Rantum Studio</title>
-    <meta name="description" content="Fourteen impersonator tokens on Ethereum mainnet, one shared bytecode, two deployers, and $3.28 billion of reported liquidity backed by 0.000739 WETH of real assets, listed on DexScreener for six months.">
+    <meta name="description" content="1,005 tokens on Ethereum mainnet share one bytecode and two deployer wallets, 184 of them impersonating real tickers. One reports $3.28 billion of liquidity backed by 0.000739 WETH, listed on DexScreener for six months.">
     <meta property="og:title" content="The Liquidity Mirage: $3.28B Backed by 0.0007 ETH | Rantum Studio">
     <meta property="og:description" content="How a Uniswap V3 initialization tick turns 0.000739 WETH into a $3.28 billion liquidity listing on DexScreener, and how to detect the fleet doing it at scale.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
@@ -75,7 +75,7 @@
                 The Liquidity Mirage
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                Fourteen impersonator tokens on Ethereum mainnet, one shared bytecode, two deployers, and $3.28 billion of reported liquidity backed by 0.000739 WETH of real assets. Listed and searchable on DexScreener for six months.
+                1,005 tokens on Ethereum mainnet share one bytecode and two deployer wallets. 184 of them impersonate a real ticker. One reports $3.28 billion of liquidity backed by 0.000739 WETH, and has been listed and searchable on DexScreener for six months.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -94,7 +94,7 @@
         <!-- Key Stats -->
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">14</div>
+                <div class="text-2xl font-bold text-white font-mono">1,005</div>
                 <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Contracts, one bytecode</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
@@ -123,7 +123,9 @@
 
             <h2>What We Found</h2>
             <p>
-                Searching a handful of blue-chip tickers on DexScreener returned rows that looked like ordinary duplicates. They were not. Fourteen contracts on Ethereum mainnet impersonate nine well-known tokens, and they run an identical playbook rather than being fourteen coincidences.
+                Searching a handful of blue-chip tickers on DexScreener returned rows that looked like ordinary duplicates. They were not. Fourteen contracts on Ethereum mainnet impersonated nine well-known tokens and ran an identical playbook rather than being fourteen coincidences.</p>
+            <p>
+                Those fourteen turned out to be a rounding error. Enumerating every contract the two deployer wallets ever created returns <strong>1,031 deployments, 1,005 of which carry that same 5,150-byte bytecode</strong>, split almost exactly evenly between them at 503 and 502. Running the detector described below across all 1,005 finds <strong>184 impersonating a canonical ticker outright, across 143 distinct real tokens</strong>, plus 59 more cloning tickers that have several legitimate claimants. The remaining 762 use names no curated list carries, which is ordinary memecoin noise. That is still a floor rather than a total: only two deployer wallets were enumerated, and nothing rules out others running the same template.
             </p>
 
             <h3>One bytecode, two deployers</h3>
@@ -231,10 +233,10 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
                 Nor is "one operator" established. The two deployer wallets each service only their own tokens, and no funding link between them was confirmed: both were touched by the same high-volume address early on, but that address has more than 27,000 transactions and is unidentified, so it may be a shared service rather than a controller. What the evidence supports is two wallets running the same playbook with the same template, the same single-sided structure and the same daily schedule.
             </p>
             <p>
-                The two deployer accounts were not deanonymised, and were not linked to a common funding source in this pass. The <code>MintBurnTeamToken</code> label comes from public contract metadata and was not independently source-verified. The fourteen contracts came from sampling twenty blue-chip tickers, so the fleet is at least fourteen and the true size is unknown.
+                The two deployer accounts were not deanonymised. The <code>MintBurnTeamToken</code> label comes from public contract metadata and was not independently source-verified. Pool economics were measured on six pools and the daily schedule on four; the other 999 contracts were confirmed by bytecode and ticker, not by reading each one's pool.
             </p>
             <p>
-                The two deployer accounts were not linked to a common funding source, and the fleet is at least fourteen contracts from a twenty-ticker sample rather than a complete enumeration.</p>
+                The two wallets are not linked. Both were touched early by the same address, which looked like a possible controller until it was read: it sends one identical 514-byte message to each of 2,996 distinct recipients, and the message decodes to a freelance designer advertising branding work to token deployers. It is unsolicited marketing, not a funding link, and both wallets received it for the same reason anyone else did.</p>
             <p>
                 Every number above was read directly from Ethereum mainnet via <code>eth_getCode</code>, <code>eth_call</code>, pool state and swap logs, or from the public DexScreener and Blockscout APIs, on 2026-09-01 and 2026-09-02. Prices move and pools can be removed; the measurements are timestamped for that reason.
             </p>
