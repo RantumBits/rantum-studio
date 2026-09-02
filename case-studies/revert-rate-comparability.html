@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Revert Rate That Lies: Comparability Across DEX Execution Models | Rantum Studio</title>
+    <meta name="description" content="Why a DEX revert rate is only a reliability signal where the user's own transaction fails, and how ClearTrace encodes an execution-model taxonomy that refuses to rank routers, batch auctions, and intent venues against each other.">
+    <meta property="og:title" content="The Revert Rate That Lies: Comparability Across DEX Execution Models | Rantum Studio">
+    <meta property="og:description" content="A revert rate measures reliability only where the user submits the failing transaction. ClearTrace tags every venue router, batch auction, intent, or unclassified, and blocks any cross-model ranking in code.">
+    <meta property="og:image" content="https://rantum.xyz/og-cleartrace.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/revert-rate-comparability.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-cleartrace.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/revert-rate-comparability.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "The Revert Rate That Lies: Comparability Across DEX Execution Models",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Methodology</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-500 border border-gray-800">Neutrality</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                The Revert Rate That Lies
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                A DEX revert rate is a reliability signal only where the failing transaction is the user's own. Rank it across execution models and it flatters exactly the venues you can measure least, which is the fastest way to break a neutral benchmark. Here is how ClearTrace encodes the difference and refuses to publish the comparison.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-500 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">4</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Execution models tagged</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">35x</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Flattering claim we retracted</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">0</div>
+                <div class="text-xs text-gray-500 mt-1 font-mono uppercase tracking-wide">Cross-model rankings we publish</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                A revert rate answers one question: how often did a swap fail on-chain? It reads like a clean reliability number, and a leaderboard that ranks venues by it looks like a fair reliability ranking. It is not one, because the number only means the same thing across venues that fail the same way.
+            </p>
+            <p>
+                On a router (1inch, Uniswap, KyberSwap, ParaSwap, Odos), the user signs and submits the swap. If it fails, it fails on-chain, ClearTrace sees it, and the revert rate is exactly what it looks like: the odds your transaction does not land. On a batch-auction venue like CoW Protocol, the user signs an order and a solver settles the batch in one transaction. An order that cannot be filled, from a bad price, no solver, or expiry, never becomes a transaction at all. On an intent venue like 1inch Fusion, a third-party resolver submits, and an unfilled or expired intent leaves no trace either. Their on-chain failures are invisible by construction.
+            </p>
+            <p>
+                So a naive cross-model ranking rewards the venues whose failures you cannot see. Measured live on Ethereum over the trailing seven days (September 2026), CoW's revert rate reads 0.53% and 1inch's Limit Order Protocol reads 0.56%, while the routers 1inch and KyberSwap read 1.11% and 1.75%. Sort that column and the two off-chain venues top the table as the most reliable. That ordering is a category error, and the direction of the error is the dangerous part: it flatters the venues a third party can measure least, which is precisely what destroys the credibility of a neutral benchmark.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                ClearTrace, our live on-chain execution-intelligence engine, encodes the distinction as a single taxonomy that every consumer imports from one module. A venue is one of four execution models:
+            </p>
+            <ul>
+                <li><strong>Router:</strong> the user submits the swap transaction, so a failed swap fails on-chain and is counted. Revert rate is comparable.</li>
+                <li><strong>Batch auction:</strong> the user signs an order and a solver settles it in a batch, so orders that cannot be filled never become transactions. Revert rate is structurally near zero and is not a reliability signal.</li>
+                <li><strong>Intent:</strong> the user signs an intent and a resolver submits it, so unfilled or expired orders never become transactions. Same shape as a batch auction.</li>
+                <li><strong>Unclassified:</strong> we have not established who submits the settlement transaction, or the venue runs more than one model. Never ranked on revert.</li>
+            </ul>
+            <p>
+                Only routers carry a comparable revert rate, and even then only against other routers. Every published row is stamped with its <code>execution_model</code> and a <code>revert_comparable</code> flag, so a downstream consumer, whether the ClearTrace dashboard or an outside script hitting the public API, can never read a batch-auction revert rate as reliability without being told otherwise. Those two fields are live on the API today.
+            </p>
+
+            <h3>The discriminator is who submits, not where it settles</h3>
+            <p>
+                The obvious rule, "off-chain settlement means no reverts," is wrong in a way that matters. In classic request-for-quote, the market maker signs a quote but the taker still submits the transaction carrying that signature. An expired quote or a short maker balance therefore does revert on-chain, in the user's own transaction. A venue like that is router-shaped for measurement purposes even though its price came from off-chain. The question is not where the price originated. It is whether a user's failed swap becomes a transaction anyone can count.
+            </p>
+
+            <h3>The taxonomy, and the guard that enforces it</h3>
+            <p>
+                The rule lives in one place so it cannot drift. A short excerpt of the module every consumer imports:
+            </p>
+
+<pre><code class="language-python"># Execution models
+ROUTER, BATCH_AUCTION, INTENT, UNCLASSIFIED = "router", "batch_auction", "intent", "unclassified"
+
+# The ONLY model whose tx-level revert rate measures user reliability, because it
+# is the only one where the transaction that fails belongs to the user.
+REVERT_COMPARABLE_MODELS = frozenset({ROUTER})
+
+class CrossModelComparison(ValueError):
+    """Raised when code tries to rank/compare revert rates across execution models."""
+
+def rank_by_revert(rows, rate_key="revert_rate_pct", project_key="project", strict=True):
+    """Rank venues by revert rate, best first — WITHIN ONE EXECUTION MODEL.
+    Refuses to return a list that mixes models, because such a list ranks nothing."""
+    rankable, refused = [], []
+    for r in rows:
+        (rankable if is_revert_comparable(r.get(project_key)) else refused).append(r)
+    if strict and refused:
+        raise CrossModelComparison(
+            "refusing to rank revert rates across execution models: these venues do "
+            "not submit the user's transaction, so their on-chain revert rate is not "
+            "comparable to a router's.")
+    rankable.sort(key=lambda r: r.get(rate_key))
+    return rankable</code></pre>
+
+            <p>
+                A compare page does not print a suppressed head-to-head as a blank. It replaces the number with the reason: a plain-English sentence explaining that the two venues settle differently, that the off-chain venue's on-chain revert rate is therefore structurally near zero regardless of how reliably it fills, and that putting that number next to a router's would overstate its reliability rather than measure it. The refusal is legible, not silent.
+            </p>
+
+            <h3>Under-claiming is the default</h3>
+            <p>
+                A venue ClearTrace has not established is unclassified, and unclassified never ranks on revert. Absence of evidence is not evidence. A venue that runs both models is also unclassified: Bebop settles taker-submitted quotes, where a failed fill reverts in the user's own transaction, and solver-submitted intents, where failures never land. A rate computed over that mixed population answers no question, so ClearTrace does not rank Bebop until the two are split. The same discipline applies to a venue like Tokenlon, whose very low on-chain rate would top any reliability ranking, which is exactly why it needs evidence about who submits rather than an assumption.
+            </p>
+
+            <h3>Why the guardrail exists</h3>
+            <p>
+                This is not a hypothetical. ClearTrace once shipped the sentence "CoWSwap's revert rate is 0.04% versus ParaSwap's 1.41%" to production, in body copy and in indexed FAQ schema. That is a 35x reliability claim, and it was purely an artifact of settlement: CoW's number was structurally low because unfillable orders never became transactions, not because it executed 35 times more reliably than a router. A flattering wrong number costs a neutral benchmark its credibility exactly as a damaging one does. The taxonomy, the <code>CrossModelComparison</code> guard, and a pre-send claim gate that blocks any cross-model revert claim before it leaves the building are the response to that specific mistake.
+            </p>
+
+            <h2>What It Shows</h2>
+            <p>
+                The rare skill here is not a model or a scraper. It is knowing which comparison is invalid and building the refusal into the pipeline, so a metric that looks universal is only ever computed over the population where it means something. Finding signal in adversarial data includes declining to manufacture signal that is not there, even when the invalid version would make the product look more complete.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That we build data infrastructure that is honest under its own load. Anyone can publish a leaderboard. The harder and more valuable thing is a benchmark whose numbers survive contact with the teams they describe, because the one comparison that would embarrass it is blocked in code rather than caught in review. For a foundation, a grant program, or a protocol team spending real money against a metric, that is the difference between a dashboard and a source of record. ClearTrace runs today as a free dashboard and public API, with paid per-chain integrity reports and standing monitoring engagements.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-600">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-gray-400 transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-gray-400 transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
