@@ -1,0 +1,54 @@
+# Fails if assets/app.css is not what `npm run build:css` produces from the
+# current HTML and config.
+#
+# Why this exists: Tailwind only emits classes it finds in the tailwind.config.js
+# content globs, and the built stylesheet is committed and served directly by
+# GitHub Pages. So the artifact can drift from its source in two directions, both
+# silent: a class added to a page but never rebuilt in is simply absent and
+# renders as nothing, and a class left in the stylesheet long after its last use
+# hides that the build was never re-run. #36 found 157 bytes of exactly this
+# drift, by hand, and it is only luck that none of it was load-bearing.
+#
+# Deliberately NOT added to publish-gate.yml. That workflow installs nothing on
+# purpose so it cannot fail open when an install breaks; this one needs the
+# toolchain, so it is a separate job whose failure cannot take the gate with it.
+name: CSS build check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# No path filter on purpose: the content globs scan every HTML file, so a copy
+# edit on any page can legitimately change the built stylesheet.
+jobs:
+  css-build-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      # ci, not install: package-lock.json pins tailwindcss and the typography
+      # plugin exactly, and the check is only meaningful if the build is
+      # reproducible. `npm install` could resolve a newer patch under ^3.4.17
+      # and fail this for a reason that has nothing to do with the commit.
+      - run: npm ci
+      - run: npm run build:css
+      - name: assets/app.css must match a fresh build
+        run: |
+          if ! git diff --quiet -- assets/app.css; then
+            echo "::error file=assets/app.css::Committed stylesheet does not match a fresh build."
+            echo
+            echo "assets/app.css is committed and served directly, so it has to be rebuilt"
+            echo "whenever a page's classes or tailwind.config.js change. Fix with:"
+            echo
+            echo "    npm ci && npm run build:css && git add assets/app.css"
+            echo
+            echo "Diff (committed -> fresh build):"
+            git --no-pager diff --stat -- assets/app.css
+            git --no-pager diff --word-diff=porcelain -- assets/app.css | head -40
+            exit 1
+          fi
+          echo "assets/app.css matches a fresh build."
