@@ -143,6 +143,56 @@
                 <li><strong>Week 3: Report.</strong> Written findings with severity ratings and an ROI-ranked roadmap: what to fix, in what order, and what each fix is worth. Delivered with a walkthrough call.</li>
             </ul>
 
+
+            <h2>What counts as delivered</h2>
+            <p>
+                The scope is fixed before week one, and so is the bar the work is measured against. Both are written into the scope document you sign, so neither side is arguing about the standard after the report lands.
+            </p>
+
+            <h3>What makes a finding count</h3>
+            <p>
+                A finding counts toward the engagement only if it passes all four:
+            </p>
+            <ul>
+                <li><strong>In scope.</strong> It concerns the one system named in the scope document.</li>
+                <li><strong>Reproducible.</strong> You can re-run it yourself, against your own data, and get the same result. Evidence that cannot be re-run is not a finding.</li>
+                <li><strong>Consequential.</strong> It names what the defect costs you: a number that cannot be re-derived, a claim the data does not support, a failure your monitoring will not catch. Preferences about how we would have built it are not findings.</li>
+                <li><strong>Actionable.</strong> It carries a severity rating and a specific recommended fix, with its position in the ROI ranking.</li>
+            </ul>
+
+            <h3>How many</h3>
+            <p>
+                <strong>The audit commits to five qualified findings.</strong> Severity is assigned against a rubric fixed before week one, not negotiated after delivery, so the count cannot be met by padding it with trivia.
+            </p>
+            <p>
+                A clean system is a real result. If fewer than five qualified findings come back, you choose: a $3,000 rebate, or a fourth week against a second system you name, at no extra cost. That clause exists so that padding the report is never the cheaper option for us.
+            </p>
+
+            <h3>What each finding carries</h3>
+            <ul>
+                <li>The query, script, or check that produces it, runnable by your team.</li>
+                <li>The output of that run, dated.</li>
+                <li>The exact input it ran against: table, snapshot, date range.</li>
+                <li>What a passing result looks like, so your team can verify the fix without us.</li>
+            </ul>
+
+            <h3>What you can reject a finding on</h3>
+            <p>
+                You may reject a finding in writing within ten business days of delivery, on any of these grounds:
+            </p>
+            <ul>
+                <li><strong>Out of scope.</strong> It concerns a system other than the one named.</li>
+                <li><strong>Not reproducible.</strong> You run the supplied query against the named input and do not get the reported result.</li>
+                <li><strong>Wrong.</strong> The system does not behave as described, and you can show it.</li>
+                <li><strong>Already documented.</strong> It was in your tracker or your docs before the start date, and you can link it.</li>
+            </ul>
+            <p>
+                A rejected finding does not count toward the five, and we replace it at no charge.
+            </p>
+            <p>
+                <strong>That list is exhaustive.</strong> A finding cannot be rejected for being unwelcome, for confirming something you had suspected but never written down, or for reaching a conclusion you would rather it did not. The criteria are set before the work starts and do not move while it runs: we cannot loosen them to inflate the count, and they cannot be tightened to shrink it.
+            </p>
+
             <h2>Who it's for</h2>
             <p>
                 Funded seed to Series A teams with a model or data product in production (or close to it) and no senior data hire yet. If your data system is load-bearing, if customers, investors, or your own roadmap depend on its numbers being right, and nobody senior has ever adversarially checked it, this is for you.
