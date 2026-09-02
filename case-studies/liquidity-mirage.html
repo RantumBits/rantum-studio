@@ -115,7 +115,7 @@
                 Token discovery surfaces have a verification problem that price feeds do not. A ticker is not an identifier. Anyone can deploy a contract whose <code>name()</code> returns "Dai Stablecoin" and whose <code>symbol()</code> returns "DAI", and nothing about the resulting row in a search result distinguishes it from the real one. The contract address does, but the address is exactly the field that gets truncated in every list view.
             </p>
             <p>
-                The usual answer is a scam blocklist, which is an unwinnable race: new contracts deploy faster than any list is maintained. The inverse works better, and it is the approach used here. Rather than enumerate what is fake, enumerate what is canonical, keyed on <code>(ticker, chainId)</code>, and treat a same-ticker, same-chain, different-address row as the thing worth flagging.
+                The usual answer is a scam blocklist, which is an unwinnable race: new contracts deploy faster than any list is maintained. The inverse works better, and it is the approach used here. Instead of enumerating what is fake, enumerate what is canonical, keyed on <code>(ticker, chainId)</code>, and treat a same-ticker, same-chain, different-address row as the thing worth flagging.
             </p>
             <p>
                 Building that check surfaced something more interesting than the check itself.
@@ -131,7 +131,7 @@
                 Every one of the fourteen returns the <strong>same 5,150-byte runtime bytecode</strong>, SHA-256 prefix <code>7ff6feb2ee87face</code>. The tokens they impersonate do not resemble each other at all: real DAI is 7,904 bytes, CRV 4,369, COMP 6,795, PEPE 4,517, each distinct. Identical bytecode across fourteen supposedly unrelated tokens is a deployment fingerprint, not a coincidence.
             </p>
             <p>
-                Public contract metadata names the source <code>MintBurnTeamToken</code>, an off-the-shelf mintable template, and attributes all fourteen to just two externally-owned accounts, split eight and six. No creation transaction is indexed for any of them, which is consistent with factory deployment rather than direct creation.
+                Public contract metadata names the source <code>MintBurnTeamToken</code>, an off-the-shelf mintable template, and attributes all fourteen to just two externally-owned accounts, split eight and six. No creation transaction is indexed for any of them, which is consistent with factory deployment instead of direct creation.
             </p>
             <p>
                 The tickers spoofed: DAI, CRV, APE, SHIB and LDO twice each, plus COMP, ENS, GRT and SNX.
@@ -149,10 +149,13 @@ slot0().tick              =          -75,180   -- chosen at initialization
 price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code></pre>
 
             <p>
-                A Uniswap V3 pool can be initialized at any price its creator chooses, because the price is a tick, not a consequence of deposited capital. Set the tick, deposit an enormous quantity of a token you minted for free, and add a rounding error of real WETH. An indexer that values reserves at the pool's spot price then computes:
+                A Uniswap V3 pool can be initialized at any price its creator chooses, because the price is a tick, not a consequence of deposited capital. Set the tick, deposit an enormous quantity of a token you minted for free, and add a rounding error of real WETH. An indexer that values the reserves at the pool's spot price then reports the product as liquidity:
             </p>
             <p>
-                <strong>2,506,024,274 tokens &times; $1.31 = $3,282,891,800 of "liquidity."</strong>
+                <strong>2,506,024,274 tokens &times; $1.31 = $3,286,019,931 of "liquidity."</strong>
+            </p>
+            <p class="text-sm text-gray-500">
+                The displayed price rounds to $1.31; reproducing the indexer's total to the dollar takes the unrounded $1.3112. The rounding is worth $3.1 million on its own, which is a decent illustration of the scale being discussed.
             </p>
             <p>
                 The actual withdrawable value of everything real in that pool is 0.000739 WETH, which at $2,410.77/ETH is <strong>$1.78</strong>. The reported figure exceeds the real one by a factor of roughly 1.8 billion to one. Nothing here is a bug in the arithmetic; the arithmetic is correct on inputs that were manufactured.
