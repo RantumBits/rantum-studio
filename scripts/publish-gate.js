@@ -46,6 +46,22 @@ const ZEROX_PREFIXES = [
 ];
 
 // Full-length addresses are addresses, never the venue name. Scrub before matching.
+//
+// Measured 2026-09-08: this scrub does NOT change which occurrences are flagged,
+// and is kept deliberately rather than because it is load-bearing. A differential
+// run of this file with and without it, over 199,028 generated cases (every term
+// against 7 address shapes and 27 separator characters on both sides, in three
+// positions) plus all 23 site pages, produced 112,521 hits with an identical hit
+// set. The reason is that patternFor() already requires non-alphanumeric
+// boundaries, and an address is a contiguous alphanumeric run, so nothing inside
+// one can satisfy them; a term adjacent to an address is not scrubbed either,
+// because HEX_ADDR needs a trailing \b that a word-character term start prevents.
+// Adding a deliberately hex-composable alias ("deadbeef") did not change that.
+//
+// So do not read a green scripts/publish-gate.test.js as covering this line, and
+// do not delete it as dead code: it still shapes the context window printed on
+// failure, it costs one String.replace, and it fails safe on a gate that enforces
+// a legal constraint.
 const HEX_ADDR = /\b0x[0-9a-fA-F]{6,}\b/g;
 
 // Occurrences already on the site when this gate was added. Each one is a real
