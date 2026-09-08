@@ -1,1 +1,18 @@
 node_modules/
+
+# Finder / file-delivery duplicates ("foo 2.html"). Never intentional, and on this
+# repo a stray .html is a publish risk rather than clutter: GitHub Pages serves main
+# directly, so a committed duplicate goes live, and these copies are usually older
+# drafts. On 2026-08-25 a `case-studies/fee-recipient-attribution 2.html` still
+# carried 0x prose that had been deliberately revised away. The same class recurred
+# in the afm repo on 2026-09-08 (`voice_inanimate_subject_audit 2.md`, swept into a
+# PR by `git add -A`), which is why both repos now guard it.
+#
+# Safe here: no tracked file in this repo has a space in its name, so this masks
+# nothing real.
+#
+# It only stops the duplicate being COMMITTED. scripts/publish-gate.js walks the
+# filesystem with fs.readdirSync and skips only node_modules and .git, so an ignored
+# duplicate still fails a LOCAL gate run. Delete the file; .gitignore will not
+# silence the gate.
+* [2-9].html
