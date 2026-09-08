@@ -152,6 +152,85 @@ test('fails closed when git is unavailable', () => {
   check(!/skipped \d+ untracked/.test(out), `claimed a skip with no tracked set\n${out}`);
 });
 
+// ---------------------------------------------------------------------------
+// Matching logic. These pin behaviour that predates the skip: the 0x collision
+// exclusions, and the allowlist's case-sensitive, file-scoped context match.
+// ---------------------------------------------------------------------------
+
+// The venue's name is also the universal hex prefix. A naive substring test fires
+// 16 times on content that is fine, and a gate that cries wolf gets switched off.
+const notAVenue = [
+  ['a version multiplier', '<p>Routing gave a 2.0x lift on depth.</p>'],
+  // The literal U+2026, which is how the site actually writes it (there is no
+  // &hellip; anywhere in the tracked HTML). The entity form is deliberately not
+  // pinned here: the gate scans raw markup, so "0x&hellip;" would fire — a false
+  // positive, but one that fails closed and would be caught in review.
+  ['a truncated placeholder', '<p>Unknown Proxy (0x\u2026) stayed unattributed.</p>'],
+  ['a SQL pattern', "<p>Filtered with GLOB '0x[0-9a-fA-F]*' before joining.</p>"],
+  // Honest note: this case is already excluded by the 0x lookahead, because an
+  // address always continues with a hex character. Deleting the HEX_ADDR scrub
+  // leaves all of these green, so a passing suite is NOT evidence that the scrub
+  // is load-bearing — it is belt-and-braces. Verified by mutation, 2026-09-08.
+  ['a full-length address', '<p>Settled at 0xdef1c0ded9bec7f1a1670819833240f027b25eff on mainnet.</p>'],
+];
+for (const [label, body] of notAVenue) {
+  test(`${label} is not a naming`, () => {
+    const d = fixture();
+    commit(d, write(d, 'page.html', `<html><body>${body}</body></html>\n`));
+    const { code, out } = runGate(d);
+    check(code === 0, `false positive on ${label}\n${out}`);
+  });
+}
+
+const isAVenue = [
+  ['the frozen entry itself', '<p>Quotes came from 0x API.</p>'],
+  ['a prose alias', '<p>Compared against 0x protocol routing.</p>'],
+  ['the consumer-facing alias', '<p>Matcha was the cheapest at $1k.</p>'],
+  ['an on-chain prefix', '<p>Settled through mainnetsettler.</p>'],
+];
+for (const [label, body] of isAVenue) {
+  test(`${label} is blocked`, () => {
+    const d = fixture();
+    commit(d, write(d, 'page.html', `<html><body>${body}</body></html>\n`));
+    const { code, out } = runGate(d);
+    check(code === 1, `missed a naming via ${label}\n${out}`);
+  });
+}
+
+test('markup outside visible text is scanned too', () => {
+  const d = fixture();
+  const body = '<html><head><meta property="og:description" content="Built on 0x API."></head><body><p>Hi.</p></body></html>\n';
+  commit(d, write(d, 'page.html', body));
+  const { code, out } = runGate(d);
+  check(code === 1, `og:description was not scanned, but it is published\n${out}`);
+});
+
+test('an allowlisted context passes and is reported as allowlisted', () => {
+  const d = fixture();
+  commit(d, write(d, 'index.html', '<html><body><p>Led by Andrew Maury, ex-0x, Uniswap, Art Blocks.</p></body></html>\n'));
+  const { code, out } = runGate(d);
+  check(code === 0, `the allowlisted credential was blocked\n${out}`);
+  check(/allowlisted/.test(out), `allowlisted hit was not reported\n${out}`);
+});
+
+// THE CASING TRAP, hit for real on 2026-08-25. allowFor() compares the context
+// with a case-sensitive String.includes, so an em-dash cleanup that ended the
+// previous clause with a period capitalised "ex-0x" to "Ex-0x", the allowlist
+// stopped matching, and the gate read a decided keep as a new naming.
+test('the allowlist is case-sensitive: "Ex-0x" is NOT allowlisted', () => {
+  const d = fixture();
+  commit(d, write(d, 'index.html', '<html><body><p>Led by Andrew Maury. Ex-0x, Uniswap, Art Blocks.</p></body></html>\n'));
+  const { code, out } = runGate(d);
+  check(code === 1, `capitalised "Ex-0x" was allowlisted; the 2026-08-25 trap is gone\n${out}`);
+});
+
+test('the allowlist is file-scoped: the same context elsewhere is blocked', () => {
+  const d = fixture();
+  commit(d, write(d, 'about.html', '<html><body><p>Led by Andrew Maury, ex-0x, Uniswap, Art Blocks.</p></body></html>\n'));
+  const { code, out } = runGate(d);
+  check(code === 1, `an index.html allowlist entry leaked to about.html\n${out}`);
+});
+
 let failed = 0;
 for (const [name, fn] of tests) {
   try {
