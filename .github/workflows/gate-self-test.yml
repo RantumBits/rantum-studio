@@ -1,0 +1,31 @@
+# Runs scripts/publish-gate.test.js, which locks down the untracked-duplicate
+# skip added in #43.
+#
+# Why this is a separate workflow, following the same reasoning as
+# css-build-check.yml: the gate job stays minimal and cannot be taken down by an
+# adjacent concern, and this job's own failure cannot stop the gate from running.
+# Unlike css-build-check this one installs nothing either — the self-test is
+# dependency-free on purpose, because a test that needs an install can fail for
+# reasons that have nothing to do with the gate.
+#
+# The test that matters is "a TRACKED duplicate is still scanned". A skip rule is
+# the one kind of change that can make a gate fail OPEN, and PUBLISH_EXCLUDE is a
+# legal constraint, so that property needs a standing proof rather than a comment.
+name: Gate self-test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gate-self-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      # Needs git on PATH (it builds throwaway repos as fixtures); actions/checkout
+      # has already guaranteed that. Still no dependency install.
+      - run: node scripts/publish-gate.test.js
