@@ -28,6 +28,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 
 // Mirrors `leaderboard.PUBLISH_EXCLUDE` in the cleartrace repo. It is not read
 // live because cleartrace is private and this repo is public, so a cross-repo
@@ -94,16 +95,59 @@ function patternFor(term) {
   return new RegExp(`(?<![a-z0-9])${escapeRe(term)}(?![a-z0-9])`, 'gi');
 }
 
+// Finder / file-delivery duplicates ("foo 2.html"). They are gitignored, but this
+// walk reads the filesystem rather than the index, so it scanned them anyway: a
+// stray `case-studies/fee-recipient-attribution 2.html` was an older draft still
+// carrying 0x prose that had been deliberately revised away, and it failed the
+// local gate three times on 2026-08-25 over content that was never going to ship.
+const DUPLICATE_NAME = / [2-9]\.html$/;
+
+// Skipping on the filename alone would be unsafe. If a file like that were ever
+// committed then it IS published, and a name-only rule would quietly stop checking
+// a live page — the exact failure this gate exists to prevent. So a file is skipped
+// only when it is BOTH shaped like a duplicate AND untracked. If the tracked set
+// cannot be read for any reason (no git, not a repo), this returns null and nothing
+// is skipped: unknown means scan it, the same fail-closed choice as the
+// no-files-found branch in main().
+function trackedHtml(root) {
+  try {
+    const out = execFileSync('git', ['ls-files', '-z', '--', '*.html'], {
+      cwd: root,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    return new Set(out.split('\0').filter(Boolean));
+  } catch {
+    return null;
+  }
+}
+
 function htmlFiles(root) {
+  const tracked = trackedHtml(root);
   const out = [];
+  const skipped = [];
   (function walk(dir) {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       if (e.name === 'node_modules' || e.name === '.git') continue;
       const p = path.join(dir, e.name);
       if (e.isDirectory()) walk(p);
-      else if (e.name.endsWith('.html')) out.push(path.relative(root, p));
+      else if (e.name.endsWith('.html')) {
+        // git reports forward slashes; path.relative uses the platform separator.
+        const rel = path.relative(root, p).split(path.sep).join('/');
+        if (tracked && DUPLICATE_NAME.test(e.name) && !tracked.has(rel)) {
+          skipped.push(rel);
+          continue;
+        }
+        out.push(rel);
+      }
     }
   })(root);
+  // Never silent: a skipped file is still a file someone should delete.
+  if (skipped.length) {
+    console.log(`publish-gate: skipped ${skipped.length} untracked duplicate(s) — delete them:`);
+    for (const s of skipped.sort()) console.log(`  - ${s}`);
+    console.log('');
+  }
   return out.sort();
 }
 
