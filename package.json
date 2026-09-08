@@ -6,7 +6,8 @@
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./assets/app.css --minify",
     "watch:css": "tailwindcss -i ./src/input.css -o ./assets/app.css --watch",
-    "gate": "node scripts/publish-gate.js"
+    "gate": "node scripts/publish-gate.js",
+    "test:gate": "node scripts/publish-gate.test.js"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
