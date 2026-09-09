@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backed, or Just Named: 13 Forged Tokenized-Equity Tickers | Rantum Studio</title>
+    <meta name="description" content="Thirteen contracts on Base forged five of Coinbase's tokenized-equity tickers for $393,805. The genuine tokens beside them are backed 1:1. Neither the name nor the bytecode separates them, and one on-chain check does.">
+    <meta property="og:title" content="Backed, or Just Named: 13 Forged Tokenized-Equity Tickers | Rantum Studio">
+    <meta property="og:description" content="A token carrying a stock's name is either backed by the stock or it is not. Thirteen forged contracts on Base show which on-chain checks answer that question and which ones quietly fail.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/backed-or-just-named.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/backed-or-just-named.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Backed, or Just Named: Thirteen Forged Tokenized-Equity Tickers on Base",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">&#9679; Live on-chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Token Integrity</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Tokenized Equities</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Backed, or Just Named
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                Thirteen contracts on Base forged five of Coinbase's tokenized-equity tickers and traded $393,805 before they stopped. The genuine tokens sitting beside them are backed one-for-one. Neither the name nor the bytecode tells the two apart, and one on-chain check does.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+                <span>&bull;</span>
+                <span>Measured 2026-09-09</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">13</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Forged contracts, 5 tickers</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">$393,805</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Traded through them</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">~30<span class="text-base text-gray-400"> min</span></div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Typical contract lifetime</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                Writing in Bloomberg on 9 September 2026, Matt Levine set out a useful taxonomy for tokenized stocks. A token carrying a company's name, he observes, can be one of exactly four things. It can be <em>stock</em>, issued on-chain by the company itself. It can be <em>an SPV</em>: "I buy 1,000 AMC shares, I put them in a pot, and I issue exactly 1,000 tokens against that pot." It can be <em>a swap</em>, an IOU for the asset's return. Or it can be <em>nothing</em>: "I issue 1,000 tokens each representing one AMC share, and you buy them, and I don't owe you anything. They're just, like, crypto tokens with the name &lsquo;AMC&rsquo; on them." He notes that the fourth is out of fashion in equity tokenization, "though it is a very traditional approach in crypto generally."
+            </p>
+            <p>
+                To be clear about what is borrowed here and what is not: Levine is writing about Robinhood, whose tokens Robinhood says are "backed 1:1 by the corresponding underlying equity." On his own taxonomy those are the second kind. He is not describing the contracts in this case study and has never seen them. The ladder is his; the objects below are not.
+            </p>
+            <p>
+                What the taxonomy leaves open is the question a buyer actually has. Four categories are named, but nothing in that piece says how someone holding a token would work out which of the four they are holding. That question has an on-chain answer, and it is narrower and more useful than it first appears.
+            </p>
+
+            <h3>What measurement can and cannot settle</h3>
+            <p>
+                A rung is a claim about the world off the chain. Whether shares are sitting in a custodian's account is not visible from a contract, so on-chain data cannot confirm the first three rungs. No amount of reading state proves a pot exists.
+            </p>
+            <p>
+                It can do the opposite. On-chain data can show that nothing is behind a token at all, which rules out the first three and leaves only the fourth. That asymmetry is the whole practical value: the check is cheap, it runs in one direction, and almost nobody runs it. What follows is a namespace where running it separates the second rung from the fourth inside a single set of search results.
+            </p>
+
+            <h2>What We Found</h2>
+            <p>
+                Coinbase's B20 tokenized equities trade on Base. Four are live: NVDAc, AAPLc, METAc and GOOGLc, tracking NVIDIA, Apple, Meta and Alphabet. Since 1 July 2026 they have traded <strong>$241,972,775</strong>, which is 0.167% of all Base DEX volume in the same window, and Aerodrome Slipstream carries 86.46% of it.
+            </p>
+            <p>
+                Alongside them, in the same window, <strong>thirteen impostor contracts forged five of those tickers</strong>, adding COINc to the four above. Together they traded <strong>$393,804.68</strong>. Ten of the thirteen ran a uniform pattern: roughly half an hour of life, between 58 and 71 distinct takers, then nothing. The three COINc contracts break the pattern, each drawing a single taker, two of them accounting for $138,882 between them in consecutive half-hours.
+            </p>
+
+            <h3>The address shape is not an identifier</h3>
+            <p>
+                Coinbase's B20 contracts share a vanity address prefix, <code>0xb200000000000000000000</code>, and Base's own documentation presents that prefix as the convention for the standard. It reads like a namespace badge. It is not one.
+            </p>
+            <p>
+                The impostors copy the prefix precisely so that a prefix check clears them. A first pass at measuring this asset class matched on that prefix and returned <strong>7,532 distinct tokens on Base</strong>, with forged NVDAc, AAPLc and METAc rows sitting at the top of their tickers. Anyone reading the address shape as proof of provenance gets the wrong answer, and gets it confidently.
+            </p>
+
+            <h3>The name does not separate them either</h3>
+            <p>
+                The obvious fallback is to read <code>name()</code> and check it against the company. That fails, and it fails in the most expensive possible way: it clears the best forgeries and flags only the lazy ones.
+            </p>
+            <p>
+                Two of the thirteen return a <code>name()</code> of <code>NVIDIA Corporation</code>, byte-identical to Coinbase's own contract. Four use <code>Meta Platform Inc.</code>, one character away from the real <code>Meta Platforms Inc.</code> Four more simply return the bare ticker. A name check waves through the two most convincing fakes and catches the four that were never going to fool anyone.
+            </p>
+
+            <h3>And neither does the bytecode</h3>
+            <p>
+                Bytecode fingerprinting is the technique that cracked <a href="liquidity-mirage.html">the mainnet impersonator fleet</a>, where 1,005 contracts shared one byte-identical 5,150-byte runtime. It returns nothing here. <code>eth_getCode</code> at every address in this namespace, genuine and forged alike, is the single byte <code>0xef</code>. There is no runtime to hash and no fingerprint to compare.
+            </p>
+
+            <h2>How We Detect It</h2>
+            <p>
+                One check survives, and it is the one that reads the backing rather than the branding. Coinbase's contracts carry <strong>8 decimals and a supply denominated in shares</strong>. Every impostor carries <strong>18 decimals and exactly 1,000,000,000 units</strong>.
+            </p>
+
+<pre><code class="language-sql">-- Base mainnet, read live 2026-09-09
+-- canonical NVDAc
+decimals()    = 8
+totalSupply() = 15,473.08          -- a share count
+
+-- forged NVDAc, same vanity prefix, same name() string
+decimals()    = 18
+totalSupply() = 1,000,000,000.00   -- a round number, chosen not derived</code></pre>
+
+            <p>
+                The reason this works is worth stating carefully, because the intuition runs backwards. A supply of one billion at 18 decimals is not a forgery signature. It is the ordinary default in this namespace: five unrelated tokens sampled on the same prefix are all 18 decimals and four of the five carry exactly one billion. The impostors do not look wrong. <strong>Coinbase's tokens look unusual</strong>, because 8 decimals and a share count are what one-for-one backing forces you into. The test only works if you already know what the genuine article looks like, which is another way of saying the issuer's published contract list is doing the real work.
+            </p>
+
+            <h3>The stronger signal: the supply moves</h3>
+            <p>
+                A static reading is a snapshot, and a forger could copy a share-shaped number. What is much harder to fake is the behaviour of that number over time. A claim backed one-for-one has to be created when someone deposits and destroyed when someone redeems, so its supply breathes. Reading the same four contracts six days apart:
+            </p>
+
+            <div class="not-prose my-8 overflow-x-auto">
+                <table class="w-full text-sm font-mono border border-gray-800 rounded-lg overflow-hidden">
+                    <thead class="bg-black/40 text-gray-400">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Token</th>
+                            <th class="px-4 py-3 text-right">Supply 2026-09-03</th>
+                            <th class="px-4 py-3 text-right">Supply 2026-09-09</th>
+                            <th class="px-4 py-3 text-left">Movement</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300 divide-y divide-gray-800">
+                        <tr><td class="px-4 py-3">NVDAc (canonical)</td><td class="px-4 py-3 text-right">12,640.08</td><td class="px-4 py-3 text-right">15,473.08</td><td class="px-4 py-3">created</td></tr>
+                        <tr><td class="px-4 py-3">AAPLc (canonical)</td><td class="px-4 py-3 text-right">5,773.03</td><td class="px-4 py-3 text-right">7,276.36</td><td class="px-4 py-3">created</td></tr>
+                        <tr><td class="px-4 py-3">METAc (canonical)</td><td class="px-4 py-3 text-right">2,978.89</td><td class="px-4 py-3 text-right">2,130.54</td><td class="px-4 py-3">redeemed</td></tr>
+                        <tr><td class="px-4 py-3">All 13 impostors</td><td class="px-4 py-3 text-right">1,000,000,000.00</td><td class="px-4 py-3 text-right">1,000,000,000.00</td><td class="px-4 py-3">none</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                METAc is the useful row. Its supply went <em>down</em>, which is what redemption looks like from outside and is not a thing a fixed-supply token can imitate without someone actually burning tokens. A share count that moves in both directions is the on-chain shadow of a pot that is being added to and drawn down. A round billion that never moves is the shadow of nothing.
+            </p>
+            <p>
+                This still does not prove the shares exist. It is consistent with the second rung and inconsistent with the fourth, which is the most that reading a chain can honestly deliver.
+            </p>
+
+            <h2>What This Does Not Show</h2>
+            <p>
+                <strong>It does not verify Coinbase's custody.</strong> Everything above is consistent with one-for-one backing and rules out the "nothing" case. Confirming that shares sit in an account is an audit question, not an on-chain one, and no measurement in this study touches it.
+            </p>
+            <p>
+                <strong>The forged volume is small and no victim flow was traced.</strong> $393,805 against a $144.7 billion chain window is immaterial, and it is not claimed that anyone was harmed. What the takers believed they were buying was not measured. The finding is that the forgeries were indistinguishable by the checks most people would run, not that they succeeded at anything in particular.
+            </p>
+            <p>
+                <strong>The window is 1 July to 3 September 2026, and volumes are a leg sum.</strong> A leg sum counts both sides of a trade and is an upper bound rather than the collapsed per-transaction figure used elsewhere in this studio's reporting. The thirteen impostors are the ones that appeared in that window; nothing rules out others before or since.
+            </p>
+            <p>
+                <strong>Supply figures drift, which is the point of the section that uses them.</strong> The 3 September readings were correct when taken and had all moved by 9 September. Any figure here is a timestamped reading and not a standing fact.
+            </p>
+            <p>
+                <strong>The separate Ethereum mainnet fleet is a different operation.</strong> The 1,005-contract fleet in <a href="liquidity-mirage.html">The Liquidity Mirage</a> shares a playbook with these contracts, not an operator. No link between them was established or looked for.
+            </p>
+            <p>
+                Contract identity here was read directly from Base via <code>eth_call</code> and <code>eth_getCode</code> on 2026-09-03 and again on 2026-09-09, rather than taken from an indexer's symbol column. Volumes come from a single query execution against decoded DEX trades on 2026-09-03.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                Every intuitive check on this namespace fails. The address prefix is shared by 7,532 tokens. The name is copyable and was copied byte-for-byte. The bytecode is a single opcode for everyone. Three plausible verification strategies, all of them returning a confident wrong answer, in an asset class explicitly built to carry the credibility of regulated securities.
+            </p>
+            <p>
+                The check that works is the one that asks what is actually behind the token and then watches whether that number behaves like a claim on something. That is the same discipline as the rest of the work in this studio, whether the subject is <a href="liquidity-mirage.html">fabricated liquidity</a>, <a href="mev-sandwich-detection.html">execution quality</a> or <a href="fee-recipient-attribution.html">attribution</a>: read the underlying state, key on identifiers rather than labels, and prefer "I don't know" to a confident wrong answer.
+            </p>
+            <p>
+                Levine's fourth rung is the cheapest thing to manufacture in crypto and, for the moment, the easiest to mistake for the second. Independent verification gets more valuable in exact proportion.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>
