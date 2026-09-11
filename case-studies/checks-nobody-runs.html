@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Check I Didn't Run | Rantum Studio</title>
+    <meta name="description" content="A week tuning a classifier's precision while two thirds of the target volume sat outside a stale candidate window. The instrument that would have caught it was one command away and prints DO NOT QUOTE.">
+    <meta property="og:title" content="The Check I Didn't Run | Rantum Studio">
+    <meta property="og:description" content="A week tuning a classifier's precision while two thirds of the target volume sat outside a stale candidate window. The instrument that would have caught it was one command away and prints DO NOT QUOTE.">
+    <meta property="og:image" content="https://rantum.xyz/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/checks-nobody-runs.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-image.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/checks-nobody-runs.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "The Check I Didn't Run",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-indigo-900/20 text-indigo-400 border border-indigo-500/20">Perspective</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">On-Chain Data</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Engineering</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                The Check I Didn't Run
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                A week spent tuning the smallest term. Most bad numbers do not come from checks nobody built.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>September 2026</span>
+            </div>
+        </header>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <p>
+                I set out to build a detector for coordinated trading fleets on DEX data. I spent the week on a candidate filter, measuring its precision, hunting its false positives, and refusing three tempting fixes. At the end I ran one command I had never run:
+            </p>
+<pre><code>OVERDUE — older than the refresh cadence allows. DO NOT QUOTE these figures:
+  dune_router_entry   17.8d old (limit 7.5d)   entrypoint volume and the coverage denominator</code></pre>
+            <p>
+                The tool was already in the repo. It takes one command. It prints DO NOT QUOTE in capital letters. Every number I had produced that week came from the table it was shouting about.
+            </p>
+            <p>
+                That is the piece. Not a missing instrument. A present one, nobody ran.
+            </p>
+
+            <h2>The stack, largest term first</h2>
+            <p>
+                The result degrades in three places. I found them in exactly the wrong order, so here they are in the right one.
+            </p>
+            <p>
+                Two of the three cost recall. The third costs characterization and no recall at all, and calling all three "recall" would be the same error this piece is about: comparing two things that are not the same measurement.
+            </p>
+            <table>
+                <thead><tr><th>Term</th><th>Size</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>1. Staleness</strong></td><td>the candidate table was 17.8 days old against a 7.5-day limit; its figures reflect <strong>39.1%</strong> of the one operator fleet I can measure completely</td></tr>
+                    <tr><td><strong>2. Threshold</strong></td><td>a $1M cut dropped a fleet member carrying $6.70M, because it read $0.61M inside the stale window</td></tr>
+                    <tr><td><strong>3. The filter</strong><br><em>(characterization, not recall)</em></td><td><strong>4.7%</strong> of candidate volume un-characterizable, <strong>zero</strong> membership lost</td></tr>
+                </tbody>
+            </table>
+            <p>I spent the week on term 3.</p>
+
+            <h3>Term 1: recall is bounded by a cron job</h3>
+            <p>
+                The candidate table is rebuilt weekly from a 7-day window, and the pipeline rebuilt it on schedule. The copy I was analyzing had not been. Production's copy was two days old. Mine was 17.8, and the freshness stamp sitting in it read the current date, honestly, because that stamp records the newest write of <em>any</em> table. The candidate table underneath it was more than two weeks behind.
+            </p>
+            <p>
+                Two failures had to line up: a working copy that diverged from the shipped one, and a freshness field that answers a different question from the one everybody asks it.
+            </p>
+            <p>
+                So the classifier could only ever see what happened before that write. Here is what it costs, measured against a target I happen to know completely. One operator deployed 13 contracts on a single day, all inside 84 minutes: four in an early batch that never traded, then nine that did. Testing, a pause, then production. Eight of the thirteen carry volume, <strong>$67.24M</strong> across their active span.
+            </p>
+            <p>
+                The stale snapshot carries <strong>$26.27M</strong> of it. <strong>39.1%.</strong>
+            </p>
+            <p>
+                Nothing about the filter changes that number. A perfect classifier on a 17.8-day-old candidate set is a classifier that cannot see 61% of this one.
+            </p>
+            <p>
+                This is not a crypto problem. Anyone who has fit a model on a periodically rebuilt candidate set has this exposure, and the failure is silent in a specific way: the freshness stamp people check is usually an upper bound across many tables, so it reads current while the one table that matters has not moved.
+            </p>
+
+            <h3>Term 2: thresholds compound with staleness, and nobody owns both</h3>
+            <p>
+                A volume floor and a refresh cadence are set by different people, usually months apart, and neither is wrong on its own. Together they multiply: a stale window makes every floor stricter than the person who chose it intended, and nothing in either system reports the combined effect.
+            </p>
+            <p>
+                One fleet member traded $6.70M. Inside the stale window it reads $0.61M, so a $1M floor dropped it. Nobody tuned anything badly.
+            </p>
+
+            <h3>Term 3: the filter, which is where the week went</h3>
+            <p>
+                The filter is one predicate: a contract whose transaction count equals its swap leg count is doing one swap per transaction, so it is a single-purpose executor rather than a multi-hop router. It is free, it runs on a table that already exists, and on a labeled set it is decent.
+            </p>
+            <p>
+                It is also the smallest term in the stack, and it took the last measurement of the week to find out why.
+            </p>
+            <p>
+                I expected a large blind spot. Some executors never appear as a party to their own token transfers: they move a counterparty's inventory by <code>transferFrom</code>, so anything built on transfer records cannot see them. I assumed that hid them from the filter too, which would have meant the candidate set was quietly restricted to executors that touch assets directly.
+            </p>
+            <p>
+                It does not. The filter reads the transaction's <code>to</code> address, which never required transfer-party presence, and the clearest example of the pattern sits in the candidate table at $19.6M with legs and trades equal. It passes. <strong>Zero membership is lost to it.</strong> What the pattern does blind is the adjudication step, which reads asset transfers to find funders and counterparties: 4 of the 32 candidates, 4.7% of the set's volume, are never a transfer party, so those signals are structurally empty for them. That is the whole of term 3.
+            </p>
+
+            <h2>Three heuristics, three failures, one cause</h2>
+            <p>
+                Before the filter, I tried to separate market-maker infrastructure from anonymous fleets. Three plausible discriminators, each derived from entities I had already identified by hand:
+            </p>
+            <ol>
+                <li>
+                    <strong>Fleet-shape features</strong> (shared funder, batch refuelling, uniform start times, single-venue concentration). They score positive on a professional market maker's execution fleet: persistent worker addresses drawing gas from a common treasury and settling exclusively against one inventory address. The features describe automation under single-operator control, and that is what market-making infrastructure is.
+                </li>
+                <li>
+                    <strong>Counterparty concentration.</strong> The intuition: a market maker settles exclusively against its own inventory address, a fleet trades against many public pools. Measured: the market maker scored 0.989. A known fleet scored <strong>1.000</strong>, with exactly one counterparty, because it traded exclusively on Uniswap V4, whose singleton design puts the same PoolManager contract on the other side of every swap. The metric measures venue architecture, not intent.
+                </li>
+                <li>
+                    <strong>A standard-read probe</strong>, to exclude venue contracts. It would have deleted the best-documented fleet in my set, which answers <code>owner()</code> and returns its deployer.
+                </li>
+            </ol>
+            <p>
+                Every one was derived from the known-entity set and failed against the known-entity set. Each failure was caught only because labeled entities existed to test against. Without them, all three would have shipped.
+            </p>
+
+            <h2>The one rule that survived measurement</h2>
+            <p>
+                Narrowing the third heuristic to venue-specific reads only (<code>token0</code>, <code>token1</code>, <code>factory</code>, <code>name</code>, <code>symbol</code>, dropping <code>owner</code>) gives a rule that can be measured rather than asserted. On held-out sets of 53 labeled executor contracts and 17 labeled pool contracts, neither consulted when the keys were chosen:
+            </p>
+            <table>
+                <thead><tr><th>Rule</th><th>Fires on executors (false negatives)</th><th>Catches pools</th></tr></thead>
+                <tbody>
+                    <tr><td>any standard read</td><td><strong>12/53 = 22.6%</strong></td><td>17/17</td></tr>
+                    <tr><td>venue keys only</td><td><strong>1/53 = 1.9%</strong></td><td>15/17</td></tr>
+                </tbody>
+            </table>
+            <p>
+                Ten of the 53 were then re-derived through a separate JSON-RPC path with its own positive control, because the script that produced these numbers is the same class of script that had already produced two false ones. Ten of ten agreed.
+            </p>
+            <p>
+                The two "missed" pools are both position rebalancers that answer only <code>owner</code>, which is a rebalancer shape rather than a pool. Reclassifying them makes it 15 of 15. That reclassification was decided after seeing they were the misses, so both numbers stay in the record and the reader picks.
+            </p>
+
+            <h2>Three refusals</h2>
+            <p>
+                The single false negative answers <code>name</code> with eight zero bytes, not a valid ABI string. Requiring well-formed returns would likely take the rule to 0 of 53. I did not make that change, because it was identified by looking at which case it would rescue.
+            </p>
+            <p>
+                Same for the venue-singleton exclusion that would have saved heuristic 2, and the minimal-proxy test that would have caught one remaining false positive. Each would have been fitted to the case that motivated it, on a validation set of one or two.
+            </p>
+            <p>
+                A threshold moved to keep a case passing is a threshold that has stopped meaning anything.
+            </p>
+
+            <h2>Four errors, one shape</h2>
+            <p>
+                The work produced four wrong results of my own. They share a structure worth more than any of them individually: <strong>a missing or mismatched value silently became a value.</strong>
+            </p>
+            <ol>
+                <li>
+                    I read a dictionary key that did not exist. <code>.get()</code> returned <code>None</code>, <code>or {}</code> made it an empty dict, and "no interface responded" was printed for eight contracts that were never asked.
+                </li>
+                <li>
+                    A guard applied to one branch and not the next. A legitimate empty return <code>"0x"</code> failed the first check, passed the second, and decoded as <code>"0x" + "0x"[-40:]</code> = <code>"0x0x"</code>. Every contract <em>without</em> an owner was bucketed into one phantom owner, producing an 8-contract, $116M cluster that was the exact inverse of the truth.
+                </li>
+                <li>
+                    I inferred that the candidate table was missing active routers by comparing a 30-day sum of swap legs against a 7-day sum of per-transaction maximum legs from a snapshot taken 17.8 days earlier. Three mismatches at once: window length, metric definition, as-of date. The gap did not exist; every absence was the window. That retraction is what led to term 1.
+                </li>
+                <li>
+                    I reported two recall figures side by side, 82.3% and 39.1%, which count different things. The first credits every identified contract its full activity. The second measures how much activity the figures actually reflect. Identification is not measurement.
+                </li>
+            </ol>
+            <p>
+                A fifth produced the lede itself, and I only caught it after the draft was finished: I read a freshness stamp out of my local working copy and checked it against a refresh cadence defined for the production copy. Different lineages, same shape. The pipeline was healthy the whole time.
+            </p>
+            <p>
+                Two of the four above are fixed at the value level: probes now return an explicit tri-state, so an empty return and a transport error can never collapse into each other, and an address decoder raises rather than returning something address-shaped. Nine tests, each named for the bug it prevents.
+            </p>
+            <p>
+                The other two need the same move one level up: <strong>carry the metric definition, the window, and the as-of date on the value itself</strong>, so that comparing a 30-day leg sum to a 7-day per-transaction maximum from a 17.8-day-old snapshot raises instead of returning a number. That single change would have caught all four.
+            </p>
+
+            <h2>About the addresses</h2>
+            <p>
+                The filter surfaces 32 high-volume contracts that three public labelers cannot name. That set is an illustration here, not a finding, and it carries every caveat above: its figures reflect 39.1% of the one operator I can measure completely, most of its members are classified by the <em>absence</em> of a venue interface rather than positive identification, and the fleet that taught me the most entered the analysis only because three of its members were already in the queue. Anything that missed entirely is invisible to me and contributes nothing to any recall number in this piece. All of them are upper bounds.
+            </p>
+            <p>
+                I am not publishing a list of suspects. I am publishing the filter, the rule's measured false-negative rate, and the order of the stack.
+            </p>
+            <p>
+                So, to answer the question the first line of this piece opened: yes, there is a detector. It is one predicate and one probe, with a 1.9% false-negative rate on 53 held-out executors. It sits on a candidate set whose staleness costs more than the detector could ever win back.
+            </p>
+
+            <h2>What I would tell the version of me who started</h2>
+            <p>
+                Measure the candidate set before the classifier that sits on it.
+            </p>
+            <p>
+                And run the check. Most bad numbers do not come from checks nobody built. They come from checks nobody ran.
+            </p>
+
+        </article>
+
+        <!-- Newsletter -->
+        <aside class="mt-12 border-l-2 border-purple-700/50 pl-5 text-sm text-gray-400">
+            <p>
+                The measurements behind this case study are published as they run, corrections against our own sampler included. <a href="https://cleartracedata.com/newsletter" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 transition-colors">Read the ClearTrace archive and subscribe</a>.
+            </p>
+        </aside>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Building a measurement layer you need to trust?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, and into numbers a board can rely on.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
