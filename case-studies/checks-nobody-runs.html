@@ -216,7 +216,7 @@
                     I read a dictionary key that did not exist. <code>.get()</code> returned <code>None</code>, <code>or {}</code> made it an empty dict, and "no interface responded" was printed for eight contracts that were never asked.
                 </li>
                 <li>
-                    A guard applied to one branch and not the next. A legitimate empty return <code>"0x"</code> failed the first check, passed the second, and decoded as <code>"0x" + "0x"[-40:]</code> = <code>"0x0x"</code>. Every contract <em>without</em> an owner was bucketed into one phantom owner, producing an 8-contract, $116M cluster that was the exact inverse of the truth.
+                    A guard applied to one branch and not the next. A legitimate empty return, meaning the bare hex prefix with no payload, failed the first check and passed the second. The decoder then concatenated a prefix onto that value's own last 40 characters, which for an empty return is the prefix itself, yielding a doubled prefix it treated as an address. Every contract <em>without</em> an owner was bucketed into that one phantom owner, producing an 8-contract, $116M cluster that was the exact inverse of the truth.
                 </li>
                 <li>
                     I inferred that the candidate table was missing active routers by comparing a 30-day sum of swap legs against a 7-day sum of per-transaction maximum legs from a snapshot taken 17.8 days earlier. Three mismatches at once: window length, metric definition, as-of date. The gap did not exist; every absence was the window. That retraction is what led to term 1.
