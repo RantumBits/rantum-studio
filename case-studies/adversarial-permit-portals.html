@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scraping Adversarial Municipal Portals: A Permit Pipeline That Knows When It Failed | Rantum Studio</title>
+    <meta name="description" content="Municipal permit portals fail by answering cheerfully and wrong: a rejected login returns an empty list, and a silent result-set cap drops the newest records. Here is the permit pipeline built to detect both, across 27 jurisdictions and eight portal platforms.">
+    <meta property="og:title" content="Scraping Adversarial Municipal Portals: A Permit Pipeline That Knows When It Failed | Rantum Studio">
+    <meta property="og:description" content="A rejected login returns an empty list and the run reports success. A silent result-set cap returns the oldest 500 rows and calls itself complete. How AddressIntel detects the failures that look like data.">
+    <meta property="og:image" content="https://rantum.xyz/og-adversarial-permit-portals.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/adversarial-permit-portals.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-adversarial-permit-portals.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/adversarial-permit-portals.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Scraping Adversarial Municipal Portals: A Permit Pipeline That Knows When It Failed",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="address-intel.html" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            AddressIntel &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">PropTech</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Data Engineering</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Scraping</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Scraping Adversarial Municipal Portals
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                Building-permit data is public by law and adversarial in practice. The dangerous failure is not the portal that blocks you. It is the portal that answers cheerfully and wrong, so a broken scraper and a quiet city produce the same number: zero.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">187,838</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Permits collected</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">27</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Jurisdictions</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">8</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Portal platforms</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                Every California city publishes its building permits, and almost none of them publish the same way. The San Francisco Peninsula alone runs eTRAKiT (on at least two incompatible vendor forks), Tyler Technologies' Energov and Civic Self Service, Accela, Clariti, PermitStack, one municipal open-data feed, and one city whose only complete record is a monthly report it posts as a document. Searches are login-gated, JavaScript-rendered, and driven by ASP.NET postbacks that rewrite the form under you. Two portals in the set answer to a browser and not to a client library.
+            </p>
+            <p>
+                That is the visible difficulty, and it is the easy half. A blocked request is loud: it throws, the run goes red, somebody fixes it. The failures that actually cost you are the ones that return a well-formed answer to a question you did not ask.
+            </p>
+            <p>
+                <strong>Failure one: the empty list that looks like a quiet month.</strong> One city's portal login was being rejected on every run. The scraper printed a warning, returned an empty permit list, and the pipeline reported success. A city we actively cover disappeared from the product for weeks and nothing alarmed. Then the absence did what absences always do: it turned into a zero. The city's demolition-permit count rendered as 0, indistinguishable from a city that genuinely filed none, and that zero reached public copy written for Peninsula builders who would have known on sight that it was false.
+            </p>
+            <p>
+                <strong>Failure two: the result set that is not the answer.</strong> Every eTRAKiT host caps a search result. It applies the cap before sorting, it emits no error, and once the grid's page size is raised past the cap the pager that would have read "page 1 of 5" simply disappears. A truncated result set is byte-for-byte indistinguishable from a complete one. Worse, the rows it keeps follow the portal's own internal order, which skews heavily oldest-first, so the truncation drops the newest permits: the only ones a recent-activity scrape exists to find.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                AddressIntel's permit layer is a fleet of nine scrapers across eight portal platforms, running Selenium and undetected-chromedriver on a self-hosted runner, plus a document-ingest path for the cities that will not be scraped at all. As of September 16, 2026 it holds <strong>187,838 permits across 27 jurisdictions</strong>, of which 177,522 carry an assessor's parcel number and 128,324 carry a declared valuation. Those numbers are the easy part to report. The engineering worth describing is the part that decides whether to believe them.
+            </p>
+
+            <h3>1. Measure the cap; never assume it</h3>
+            <p>
+                Because nothing on the page announces truncation, the size of the result set is the only tell available, and it has to be read before anything is trusted. Each host's cap was measured directly on August 25, 2026, one query per host, page size raised to 2000 so the whole set arrived at once:
+            </p>
+            <div class="not-prose my-8 overflow-x-auto">
+              <table class="w-full text-sm font-mono border border-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-black/40 text-gray-400">
+                  <tr>
+                    <th class="text-left px-4 py-3 border-b border-gray-800">Host</th>
+                    <th class="text-right px-4 py-3 border-b border-gray-800">Cap</th>
+                    <th class="text-left px-4 py-3 border-b border-gray-800">"ISSUED AT LEAST 01/01/2015" returned</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300">
+                  <tr><td class="px-4 py-3 border-b border-gray-800">Atherton</td><td class="px-4 py-3 border-b border-gray-800 text-right">100</td><td class="px-4 py-3 border-b border-gray-800">100 rows, newest issued 2018-07-16</td></tr>
+                  <tr><td class="px-4 py-3 border-b border-gray-800">Hillsborough</td><td class="px-4 py-3 border-b border-gray-800 text-right">500</td><td class="px-4 py-3 border-b border-gray-800">500 rows, newest issued 2020-01-08</td></tr>
+                  <tr><td class="px-4 py-3 border-b border-gray-800">Saratoga</td><td class="px-4 py-3 border-b border-gray-800 text-right">500</td><td class="px-4 py-3 border-b border-gray-800">500 rows, newest issued 2015-04-09</td></tr>
+                  <tr><td class="px-4 py-3">Redwood City</td><td class="px-4 py-3 text-right">1000</td><td class="px-4 py-3">1000 rows, 743 of them from 2015</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+                The cap is not uniform. It ranges from 100 to 1000 across four hosts of nominally the same product, so it cannot be hardcoded once and forgotten. It is also not a page-size artifact: page one of the un-resized grid reports "page 1 of N" with N times the page size equal to the cap exactly, and raising the page size past the cap returns the cap with no pager at all.
+            </p>
+            <p>
+                The obvious workaround does not work either. Sorting a saturated Hillsborough search by issued date descending, which is precisely what the scraper's own sort helper does, still returns the same 500 rows with a newest date of 2026-04-22, while the city has been issuing permits continuously since. Sorting reorders the survivors. It does not change which rows survived.
+            </p>
+            <p>
+                Two hosts in the fleet are login-gated and their caps are therefore <em>unmeasured</em> rather than absent, which is a distinction worth encoding. An unmeasured host must not be treated as an uncapped one. For those, the fallback test is a total landing exactly on a round number, and it is a real signal rather than a superstition: a result set is a count of permits a city happened to issue, and that count landing on exactly 500 by coincidence is far less likely than it landing there because something clipped it.
+            </p>
+<pre><code class="language-python">def etrakit_is_saturated(total_rows, url=None, cap=None):
+    """True when a result set of `total_rows` is sitting on its host's cap.
+
+    Saturated means TRUNCATED: the portal returned as many rows as it will
+    ever return, so there are almost certainly more records matching the
+    search than came back, and the ones missing are the newest.
+
+    Deliberately &gt;= rather than ==: a host that raises its cap, or one whose
+    cap was measured low, must still trip this.
+    """
+    if total_rows is None:
+        return False
+    cap = cap or etrakit_result_cap(url)
+    if cap:
+        return total_rows &gt;= cap
+    return total_rows in ETRAKIT_ROUND_CAPS</code></pre>
+
+            <h3>2. Find the one bucket the platform cannot truncate</h3>
+            <p>
+                Detecting truncation is only useful if there is something better to do than report it. The standard answer, bisect the query until each half fits, is unavailable here: the search offers one criterion and five operators (BEGINS WITH, CONTAINS, EQUALS, AT LEAST, AT MOST), there is no BETWEEN and no second field, the string operators reject a partial date outright, and AT MOST truncates from the same end, so an AT MOST query on the Atherton host comes back with 100 rows whose newest is 2008-04-28.
+            </p>
+            <p>
+                That leaves EQUALS on a single calendar day as the only bounded bucket the platform offers, and it turns out to be an excellent one. Measured across the four date-search hosts, a single day returns 5 to 22 rows against caps of 100 to 1000. A bucket that small cannot be silently truncated, which converts an unanswerable question into an answerable one at the cost of one postback per day walked.
+            </p>
+            <p>
+                The walk runs newest-first on a 45-day budget, because each day costs a postback and its settle time, and the freshest permits are the ones worth spending the budget on. The budget is deliberately a budget and not a window: whatever it does not reach is named explicitly in the run log and recorded as a source failure rather than being allowed to vanish. A historical backfill asks for 1825 days, which this path will not walk, and saying so out loud is the entire point. The alternative is a backfill that returns the portal's oldest 500 rows and calls itself complete.
+            </p>
+            <p>
+                One further distinction earns its keep: a saturation the day-walk fully recovered from costs time, not data, and is therefore <em>not</em> recorded as a failure. Only days the walk could not cover are. A busy city would otherwise red the pipeline twice a day forever, which is the alarm-nobody-reads failure mode the health gate exists to prevent.
+            </p>
+
+            <h3>3. An alarm you would still read on day 400</h3>
+            <p>
+                The health registry records only failures the scrapers <em>know</em> about: a rejected login, an unreachable portal, a saturated search that could not be recovered. Breakage is never inferred from a low permit count. A quiet city and a broken scraper both produce zero permits, and guessing between them is how you build an alarm that cries wolf and then gets ignored. If a scraper cannot tell you it failed, that is a gap in the scraper, not something to paper over in the gate.
+            </p>
+            <p>
+                Three implementation details follow from taking that seriously.
+            </p>
+            <ul>
+                <li><strong>Failures flush on every failure, not at the end of the run.</strong> The scrape executes under a <code>timeout</code> that terminates it when the budget expires, routinely. Anything saved only at the end is lost exactly when a slow, failing source is the likeliest cause.</li>
+                <li><strong>The gate runs last, after the sync and the data-store save.</strong> The run goes red, but every byte the scrape did manage to collect is already persisted. A red run that kept its data is the goal; a green run that quietly lost a city is the thing being fixed.</li>
+                <li><strong>Known-unscrapable sources report without reddening the run.</strong> Where the fix is a new data source rather than a retry, a permanent red is just a switched-off alarm. Entry into that list requires a tracked issue and a stated reason, and nothing else.</li>
+            </ul>
+            <p>
+                The retry policy is drawn on the same line. A timeout, a stale element reference, an intercepted click, a grid that did not re-render, an ASP.NET postback that never landed: these differ between two runs against unchanged markup, so they get one more attempt with a fresh driver. Two red runs in August 2026 were exactly this, one dying on an index error and one on a renderer timeout, both with runs ninety minutes earlier that had walked the identical pages to a clean finish, and both with their sync and data-store save already succeeded. They were red purely on an exit code.
+            </p>
+            <p>
+                <code>NoSuchElement</code> is pointedly excluded from that list. An element that is simply absent is the signature of a portal whose markup changed, which is real breakage and must red the run on the first attempt rather than being retried until it looks intermittent.
+            </p>
+            <p>
+                Above the per-source gate sits one inference that <em>is</em> safe to make. One quiet city is ordinary. Every city sharing a single scraper going quiet at once is a fact about the shared code, not about the cities, so a platform whose every source came back empty is reported as a known failure.
+            </p>
+
+            <h3>4. Knowing when scraping is the wrong answer</h3>
+            <p>
+                One town's portal has no issued-date search at all, only permit number and site address. A number-walk is technically possible; the town's permits carry year-prefixed series identifiers that the fleet's number-walk path already enumerates elsewhere. It is still not the fix, because that portal's public detail panel carries no declared valuation and no parcel number, and declared valuation is the field the town is carried for. A number-walk would restore row count while losing the column that matters, at roughly thirty-six seconds per permit. The route out is a recurring public-records request instead: one delivery carried $309M of declared valuation across 2,405 of the town's 5,128 permits.
+            </p>
+            <p>
+                That entry in the registry also carries its own correction, which is the part worth keeping. It used to assert that the number-walk was impossible because the town's permit identifiers were pure numeric strings with no series prefix. They are not. The claim had been written while the town had zero scraped rows and nobody had yet seen a real permit number from it, and it survived until a records delivery revealed the actual format. An assumption made in the absence of data reads exactly like a measurement once it is written down in a code comment.
+            </p>
+            <p>
+                A smaller instance of the same discipline: the results grid clips long descriptions to thirty characters server-side, with a literal ellipsis and no title attribute holding the full string, so the complete value is genuinely not on the page. The ellipsis is kept rather than stripped. It is the only honest signal that the stored value is a prefix, and stripping it would make a clipped string indistinguishable from a complete one. Full strings arrive later from the sources that print them whole, and the writer never overwrites a value it already holds, so a clipped scrape cannot regress a complete record.
+            </p>
+
+            <h2>What It Shows</h2>
+            <p>
+                Finding signal in data that is public in principle and obstructed in practice, and being able to state which parts of it are trustworthy. The scraping is ordinary engineering. The part that is rare is the instrumentation around it: a pipeline that distinguishes a failure from an absence, refuses to read a truncated answer as a complete one, and reports the gap it could not close rather than emitting a confident number over it.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                That a dataset assembled from hostile, fragmented public sources can carry a defensible claim about its own coverage. Anyone can produce a permit table. The question a buyer should ask is what happens the week a vendor changes a form control, and whether the answer is a loud failure or a silently shortened table that still renders a chart. Here the answer is written down, measured against live portals, and enforced in a gate that runs after the data is already saved.
+            </p>
+            <p>
+                It also shows the cost of the alternative. A scraper that cannot tell you it failed produced a zero, that zero became a published statistic, and the fix was not a better scraper. It was teaching the pipeline the difference between "none" and "unknown".
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
