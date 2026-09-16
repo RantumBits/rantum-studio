@@ -1,0 +1,25 @@
+# Every page under case-studies/ and research/ must be listed on every surface
+# that enumerates pages (the index card, BOTH sitemaps, llms.txt), and the two
+# sitemaps must agree. Hand-maintaining those four files failed on four of the
+# last six new pages (a8d52c9, b5b2b86, #49, #50, #56), each costing a follow-up
+# PR and days of a live page Google could not attribute to a sitemap.
+# See scripts/site-links-check.js.
+name: Site links check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  site-links-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      # No dependencies on purpose: the check must not be able to fail open
+      # because an install broke.
+      - run: node scripts/site-links-check.test.js
+      - run: node scripts/site-links-check.js
