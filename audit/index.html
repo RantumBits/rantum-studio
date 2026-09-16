@@ -132,6 +132,17 @@
                 The report is the product. It is not a sales document with the substance held back; it is the findings themselves, quantified, with every number tied to a query that can be re-run. If the audit is the only work we ever do together, it should still have been worth it.
             </p>
 
+            <h2>What the audit actually measures</h2>
+            <p>
+                Most of what we find comes out of one comparison: the number your system promised, measured against what it actually delivered. A quoted price, a predicted score, an advertised accuracy, the metric your investors see.
+            </p>
+            <p>
+                In trading that comparison already has a name, implementation shortfall, and a regulatory context, best execution, and desks staff a function to do it. Outside trading it usually has neither, and the promise and the outcome are typically recorded by different systems, so the comparison is nobody's assigned job. That is most of why the gap goes unmeasured.
+            </p>
+            <p>
+                We built our instrument for it on our own product. ClearTrace, our live execution-quality service, asks a DEX aggregator for a real quote, then replays that aggregator's own swap calldata in a fork simulation and reads the output the route produces. The shortfall against the quote is split into the fee the venue took and an unexplained residual, with gas reported alongside it rather than folded into it. Everything about how that is computed, including what it cannot measure, is <a href="https://cleartracedata.com/research/how-execution-quality-works" target="_blank" rel="noopener noreferrer">published in full</a>.
+            </p>
+
             <h2>What we look for</h2>
             <p>
                 These are the failure modes we hunt first, because we have hit every one of them building and operating our own live data products:
