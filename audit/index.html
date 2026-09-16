@@ -39,7 +39,7 @@
       "@type": "Service",
       "name": "Data & Model Audit",
       "serviceType": "Data and machine-learning model audit",
-      "description": "A fixed-scope, fixed-price audit of one pipeline, model, or data system, delivered as a written report: findings, risk flags, and an ROI-ranked roadmap.",
+      "description": "A fixed-scope, fixed-price audit of one pipeline, model, or data system, built on promised-versus-realized measurement: what the system promised, measured against what it actually delivered. Delivered as a written report: findings, risk flags, and an ROI-ranked roadmap.",
       "provider": {
         "@type": "Organization",
         "name": "Rantum",
@@ -132,6 +132,14 @@
                 The report is the product. It is not a sales document with the substance held back; it is the findings themselves, quantified, with every number tied to a query that can be re-run. If the audit is the only work we ever do together, it should still have been worth it.
             </p>
 
+            <h2>The method has a name</h2>
+            <p>
+                We call it <strong>promised-versus-realized measurement</strong>. Take the number your system promised &mdash; a quoted price, a predicted score, an advertised accuracy, the metric on the dashboard &mdash; and measure it against what the system actually delivered, on evidence your team can re-run. The promise and the outcome are almost always recorded by different systems, and in a normal stack nothing is responsible for putting the two side by side, which is why the gap can run for months without anyone seeing it.
+            </p>
+            <p>
+                We built the method on our own product. ClearTrace, our live execution-quality service, asks a DEX aggregator for a real quote, then immediately replays that aggregator's own swap calldata against live chain state in a fork simulation and reads the amount the swap actually produces. The shortfall against the quote is then decomposed into fee, slippage and gas, rather than averaged into a single score. The mechanics and the formulas are <a href="https://cleartracedata.com/research/how-execution-quality-works">published in full</a>. The same comparison runs against a pricing model, a forecast, an SLA, or any number you report and have to stand behind.
+            </p>
+
             <h2>What we look for</h2>
             <p>
                 These are the failure modes we hunt first, because we have hit every one of them building and operating our own live data products:
@@ -141,13 +149,13 @@
                 <li><strong>Conclusions from samples too thin to support them.</strong> Cohort comparisons and headline claims made before the data can statistically carry them. These often <em>reverse</em> once the sample fills in.</li>
                 <li><strong>Validation that flatters the model.</strong> Label leakage, look-ahead bias, backtests without point-in-time discipline. A model that looks great in the notebook and quietly degrades in production usually failed here.</li>
                 <li><strong>Monitoring that fails silently.</strong> Checks that error out, get skipped, and report green anyway. A broken verifier is worse than no verifier, because it manufactures false confidence.</li>
-                <li><strong>Promised vs. realized gaps.</strong> Where quoted prices, predicted scores, or advertised accuracy diverge from what the system actually delivers, measured, not assumed.</li>
+                <li><strong>Promised-versus-realized gaps.</strong> Where quoted prices, predicted scores, or advertised accuracy diverge from what the system actually delivers, measured, not assumed. This is the failure mode <strong>promised-versus-realized measurement</strong> is built for, and it is the one we find fastest.</li>
             </ul>
 
             <h2>How the three weeks run</h2>
             <ul>
                 <li><strong>Week 1: Trace.</strong> Read the code, map the data lineage end to end, and inventory every assumption the system makes. Output: a shared map of how the system actually works, which is often news by itself.</li>
-                <li><strong>Week 2: Test.</strong> Quantify. Re-derive the headline metrics from raw data, run leakage and point-in-time checks, measure promised-vs-realized gaps, and probe the failure modes above.</li>
+                <li><strong>Week 2: Test.</strong> Quantify. Re-derive the headline metrics from raw data, run leakage and point-in-time checks, run the promised-versus-realized measurement against your headline claims, and probe the failure modes above.</li>
                 <li><strong>Week 3: Report.</strong> Written findings with severity ratings and an ROI-ranked roadmap: what to fix, in what order, and what each fix is worth. Delivered with a walkthrough call.</li>
             </ul>
 
