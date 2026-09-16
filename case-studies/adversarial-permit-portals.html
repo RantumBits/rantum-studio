@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scraping Adversarial Municipal Portals: A Permit Pipeline That Knows When It Failed | Rantum Studio</title>
-    <meta name="description" content="Municipal permit portals fail by answering cheerfully and wrong: a rejected login returns an empty list, and a silent result-set cap drops the newest records. Here is the permit pipeline built to detect both, across 27 jurisdictions and eight portal platforms.">
+    <meta name="description" content="Municipal permit portals fail by answering cheerfully and wrong: a rejected login returns an empty list, and a silent result-set cap drops the newest records. Here is the permit pipeline built to detect both, across 20 permitting jurisdictions and six vendor portal platforms.">
     <meta property="og:title" content="Scraping Adversarial Municipal Portals: A Permit Pipeline That Knows When It Failed | Rantum Studio">
     <meta property="og:description" content="A rejected login returns an empty list and the run reports success. A silent result-set cap returns the oldest 500 rows and calls itself complete. How AddressIntel detects the failures that look like data.">
     <meta property="og:image" content="https://rantum.xyz/og-adversarial-permit-portals.png">
@@ -98,12 +98,12 @@
                 <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Permits collected</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">27</div>
-                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Jurisdictions</div>
+                <div class="text-2xl font-bold text-white font-mono">20</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Permitting jurisdictions</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">8</div>
-                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Portal platforms</div>
+                <div class="text-2xl font-bold text-white font-mono">6</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Vendor portal platforms</div>
             </div>
         </div>
 
@@ -112,26 +112,39 @@
 
             <h2>The Challenge</h2>
             <p>
-                Every California city publishes its building permits, and almost none of them publish the same way. The San Francisco Peninsula alone runs eTRAKiT (on at least two incompatible vendor forks), Tyler Technologies' Energov and Civic Self Service, Accela, Clariti, PermitStack, one municipal open-data feed, and one city whose only complete record is a monthly report it posts as a document. Searches are login-gated, JavaScript-rendered, and driven by ASP.NET postbacks that rewrite the form under you. Two portals in the set answer to a browser and not to a client library.
+                Most California cities publish their building permits, and almost none of them publish the same way. The San Francisco Peninsula alone runs six vendor portal products (eTRAKiT, on at least two incompatible forks; Tyler Technologies' EnerGov and Civic Self Service; Accela; Clariti; PermitStack), one municipal open-data feed, and one city whose only complete record is a monthly report it posts as a document. Searches are login-gated, JavaScript-rendered, and driven by ASP.NET postbacks that rewrite the form under you. Two of the portals answer only to a real browser.
             </p>
             <p>
-                That is the visible difficulty, and it is the easy half. A blocked request is loud: it throws, the run goes red, somebody fixes it. The failures that actually cost you are the ones that return a well-formed answer to a question you did not ask.
+                A blocked request is loud: it throws, the run goes red, somebody fixes it. The failures that cost you are the ones that return a well-formed answer to a question you did not ask.
             </p>
             <p>
-                <strong>Failure one: the empty list that looks like a quiet month.</strong> One city's portal login was being rejected on every run. The scraper printed a warning, returned an empty permit list, and the pipeline reported success. A city we actively cover disappeared from the product for weeks and nothing alarmed. Then the absence did what absences always do: it turned into a zero. The city's demolition-permit count rendered as 0, indistinguishable from a city that genuinely filed none, and that zero reached public copy written for Peninsula builders who would have known on sight that it was false.
+                <strong>Failure one: the empty list that looks like a quiet month.</strong>
             </p>
             <p>
-                <strong>Failure two: the result set that is not the answer.</strong> Every eTRAKiT host caps a search result. It applies the cap before sorting, it emits no error, and once the grid's page size is raised past the cap the pager that would have read "page 1 of 5" simply disappears. A truncated result set is byte-for-byte indistinguishable from a complete one. Worse, the rows it keeps follow the portal's own internal order, which skews heavily oldest-first, so the truncation drops the newest permits: the only ones a recent-activity scrape exists to find.
+                One city's portal login was being rejected on every run. The scraper printed a warning, returned an empty permit list, and the pipeline reported success. A city we actively cover disappeared from the product for weeks and nothing alarmed.
             </p>
-
+            <p>
+                Then the absence turned into a zero. The city's demolition-permit count rendered as <code>0</code>, indistinguishable from a city that had filed none, and that zero reached public copy written for builders in that market.
+            </p>
+            <p>
+                <strong>Failure two: the result set that is not the answer.</strong>
+            </p>
+            <p>
+                Every eTRAKiT host caps a search result. It applies the cap before sorting, it emits no error, and once the grid's page size is raised past the cap the pager that would have read "page 1 of N" disappears. Nothing on the page distinguishes a truncated result set from a complete one except its size.
+            </p>
+            <p>
+                The rows it keeps follow the portal's own internal order, which skews heavily oldest-first, so the truncation drops the newest permits: the only ones a recent-activity scrape exists to find.
+            </p>
             <h2>What We Built</h2>
             <p>
-                AddressIntel's permit layer is a fleet of nine scrapers across eight portal platforms, running Selenium and undetected-chromedriver on a self-hosted runner, plus a document-ingest path for the cities that will not be scraped at all. As of September 16, 2026 it holds <strong>187,838 permits across 27 jurisdictions</strong>, of which 177,522 carry an assessor's parcel number and 128,324 carry a declared valuation. Those numbers are the easy part to report. The engineering worth describing is the part that decides whether to believe them.
+                AddressIntel's permit layer is a fleet of nine scrapers, running Selenium and undetected-chromedriver on a self-hosted runner, over six vendor portal platforms, one municipal open-data feed, and one city's published monthly reports, plus a records-request ingest for the towns that cannot be scraped at all. As of 2026-09-16 it holds <strong>187,838 permits across 20 permitting jurisdictions</strong>: nineteen cities and towns, plus unincorporated San Mateo County, whose rows carry the names of seven coastal communities. 177,522 of the permits carry an assessor's parcel number and 128,324 carry a declared valuation above zero.
             </p>
-
+            <p>
+                Two things about that count belong next to it. Coverage is uneven, from 53,160 rows in Palo Alto to 28 in Foster City, and a city with few rows is either quiet or under-collected, which the rest of this piece is about telling apart. And 39,830 rows, 21% of the total, carry no issued date: 37,235 of those are Palo Alto's, from an open-data export that publishes an application date and a lifecycle status for each permit (33,641 of them Finaled) but no issue date. The remaining 2,595 are spread across five other sources with mixed statuses, including 372 marked Issued that carry no date for it. One Saratoga row is dated 2026-10-03, seventeen days after this was written, with an application date of 2025-10-01. It is stored as the portal printed it.
+            </p>
             <h3>1. Measure the cap; never assume it</h3>
             <p>
-                Because nothing on the page announces truncation, the size of the result set is the only tell available, and it has to be read before anything is trusted. Each host's cap was measured directly on August 25, 2026, one query per host, page size raised to 2000 so the whole set arrived at once:
+                Because nothing on the page announces truncation, the size of the result set is the only tell available, and it has to be read before anything is trusted. Each host's cap was measured directly on 2026-08-25, one query per host, page size raised to 2000 so the whole set arrived at once:
             </p>
             <div class="not-prose my-8 overflow-x-auto">
               <table class="w-full text-sm font-mono border border-gray-800 rounded-lg overflow-hidden">
@@ -151,13 +164,13 @@
               </table>
             </div>
             <p>
-                The cap is not uniform. It ranges from 100 to 1000 across four hosts of nominally the same product, so it cannot be hardcoded once and forgotten. It is also not a page-size artifact: page one of the un-resized grid reports "page 1 of N" with N times the page size equal to the cap exactly, and raising the page size past the cap returns the cap with no pager at all.
+                The cap ranges from 100 to 1000 across four hosts of nominally the same product, so it cannot be hardcoded once and forgotten. It is also independent of page size: page one of the un-resized grid reports "page 1 of N" with N times the page size equal to the cap exactly, and raising the page size past the cap returns the cap with no pager at all.
             </p>
             <p>
-                The obvious workaround does not work either. Sorting <code>AT LEAST 01/01/2026</code> on the Hillsborough host by issued date descending, which is what the scraper's own sort helper does, still returns that query's 500 rows stopping at 2026-04-22, while the city has been issuing permits continuously since. That is a different query from the one in the table above, which is why its cut-off date differs; both saturate at 500. Sorting reorders the survivors. It does not change which rows survived.
+                Sorting does not help. Sorting <code>AT LEAST 01/01/2026</code> on the Hillsborough host by issued date descending, which is what the scraper's own sort helper does, still returns that query's 500 rows stopping at 2026-04-22, while the city has been issuing permits continuously since. (That is a different query from the one in the table above, which is why its cut-off date differs; both saturate at 500.) Sorting reorders the survivors. It does not change which rows survived.
             </p>
             <p>
-                Two hosts in the fleet are login-gated and their caps are therefore <em>unmeasured</em> rather than absent, which is a distinction worth encoding. An unmeasured host must not be treated as an uncapped one. For those, the fallback test is a total landing exactly on a round number, and it is a real signal rather than a superstition: a result set is a count of permits a city happened to issue, and that count landing on exactly 500 by coincidence is far less likely than it landing there because something clipped it.
+                Two hosts in the fleet are login-gated, so their caps are <em>unmeasured</em> rather than absent, and the code keeps that distinction. For those, the fallback test is a total landing exactly on a round number: a result set is a count of permits a city happened to issue, and that count landing on exactly 500 by coincidence is far less likely than it landing there because something clipped it.
             </p>
 <pre><code class="language-python">def etrakit_is_saturated(total_rows, url=None, cap=None):
     """True when a result set of `total_rows` is sitting on its host's cap.
@@ -175,83 +188,75 @@
     if cap:
         return total_rows &gt;= cap
     return total_rows in ETRAKIT_ROUND_CAPS</code></pre>
-
             <h3>2. Find the one bucket the platform cannot truncate</h3>
             <p>
-                Detecting truncation is only useful if there is something better to do than report it. The standard answer, bisect the query until each half fits, is unavailable here: the search offers one criterion and five operators (BEGINS WITH, CONTAINS, EQUALS, AT LEAST, AT MOST), there is no BETWEEN and no second field, the string operators reject a partial date outright, and AT MOST truncates from the same end, so an AT MOST query on the Atherton host comes back with 100 rows whose newest is 2008-04-28.
+                Detecting truncation is only useful if there is something better to do than report it. The standard answer, bisect the query until each half fits, is unavailable here: the search offers one criterion and five operators (<code>BEGINS WITH</code>, <code>CONTAINS</code>, <code>EQUALS</code>, <code>AT LEAST</code>, <code>AT MOST</code>), there is no <code>BETWEEN</code> and no second field, the string operators reject a partial date outright, and <code>AT MOST</code> truncates from the same end, so an <code>AT MOST</code> query on the Atherton host comes back with 100 rows whose newest is 2008-04-28.
             </p>
             <p>
-                That leaves EQUALS on a single calendar day as the only bounded bucket the platform offers, and it turns out to be an excellent one. Measured across the four date-search hosts, a single day returns 5 to 22 rows against caps of 100 to 1000. A bucket that small cannot be silently truncated, which converts an unanswerable question into an answerable one at the cost of one postback per day walked.
+                That leaves <code>EQUALS</code> on a single calendar day as the only bounded bucket the platform offers. Measured across the four date-search hosts, a single day returns 5 to 22 rows against caps of 100 to 1000. A bucket that small never reaches the cap, and the scraper checks each day's total anyway, so a day that did saturate would be reported rather than half-read.
             </p>
             <p>
-                The walk runs newest-first on a 45-day budget, because each day costs a postback and its settle time, and the freshest permits are the ones worth spending the budget on. The budget is deliberately a budget and not a window: whatever it does not reach is named explicitly in the run log and recorded as a source failure rather than being allowed to vanish. A historical backfill asks for 1825 days, which this path will not walk, and saying so out loud is the entire point. The alternative is a backfill that returns the portal's oldest 500 rows and calls itself complete.
+                The walk runs newest-first on a 45-day budget, because each day costs a postback and its settle time, and the freshest permits are the ones worth spending the budget on. Whatever the budget does not reach is named in the run log and recorded as a source failure. A historical backfill asks for 1825 days, which this path will not walk; the alternative is a backfill that returns the portal's oldest 500 rows and calls itself complete.
             </p>
             <p>
-                <strong>What the instrument actually reads.</strong> Across the sixteen scheduled runs from September 10 to September 16, 2026, twelve reached the Atherton host's date search. All twelve saturated its 100-row cap and fell back to the day-walk; the other four were cut off by the time budget before reaching it. None of the sixteen recorded an uncovered window, so the fallback never had to report a gap it could not close.
+                <strong>What the instrument reads.</strong> Across the sixteen scheduled runs from 2026-09-10 to 2026-09-16, twelve reached the Atherton host's date search. All twelve saturated its 100-row cap and fell back to the day-walk; the other four were cut off by the time budget before reaching it. None of the sixteen recorded an uncovered window, so the fallback never had to report a gap it could not close.
             </p>
             <p>
-                The outcome is visible in the database, which holds <strong>138 Atherton permits issued on or after August 16, 2026</strong>, for a search the portal will not return more than 100 rows of. The town's 1,298-page records ingest cannot account for the surplus: it landed on August 5, 2026, before that window opens. Saturation is not an edge case on this host, it is the steady state, and without the fallback every one of those twelve runs would have reported success while handing back the oldest hundred rows of the window.
+                The outcome is visible in the database, which holds <strong>138 Atherton permits issued on or after 2026-08-16</strong>, for a search the portal will not return more than 100 rows of. The town's 1,298-page records ingest cannot account for the surplus: it landed on 2026-08-05, before that window opens. Saturation on this host is the steady state, and without the fallback every one of those twelve runs would have reported success while handing back the oldest hundred rows of the window.
             </p>
             <p>
-                The budget that actually binds is not the 45-day one. Every one of those runs stopped after 12 to 16 of the 31 days, on the 50-permit <code>max_permits</code> cap the walk inherits from the plain search. The 45-day figure is the ceiling on how far back a walk may reach, not a promise about how far it got.
+                The budget that binds is <code>max_permits</code>, at 50. Every one of those runs stopped after 12 to 16 of the 31 days on that cap, which the walk inherits from the plain search. The 45-day figure is the ceiling on how far back a walk may reach.
             </p>
             <p>
-                A saturation the day-walk fully recovered from costs time, not data, and is therefore <em>not</em> recorded as a failure. Only days the walk could not cover are. A busy city would otherwise red the pipeline twice a day forever, which is the alarm-nobody-reads failure mode the health gate exists to prevent.
+                A saturation the day-walk fully recovered from costs time and is therefore <strong>not</strong> recorded as a failure. Only days the walk could not cover are. A busy city would otherwise red the pipeline twice a day forever, which is the alarm-nobody-reads failure mode the health gate exists to prevent.
             </p>
-
-            <h3>3. An alarm you would still read on day 400</h3>
+            <h3>3. Two gates, and the incident between them</h3>
             <p>
-                The health registry records only failures the scrapers <em>know</em> about: a rejected login, an unreachable portal, a saturated search that could not be recovered. It does not infer breakage from a low permit count, because a quiet city and a broken scraper both produce zero permits, and guessing between them is how you build an alarm that cries wolf and then gets ignored. If a scraper cannot tell you it failed, that is a gap in the scraper, not something to paper over in the gate.
-            </p>
-            <p>
-                That rule is right for the registry, and it was not enough for the pipeline. On September 1, 2026, two cities were found silently dead in production: Sunnyvale had added no permit row for 14 days, Woodside for 33. Every run in that window reported success, and three separate guards missed it. The registry saw nothing, because neither city failed in a way its scraper knew about: Woodside's date-walk searched a portal that has no date search and got a legitimate empty result, and Sunnyvale's aggregator answered HTTP 200 with frozen data. The freshness check read <code>MAX(scraped_at)</code> across every city at once, which San Jose alone holds at today forever, so it reported all sources fresh on the morning both cities were 14 and 33 days dead. The third guard reported which targets the time budget cut off, which catches starvation and not breakage; Sunnyvale had been reached in 8 of the previous 11 runs and ingested nothing on every one.
+                The health registry records only failures the scrapers <em>know</em> about: a rejected login, an unreachable portal, a saturated search that could not be recovered. It does not infer breakage from a low permit count, because a quiet city and a broken scraper both produce zero permits, and guessing between them is how you build an alarm that cries wolf and then gets ignored. If a scraper cannot tell you it failed, that is a gap in the scraper.
             </p>
             <p>
-                The failure mode they share is that a permit source can fail by succeeding at nothing, and nothing was watching whether rows actually landed, per city, over time. So a second gate now does exactly that, and it does infer from volume, which is the thing the registry refuses to do. That is not a reversal; it is the same inference moved to a place where it can be made explicit and sized.
+                That rule is right for the registry, and it was not enough for the pipeline. On 2026-09-01, two cities were found silently dead in production: Sunnyvale had added no permit row for 14 days, Woodside for 33. Every run in that window reported success, and three separate guards missed it. The registry saw nothing, because neither city failed in a way its scraper knew about: Woodside's date-walk searched a portal that has no date search and got a legitimate empty result, and Sunnyvale's aggregator answered HTTP 200 with frozen data. The freshness check read <code>MAX(scraped_at)</code> across every city at once, which San Jose alone holds at today forever, so it reported all sources fresh on the morning both cities were 14 and 33 days dead. The third guard reported which targets the time budget had cut off; Sunnyvale had been reached in 8 of the previous 11 runs and ingested nothing on every one.
             </p>
             <p>
-                Sizing it is where the interesting mistake lives. The obvious approach is to learn each city's normal silence from its own history, and that was tried first. Measured against the production snapshot, a dozen unrelated cities shared an identical 13-day gap in August 2026: not their cadence, but a rotation failure that reached only half the target list for twelve days. A threshold learned from that history would have set Sunnyvale's tolerance to 20 days and slept straight through its 14-day outage. A guard that learns "normal" from a record containing its own failure mode gets blinder every time it fails. The threshold is sized from how much each city normally files instead, with a ten-day floor.
+                A permit source can fail by succeeding at nothing, and nothing was watching whether rows actually landed, per city, over time. A second gate now does that. It infers from volume, the inference the registry refuses to make, and it makes it in one place, explicitly, with a threshold that can be read.
             </p>
             <p>
-                Three implementation details follow from taking that seriously.
+                Sizing that threshold is where the interesting mistake lives. The obvious approach is to learn each city's normal silence from its own history, and that was tried first. Measured against the production snapshot, a dozen unrelated cities shared an identical 13-day gap in August 2026, a rotation failure that had reached only half the target list for twelve days. A threshold learned from that history would have set Sunnyvale's tolerance to 20 days and slept straight through its 14-day outage. A guard that learns "normal" from a record containing its own failure mode gets blinder every time it fails. The threshold is sized from how much each city normally files instead, with a ten-day floor.
+            </p>
+            <p>
+                Three details of the registry follow from the same reasoning.
             </p>
             <ul>
-                <li><strong>Failures flush on every failure, not at the end of the run.</strong> The scrape executes under a <code>timeout</code> that terminates it when the budget expires, routinely. Anything saved only at the end is lost exactly when a slow, failing source is the likeliest cause.</li>
-                <li><strong>The gate runs last, after the sync and the data-store save.</strong> The run goes red, but every byte the scrape did manage to collect is already persisted. A red run that kept its data is the goal; a green run that quietly lost a city is the thing being fixed.</li>
-                <li><strong>Known-unscrapable sources report without reddening the run.</strong> Where the fix is a new data source rather than a retry, a permanent red is just a switched-off alarm. Entry into that list requires a tracked issue and a stated reason, and nothing else.</li>
+                <li><strong>Failures flush on every failure.</strong> The scrape executes under a <code>timeout</code> that terminates it when the budget expires, routinely. Anything saved only at the end of the run is lost exactly when a slow, failing source is the likeliest cause.</li>
+                <li><strong>The gate runs last, after the sync and the data-store save.</strong> The run goes red, but every byte the scrape did manage to collect is already persisted. A red run that kept its data is the goal.</li>
+                <li><strong>Known-unscrapable sources report without reddening the run.</strong> Where the fix is a new data source rather than a retry, a permanent red is a switched-off alarm. Entry into that list requires a tracked issue and a stated reason.</li>
             </ul>
             <p>
-                The retry policy is drawn on the same line. A timeout, a stale element reference, an intercepted click, a grid that did not re-render, an ASP.NET postback that never landed: these differ between two runs against unchanged markup, so they get one more attempt with a fresh driver. Two red runs in August 2026 were exactly this, one dying on an index error and one on a renderer timeout. For the first, the run ninety minutes earlier had walked the identical pages, blocks and pagers to a clean finish; that comparison was not made for the second. Neither was a markup change, and a single retry would very likely have absorbed both. In both, the sync and the data-store save had already succeeded, so they were red purely on an exit code.
+                The retry policy is drawn on the same line. A timeout, a stale element reference, an intercepted click, a grid that did not re-render, an ASP.NET postback that never landed: these differ between two runs against unchanged markup, so they get one more attempt with a fresh driver. Two red runs in August 2026 were of this kind, one dying on an index error and one on a renderer timeout. For the first, the run ninety minutes earlier had walked the identical pages, blocks and pagers to a clean finish; that comparison was not made for the second. Neither was a markup change, and a single retry would very likely have absorbed both. In both, the sync and the data-store save had already succeeded, so they were red purely on an exit code.
             </p>
             <p>
-                <code>NoSuchElement</code> is pointedly excluded from that list. An element that is simply absent is the signature of a portal whose markup changed, which is real breakage and must red the run on the first attempt rather than being retried until it looks intermittent.
+                <code>NoSuchElement</code> is excluded from that list. An element that is simply absent is the signature of a portal whose markup changed, which is real breakage and must red the run on the first attempt.
             </p>
             <p>
-                Above the per-source gate sits one inference that <em>is</em> safe to make. One quiet city is ordinary. Every city sharing a single scraper going quiet at once is a fact about the shared code, not about the cities, so a platform whose every source came back empty is reported as a known failure.
+                One inference across sources is safe. One quiet city is ordinary. Every city sharing a single scraper going quiet at once is a fact about the shared code, so a platform whose every source came back empty is reported as a known failure.
             </p>
-
             <h3>4. Knowing when scraping is the wrong answer</h3>
             <p>
-                One town's portal has no issued-date search at all, only permit number and site address. A number-walk is technically possible; the town's permits carry year-prefixed series identifiers that the fleet's number-walk path already enumerates elsewhere. It is still not the fix, because that portal's public detail panel carries no declared valuation and no parcel number, and declared valuation is the field the town is carried for. A number-walk would restore row count while losing the column that matters, at roughly thirty-six seconds per permit. The route out is a recurring public-records request instead, and that channel now carries the town's entire permit record rather than a valuation backfill. Re-measured at publication against the September refresh, received September 11, 2026: <strong>5,237 permits, of which 2,460 carry a declared valuation totalling $322,162,086</strong>. The town confirmed on September 1, 2026 that a standing arrangement is not available, so each refresh is its own request.
+                One town's portal has no issued-date search at all, only permit number and site address. A number-walk is technically possible; the town's permits carry year-prefixed series identifiers that the fleet's number-walk path already enumerates elsewhere. It is still the wrong fix, because that portal's public detail panel carries no declared valuation and no parcel number, and declared valuation is the field the town is carried for. A number-walk would restore row count while losing the column that matters, at roughly thirty-six seconds per permit. The route out is a recurring public-records request, and that channel now carries the town's entire permit record. Re-measured at publication against the September refresh, received 2026-09-11: <strong>5,237 permits, of which 2,460 carry a declared valuation totalling $322,162,086</strong>. The town confirmed on 2026-09-01 that a standing arrangement is not available, so each refresh is its own request.
             </p>
             <p>
-                That entry in the registry also carries its own correction, which is the part worth keeping. It used to assert that the number-walk was impossible because the town's permit identifiers were pure numeric strings with no series prefix. They are not. The claim had been written while the town had zero scraped rows and nobody had yet seen a real permit number from it, and it survived until a records delivery revealed the actual format. An assumption made in the absence of data reads exactly like a measurement once it is written down in a code comment.
+                That entry in the registry also carries its own correction. It used to assert that the number-walk was impossible because the town's permit identifiers were pure numeric strings with no series prefix. They are not. The claim had been written while the town had zero scraped rows and nobody had yet seen a real permit number from it, and it survived until a records delivery revealed the actual format. Written into a code comment, an assumption made in the absence of data reads exactly like a measurement.
             </p>
             <p>
-                A smaller instance of the same discipline: the results grid clips long descriptions to thirty characters server-side, with a literal ellipsis and no title attribute holding the full string, so the complete value is genuinely not on the page. The ellipsis is kept rather than stripped. It is the only honest signal that the stored value is a prefix, and stripping it would make a clipped string indistinguishable from a complete one. Full strings arrive later from the sources that print them whole, and the writer never overwrites a value it already holds, so a clipped scrape cannot regress a complete record.
+                The results grid clips long descriptions to thirty characters server-side, with a literal ellipsis and no title attribute holding the full string, so the complete value is not on the page. The ellipsis is kept rather than stripped: it is the only record that the stored value is a prefix, and stripping it would make a clipped string indistinguishable from a complete one. Full strings arrive later from the sources that print them whole, and the writer never overwrites a value it already holds, so a clipped scrape cannot regress a complete record.
             </p>
-
             <h2>What It Shows</h2>
             <p>
-                Finding signal in data that is public in principle and obstructed in practice, and being able to state which parts of it are trustworthy. The scraping is ordinary engineering. The part that is rare is the instrumentation around it: a pipeline that distinguishes a failure from an absence, refuses to read a truncated answer as a complete one, and reports the gap it could not close rather than emitting a confident number over it.
+                A permit table assembled from these sources can carry a claim about its own coverage. The saturation check, the day-walk, the two gates and the retry line each turn one specific silent failure into a logged one, and the numbers above are what they read on a given week. When a vendor changes a form control, the run goes red and the data it collected stays saved.
             </p>
-
             <h2>What It Proves to a Client</h2>
             <p>
-                That a dataset assembled from hostile, fragmented public sources can carry a defensible claim about its own coverage. Anyone can produce a permit table. The question a buyer should ask is what happens the week a vendor changes a form control, and whether the answer is a loud failure or a silently shortened table that still renders a chart. Here the answer is written down, measured against live portals, and enforced in a gate that runs after the data is already saved.
-            </p>
-            <p>
-                It also shows the cost of the alternative. A scraper that cannot tell you it failed produced a zero, that zero became a published statistic, and the fix was not a better scraper. It was teaching the pipeline the difference between "none" and "unknown".
+                A scraper that could not report its own failure produced a zero, and that zero became a published statistic. The pipeline now records "unknown" separately from "none", and the difference is what a buyer of this data is paying for.
             </p>
 
         </article>
