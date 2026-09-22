@@ -102,8 +102,8 @@
                 <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Predictive models</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">2</div>
-                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Live markets</div>
+                <div class="text-2xl font-bold text-white font-mono">1</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Live market</div>
             </div>
         </div>
 
@@ -120,7 +120,7 @@
 
             <h2>What We Built</h2>
             <p>
-                AddressIntel is a live real-estate intelligence platform covering the San Francisco Peninsula and Nantucket Island. A Python ingestion fleet, orchestrated on GitHub Actions, continuously pulls municipal permits and public listing data; the data is normalized, fused, and scored, then served through a B2B GraphQL API. It runs on a hybrid public-benefit model: a free public transparency layer over neighborhood development trends, funded by a monetized enterprise API for developers and institutional investors.
+                AddressIntel is a live real-estate intelligence platform covering the San Francisco Peninsula. A Python ingestion fleet, orchestrated on GitHub Actions, continuously pulls municipal permits and public listing data; the data is normalized, fused, and scored, then served through a B2B GraphQL API. The system has never been monetized. The access and metering layer was built and wired; no revenue has ever run through it. Read this page as a record of what was engineered.
             </p>
 
             <h3>Predictive scoring &amp; multimodal AI</h3>
@@ -133,7 +133,7 @@
             <h3>Architecture</h3>
             <ul>
                 <li><strong>Pipeline:</strong> a Python ingestion fleet on GitHub Actions cron, normalizing multi-source civic and listing data, with Gemini handling unstructured vision and NLP.</li>
-                <li><strong>Backend:</strong> Firebase Data Connect (GraphQL over Cloud SQL Postgres) with Firebase Auth; Stripe-metered access for enterprise clients.</li>
+                <li><strong>Backend:</strong> Firebase Data Connect (GraphQL over Cloud SQL Postgres) with Firebase Auth; Stripe metering wired for paid access.</li>
                 <li><strong>Frontend:</strong> Next.js (App Router) + React on Firebase App Hosting, with Sentry edge error tracking.</li>
             </ul>
 
@@ -144,7 +144,7 @@
 
             <h2>What It Proves to a Client</h2>
             <p>
-                That we can find signal in a data-rich space incumbents underuse, and turn it into a monetizable product: pipeline, models, API, and billing included. The same capability transfers to any business sitting on fragmented or underused data: marketplaces, fintech, insurance, logistics.
+                That we can find signal in a data-rich space incumbents underuse and build the whole stack over it: ingestion, models, API, and the access layer. Whether that stack then sells is a distribution question, and this one has not been put to that test. The engineering capability transfers to any business sitting on fragmented or underused data: marketplaces, fintech, insurance, logistics.
             </p>
 
         </article>
