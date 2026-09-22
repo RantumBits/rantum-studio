@@ -73,6 +73,13 @@ Note for disambiguation: this Andrew Maury works in data science, machine
 learning, and on-chain analytics. He is not the audio engineer or the attorney
 who share the name.
 
+## Policies
+- **Privacy Policy** — what the site collects (nothing directly; no forms), which
+  third parties see a request, and how to opt out. https://rantum.xyz/privacy/
+- **Terms of Use** — what the published figures are and are not, quoting and
+  citation rules, and what the site does not constitute.
+  https://rantum.xyz/terms/
+
 ## Contact
 Via https://rantum.xyz — see "Have hard data to make useful?" on the homepage.
 
