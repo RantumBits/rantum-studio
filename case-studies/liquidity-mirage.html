@@ -130,7 +130,7 @@
 
             <h3>One bytecode, two deployers</h3>
             <p>
-                Every one of the fourteen returns the <strong>same 5,150-byte runtime bytecode</strong>, SHA-256 prefix <code>7ff6feb2ee87face</code>. The tokens they impersonate do not resemble each other at all: real DAI is 7,904 bytes, CRV 4,369, COMP 6,795, PEPE 4,517, each distinct. Identical bytecode across fourteen supposedly unrelated tokens is a deployment fingerprint, not a coincidence.
+                Every one of the fourteen returns the <strong>same 5,150-byte runtime bytecode</strong>, SHA-256 prefix <code>7ff6feb2ee87face</code>. The tokens they impersonate do not resemble each other at all: real DAI is 7,904 bytes, CRV 4,369, COMP 6,795, PEPE 4,517, each distinct. Identical bytecode across fourteen supposedly unrelated tokens is a deployment fingerprint rather than a coincidence.
             </p>
             <p>
                 Blockscout's contract metadata names the source <code>MintBurnTeamToken</code>, an off-the-shelf mintable template, and attributes all fourteen to just two externally-owned accounts, split eight and six. No creation transaction is indexed for any of them, which is consistent with factory deployment instead of direct creation.
@@ -236,7 +236,7 @@ price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code><
                 The two deployer accounts were not deanonymised. The <code>MintBurnTeamToken</code> label comes from public contract metadata and was not independently source-verified. Pool economics were measured on six pools and the daily schedule on four; the other 999 contracts were confirmed by bytecode and ticker, not by reading each one's pool.
             </p>
             <p>
-                The two wallets are not linked. Both were touched early by the same address, which looked like a possible controller until it was read: it sends one identical 514-byte message to each of 2,996 distinct recipients, and the message decodes to a freelance designer advertising branding work to token deployers. It is unsolicited marketing, not a funding link, and both wallets received it for the same reason anyone else did.</p>
+                The two wallets are not linked. Both were touched early by the same address, which looked like a possible controller until it was read: it sends one identical 514-byte message to each of 2,996 distinct recipients, and the message decodes to a freelance designer advertising branding work to token deployers. It is unsolicited marketing rather than a funding link, and both wallets received it for the same reason anyone else did.</p>
             <p>
                 Every number above was read directly from Ethereum mainnet via <code>eth_getCode</code>, <code>eth_call</code>, pool state and swap logs, or from the public DexScreener and Blockscout APIs, on 2026-09-01 and 2026-09-02. Prices move and pools can be removed; the measurements are timestamped for that reason.
             </p>

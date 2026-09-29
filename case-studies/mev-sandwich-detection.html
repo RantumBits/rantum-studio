@@ -126,7 +126,7 @@
 
             <h3>The v1 mistake: tx_hash is not execution order</h3>
             <p>
-                The first cut at sandwich detection tried to reconstruct in-block ordering directly from <code>dex.trades</code>, using <code>tx_hash</code> comparisons as a proxy for sequencer position, treating a lower hash as an earlier transaction. That logic is wrong: <code>tx_hash</code> is a cryptographic hash, not a sequence number. Sorting by hash produces an arbitrary permutation of transactions, not the order they were actually included in the block. A "sandwich" identified this way is noise.
+                The first cut at sandwich detection tried to reconstruct in-block ordering directly from <code>dex.trades</code>, using <code>tx_hash</code> comparisons as a proxy for sequencer position, treating a lower hash as an earlier transaction. That logic is wrong: <code>tx_hash</code> is a cryptographic hash rather than a sequence number. Sorting by hash produces an arbitrary permutation of transactions rather than the order they were actually included in the block. A "sandwich" identified this way is noise.
             </p>
             <p>
                 The correct source is Dune's curated <code>dex.sandwiched</code> table, built from Dune's Spellbook detection macro, which uses actual <code>evt_index</code> (on-chain event position) to reconstruct frontrun → victim → backrun triples across every block. Switching to this source eliminated the false positives entirely.

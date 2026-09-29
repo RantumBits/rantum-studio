@@ -164,7 +164,7 @@
 
             <h2>What We Built</h2>
             <p>
-                A permit pipeline and a teardown-probability model inside <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer">AddressIntel</a>, our predictive real-estate intelligence platform. The pipeline normalizes those four sources into one schema, resolves every record to a parcel, and classifies free-text permit types into a fixed taxonomy. On top of that sits the part most predictive PropTech skips: a label and a backtest built so the numbers can be trusted.
+                A permit pipeline and a teardown-probability model inside <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer">AddressIntel</a>, our predictive real-estate intelligence platform. The pipeline normalizes those four sources into one schema, resolves every record to a parcel, and classifies free-text permit types into a fixed taxonomy. On top of that sits a label and a backtest, built so the numbers can be trusted.
             </p>
 
             <h3>One schema, joined on the parcel APN</h3>
@@ -184,7 +184,7 @@
             </div>
 
             <p>
-                So the real label comes from the permits themselves: a parcel is a teardown if it has a demolition or new-single-family permit in the forward window. Because that label is built from permits rather than assessed value, it is <em>independent</em> of the model's strongest feature (the land-to-improvement value ratio), which means the backtest measures prediction, not an artifact of the label sharing arithmetic with the feature.
+                So the real label comes from the permits themselves: a parcel is a teardown if it has a demolition or new-single-family permit in the forward window. Because that label is built from permits rather than assessed value, it is <em>independent</em> of the model's strongest feature (the land-to-improvement value ratio), which means the backtest measures prediction rather than an artifact of the label sharing arithmetic with the feature.
             </p>
 
             <h3>Point-in-time, or it means nothing</h3>
@@ -249,7 +249,7 @@ for T in (2016, 2018, 2020):                    # historical scoring dates
                 The one signal that held up on the clean test was plainer than any of the discarded ones: parcels with an outsized lot for the neighborhood carry a real, if modest, 2.0x lift, well-powered at 266 positives. Maintenance-permit history, hoped to be a clean negative signal (an owner investing in a structure they intend to keep), added nothing blended with lot size. Neighborhood-contagion, tenure, and assessment-growth features, tested earlier against the still-trusted proxy label, had already added nothing or diluted the ratio; none of them got a second look once the ratio itself stopped being trustworthy.
             </p>
             <p>
-                That is a result, not a failure, and a sharper one than the model simply beating its baselines would have been. A backtest that would have shipped as a "proprietary 5x teardown score" turned out, on closer inspection, to be measuring its own label. The honest output is a much smaller claim (an outsized lot is worth about 2x) and an explicit rule against overselling it. It also clarified where a real edge would have to come from if one exists at all: explicit seller intent in listing language ("value in the land," "as-is," "contractor special") remains untested and is the cheapest next thing to try. Just as important, it clarified the line between the backtest and the live product: physical features like lot coverage and structure age <em>leak</em> when backtesting a rebuilt parcel, but are clean and strong when scoring a house that is still standing today.
+                That is a result rather than a failure, and a sharper one than the model simply beating its baselines would have been. A backtest that would have shipped as a "proprietary 5x teardown score" turned out, on closer inspection, to be measuring its own label. The honest output is a much smaller claim (an outsized lot is worth about 2x) and an explicit rule against overselling it. It also clarified where a real edge would have to come from if one exists at all: explicit seller intent in listing language ("value in the land," "as-is," "contractor special") remains untested and is the cheapest next thing to try. Just as important, it clarified the line between the backtest and the live product: physical features like lot coverage and structure age <em>leak</em> when backtesting a rebuilt parcel, but are clean and strong when scoring a house that is still standing today.
             </p>
 
             <h2>What It Shows</h2>
