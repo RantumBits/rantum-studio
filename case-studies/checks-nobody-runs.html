@@ -119,7 +119,7 @@
 
             <h3>Term 1: recall is bounded by a cron job</h3>
             <p>
-                The candidate table is rebuilt weekly from a 7-day window, and the pipeline rebuilt it on schedule. The copy I was analyzing had not been. Production's copy was two days old. Mine was 17.8, and the freshness stamp sitting in it read the current date, honestly, because that stamp records the newest write of <em>any</em> table. The candidate table underneath it was more than two weeks behind.
+                The candidate table is rebuilt weekly from a 7-day window, and the pipeline rebuilt it on schedule. The copy I was analyzing had not been. Production's copy was two days old. Mine was 17.8, and the freshness stamp sitting in it read the current date, legitimately, because that stamp records the newest write of <em>any</em> table. The candidate table underneath it was more than two weeks behind.
             </p>
             <p>
                 Two failures had to line up: a working copy that diverged from the shipped one, and a freshness field that answers a different question from the one everybody asks it.
@@ -198,7 +198,7 @@
 
             <h2>Three refusals</h2>
             <p>
-                The single false negative answers <code>name</code> with eight zero bytes, not a valid ABI string. Requiring well-formed returns would likely take the rule to 0 of 53. I did not make that change, because it was identified by looking at which case it would rescue.
+                The single false negative answers <code>name</code> with eight zero bytes rather than a valid ABI string. Requiring well-formed returns would likely take the rule to 0 of 53. I did not make that change, because it was identified by looking at which case it would rescue.
             </p>
             <p>
                 Same for the venue-singleton exclusion that would have saved heuristic 2, and the minimal-proxy test that would have caught one remaining false positive. Each would have been fitted to the case that motivated it, on a validation set of one or two.
@@ -237,7 +237,7 @@
 
             <h2>About the addresses</h2>
             <p>
-                The filter surfaces 32 high-volume contracts that three public labelers cannot name. That set is an illustration here, not a finding, and it carries every caveat above: its figures reflect 39.1% of the one operator I can measure completely, most of its members are classified by the <em>absence</em> of a venue interface rather than positive identification, and the fleet that taught me the most entered the analysis only because three of its members were already in the queue. Anything that missed entirely is invisible to me and contributes nothing to any recall number in this piece. All of them are upper bounds.
+                The filter surfaces 32 high-volume contracts that three public labelers cannot name. That set is an illustration here rather than a finding, and it carries every caveat above: its figures reflect 39.1% of the one operator I can measure completely, most of its members are classified by the <em>absence</em> of a venue interface rather than positive identification, and the fleet that taught me the most entered the analysis only because three of its members were already in the queue. Anything that missed entirely is invisible to me and contributes nothing to any recall number in this piece. All of them are upper bounds.
             </p>
             <p>
                 I am not publishing a list of suspects. I am publishing the filter, the rule's measured false-negative rate, and the order of the stack.

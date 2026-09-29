@@ -203,7 +203,7 @@ abs(paid_cost + free_cost + residual_cost - total_bill) &lt; 0.01</code></pre>
                 That converts &ldquo;the number changed&rdquo; from an incident into a report.
             </p>
             <p>
-                It also has an operational consequence people discover the hard way. Anomaly detection on a metric that legitimately restates will page you every night. So the alerting runs against the final series, not the live one, and provisional months are excluded until they close.
+                It also has an operational consequence people discover the hard way. Anomaly detection on a metric that legitimately restates will page you every night. So the alerting runs against the final series rather than the live one, and provisional months are excluded until they close.
             </p>
 
             <h2>What these have in common</h2>
