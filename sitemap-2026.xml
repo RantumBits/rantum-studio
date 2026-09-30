@@ -144,6 +144,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://rantum.xyz/case-studies/calldata-suffix-fingerprinting.html</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://rantum.xyz/case-studies/adversarial-permit-portals.html</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>

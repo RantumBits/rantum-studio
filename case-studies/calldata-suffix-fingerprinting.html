@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fingerprinting Hidden DEX Frontends by the Bytes Standard Decoders Ignore | Rantum Studio</title>
+    <meta name="description" content="A swap's calldata often carries a few bytes past the last ABI word boundary, and off-the-shelf decoders drop them. Those bytes are evidence that an interface tagged the trade. On a live 50-swap Ethereum sample they named none of them, and that is the design.">
+    <meta property="og:title" content="Fingerprinting Hidden DEX Frontends by the Bytes Standard Decoders Ignore | Rantum Studio">
+    <meta property="og:description" content="Eight of fifty Ethereum swaps carried an unaligned calldata tail. All eight were booked as fingerprinted and unattributed. Why a high-confidence frontend fingerprint is not allowed to name anything.">
+    <meta property="og:image" content="https://rantum.xyz/og-calldata-suffix-fingerprinting.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/calldata-suffix-fingerprinting.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-calldata-suffix-fingerprinting.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/calldata-suffix-fingerprinting.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Fingerprinting Hidden DEX Frontends by the Bytes Standard Decoders Ignore",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="cleartrace.html" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            ClearTrace &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">On-Chain</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Attribution</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Calldata</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Fingerprinting Hidden DEX Frontends by the Bytes Standard Decoders Ignore
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                A swap's calldata often carries a few bytes past the last ABI word boundary. Contract decoders drop them as garbage. They are among the few pieces of on-chain evidence that some interface tagged the trade, and the hard part is refusing to say which one.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">8 / 50</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Swaps carrying a tail</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">0</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Of those named a frontend</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">29</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Bytes in the longest tag</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                Shared execution infrastructure gives a DEX frontend no standard way to sign its own trades. A swap placed in a wallet's built-in swap tab, in a portfolio app, or on a white-label interface reaches the same routers and the same pools as a swap placed on the router's own website, and lands on-chain looking identical. That is the attribution problem <a href="multichain-journey-attribution.html">ClearTrace</a> exists to work on.
+            </p>
+            <p>
+                One class of interface does leave a mark, and it leaves it in a place nothing reads. A well-formed ABI call is a four-byte selector followed by some number of thirty-two-byte words. Append a tag to the end of that and the call still executes: Solidity's decoder reads the arguments it expects and ignores whatever trails them. Etherscan will render the call cleanly. A decoded-trades table will carry the swap with no trace of the tag at all.
+            </p>
+            <p>
+                So the tag survives, unread, in the one part of the transaction everybody discards. Finding it is arithmetic on a length:
+            </p>
+<pre><code class="language-python">def has_calldata_suffix(input_hex: str) -&gt; bool:
+    """
+    A well-formed ABI call is a 4-byte selector (8 hex chars) followed by some
+    number of 32-byte words (64 hex chars each). A trailing remainder that
+    doesn't fill a word is an appended fingerprint — the signature of modular
+    frontends / wallet-native swap extensions.
+    """
+    if not input_hex:
+        return False
+    h = drop_hex_prefix(input_hex)
+    n = len(h)
+    return n &gt; 8 and (n - 8) % 64 != 0</code></pre>
+            <p>
+                That is the whole detector. (The prefix strip is written inline in the original; it is named here so the arithmetic is the only thing on the page.) It is also the reason the rest of this piece is about restraint rather than recall: the test knows that <em>something</em> is there, and nothing whatsoever about what.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                The calldata-suffix test is one of the vectors in ClearTrace's attribution kernel, alongside direct-versus-proxy routing, fee-recipient detection and aggregator-router matching. The kernel is deliberately pure: it takes an already-fetched transaction and receipt plus a label-resolver callable and returns a classification, so every decision in it is testable against static fixtures. A second pure module maps that classification onto the published taxonomy, one of named frontend, aggregator-API-direct, wallet-embedded, bots and MEV, or unattributed, with a confidence tier attached to the <em>method</em> rather than to the popularity of the name.
+            </p>
+            <p>
+                Both are reachable per transaction on the live public API. Every classification below was measured through it on 2026-09-30; the raw calldata was read separately from a public node.
+            </p>
+
+            <h3>1. What the bytes actually look like</h3>
+            <p>
+                Fifty consecutive Ethereum DEX trades above $1,000 were pulled from a 3-minute-48-second window on 2026-09-29, 16:10:23 to 16:14:11 UTC, against Uniswap, Curve and Fluid pools, from $1,043 to $1,999,358 with a median of $3,452. Those sizes are the feed's leg-summed notional, which is a different and larger basis than the conserved single-notional figure used in the aggregate table further down. Run through the per-transaction endpoint, eight of the fifty carried an unaligned tail on the top-level call. Their raw calldata is the part worth looking at:
+            </p>
+            <div class="not-prose my-8 overflow-x-auto">
+              <table class="w-full text-sm font-mono border border-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-black/40 text-gray-400 border-b border-gray-800">
+                  <tr>
+                    <th class="text-left px-4 py-3">Contract called</th>
+                    <th class="text-left px-4 py-3">Selector</th>
+                    <th class="text-right px-4 py-3">Unaligned bytes</th>
+                    <th class="text-left px-4 py-3">The tail</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300 divide-y divide-gray-800">
+                  <tr><td class="px-4 py-3">1inch AggregationRouterV6</td><td class="px-4 py-3">0x07ed2379</td><td class="px-4 py-3 text-right">4</td><td class="px-4 py-3">2a6f45f2</td></tr>
+                  <tr><td class="px-4 py-3">Unlabelled (0x278d…f8d2), twice</td><td class="px-4 py-3">0x70521ae9</td><td class="px-4 py-3 text-right">3</td><td class="px-4 py-3">000012</td></tr>
+                  <tr><td class="px-4 py-3">MetaRouterGateway, twice</td><td class="px-4 py-3">0xa11b1198</td><td class="px-4 py-3 text-right">29</td><td class="px-4 py-3">begins <code>bc_nlhvsi52</code> in ASCII</td></tr>
+                  <tr><td class="px-4 py-3">Unlabelled (0x881d…300c)</td><td class="px-4 py-3">0x5f575529</td><td class="px-4 py-3 text-right">1</td><td class="px-4 py-3">1f</td></tr>
+                  <tr><td class="px-4 py-3">7702 Delegated EOA (0x0000…089b), twice</td><td class="px-4 py-3">0x80000000</td><td class="px-4 py-3 text-right">23, 30</td><td class="px-4 py-3">packed payload</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+                The strongest pair is the MetaRouterGateway one: a byte-identical twenty-nine-byte tail on two separate transactions, beginning with the ASCII string <code>bc_nlhvsi52</code>. That is a client identifier in plain text, sitting in calldata, where no standard decoder looks. Four bytes on a 1inch <code>swap</code> call after every declared argument has been filled is almost certainly a referral or partner tag, though the bytes themselves do not prove it. The three-byte <code>000012</code> tail repeats across two transactions to the same contract, which is the pattern the vector is named for, but three low-entropy bytes are about as consistent with a packed trailing field as with a tag.
+            </p>
+            <p>
+                The last row is the one that constrains everything else. Its leading four bytes are <code>0x80000000</code> and the remainder is not ABI-encoded: it is a packed argument block, so there is no last word boundary for a tag to sit past and the unaligned remainder the test reports is the payload itself. The contract's code is twenty-three bytes beginning <code>0xef0100</code>, which is an EIP-7702 delegation designator rather than a program, so the account is a delegated EOA and a wallet-side execution surface is plausibly involved. The detector had no part in finding that, though: what it flagged here is an encoding choice rather than a tag.
+            </p>
+            <p>
+                That is the vector's ceiling, and it is structural. Length arithmetic cannot separate an appended tag from an encoding that was never word-aligned to begin with, and on this sample two of the eight hits are the second kind. A detector whose hit rate includes an unquantified share of encoding artefacts is only usable if nothing downstream is allowed to treat a hit as an identity.
+            </p>
+
+            <h3>2. Nothing downstream is allowed to treat a hit as an identity</h3>
+            <p>
+                Of those eight fingerprinted transactions, the number that produced a named frontend was <strong>zero</strong>. All eight were booked <code>unattributed</code>, at <code>low</code> confidence, with a separate <code>fingerprinted</code> flag set true. Two rules did all the work on this sample, and a third stands in front of both.
+            </p>
+            <ul>
+                <li><strong>A suffix on an aggregator's own router names no frontend.</strong> One of the eight was a 1inch AggregationRouterV6 call. A tag on an aggregator router is as likely to belong to a third-party interface layered on top as to the aggregator, so the tie goes to nobody. One exception is worth stating because the code does not hide it: a router whose label matches a <em>wallet</em> is taken as an in-wallet swap at high confidence regardless of the aggregator flag.</li>
+                <li><strong>A suffix whose label matches nothing on the marker lists names nothing either.</strong> The other seven were on contracts with no label, or with a label absent from both the frontend and the wallet marker lists: three unlabelled, the two delegated accounts, and the two MetaRouterGateway calls. That last pair is a routing interface, and it goes unnamed because the list does not carry it yet. The limit here is list coverage, not principle.</li>
+                <li><strong>MEV and bots are checked before the suffix at all.</strong> Two of the fifty were routed to <code>bots_mev</code> on their originator label alone; neither carried a suffix, so the ordering was never contested on this sample. It still matters, because the top contract by suffix-overlay volume on Ethereum is an atomic-arbitrage searcher: suffix-first would strip that searcher of its bot classification and file it as fingerprinted-unattributed, and a label carrying both a bot marker and a wallet name would be published as an in-wallet swap at high confidence.</li>
+            </ul>
+            <p>
+                The flag is the point. <code>unattributed</code> with <code>fingerprinted: false</code> means no evidence was found. <code>unattributed</code> with <code>fingerprinted: true</code> means an interface demonstrably tagged this trade and the identity could not be recovered. Those are different states, and collapsing them is how a coverage number gets quietly flattering.
+            </p>
+            <p>
+                The kernel keeps its own ordering separate from the taxonomy's, which is worth being precise about. The kernel's <code>primary_vector</code> ranks the suffix <em>fourth</em>, behind proxy, aggregator and fee-recipient, because it describes how the trade was routed. The taxonomy ranks the suffix <em>second</em>, behind only the MEV check, because it describes what evidence exists about the interface. Same transaction, two orderings, two questions.
+            </p>
+            <p>
+                One guard in the naming path is worth recording because it failed in exactly the way a guard does. Attaching a name requires the resolved label to look like an interface, which is a substring match against a marker list. One protocol on that list has a two-character name that is also the prefix every hex address starts with, and the labeller routinely embeds addresses in names: <code>Wintermute (0x51c7…8ac2)</code>, <code>Ethereum First Funder: 0xa4aF…</code>. Substring matching made every label of that shape read as a frontend, so a suffix-tagged transaction carrying a label of that shape was booked as a named frontend at <em>high</em> confidence, unless one of the infrastructure exclusions caught it first. The fix strips address-shaped tokens out of the label before matching, then requires that marker to stand alone as its own word. A high-confidence tier is exactly where a matching bug does the most damage.
+            </p>
+
+            <p>
+                The transactions feed these were drawn from is a rolling one-day sample, so it has already rotated. The eight hashes, so the classification is checkable against the endpoint directly:
+            </p>
+            <div class="not-prose my-8 overflow-x-auto">
+              <table class="w-full text-xs font-mono border border-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-black/40 text-gray-400 border-b border-gray-800">
+                  <tr>
+                    <th class="text-left px-4 py-3">Transaction</th>
+                    <th class="text-left px-4 py-3">Contract called</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300 divide-y divide-gray-800">
+                  <tr><td class="px-4 py-3 break-all">0xbd1df7e5bfa30e7b28acae7343def9e6f2137e047072d267d4f4833892ae0ed2</td><td class="px-4 py-3">1inch: AggregationRouterV6</td></tr>
+                  <tr><td class="px-4 py-3 break-all">0x562b40b68022f1ed6d9c97a1ceec06d3f37215331509a2f28d1ccaf5ce33f75d</td><td class="px-4 py-3">unlabelled (0x278d…f8d2)</td></tr>
+                  <tr><td class="px-4 py-3 break-all">0xb008c636327b9f43e7c928c94fcd6fe22ca5d5001a028a941d2b2d8c624d5345</td><td class="px-4 py-3">unlabelled (0x278d…f8d2)</td></tr>
+                  <tr><td class="px-4 py-3 break-all">0x9bb462fced2c7b5d7aabe31332d32ff000a4cfcea41a44a65127c18c8da01935</td><td class="px-4 py-3">MetaRouterGateway</td></tr>
+                  <tr><td class="px-4 py-3 break-all">0x198342c58a22d5264dcfb1e5ed49a4d76faf72353d351bbb1047092935a2fdb7</td><td class="px-4 py-3">MetaRouterGateway</td></tr>
+                  <tr><td class="px-4 py-3 break-all">0x7f0deb69de0f2e9d54ad7a85615ec20997d240b8f9f6577fe4bfe6cdf6173e6a</td><td class="px-4 py-3">unlabelled (0x881d…300c)</td></tr>
+                  <tr><td class="px-4 py-3 break-all">0x39f7f878402227b87b2d1197e68692791d626ee728d1bc333522161612310aea</td><td class="px-4 py-3">7702 Delegated EOA (0x0000…089b)</td></tr>
+                  <tr><td class="px-4 py-3 break-all">0x685667cee982f6aecc8ad596a832076804cc59846b960d207cdf144ad48acdb9</td><td class="px-4 py-3">7702 Delegated EOA (0x0000…089b)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <h3>3. More evidence, less attribution</h3>
+            <p>
+                The endpoint has a deep mode that fetches internal call traces, which widens the aggregator match to the whole call path and runs the suffix test per sub-call. It should be better information, with one caveat the code makes plain: the live path counts a suffix on any traced call frame, including reverted and static sub-calls, where the Dune definition of the same vector requires a successful call. Part of the jump below is a looser test rather than more evidence, and how much is not measured here. On the twenty newest transactions of the sample, run both ways:
+            </p>
+            <div class="not-prose my-8 overflow-x-auto">
+              <table class="w-full text-sm font-mono border border-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-black/40 text-gray-400 border-b border-gray-800">
+                  <tr>
+                    <th class="text-left px-4 py-3">Same 20 transactions</th>
+                    <th class="text-right px-4 py-3">Top-level only</th>
+                    <th class="text-right px-4 py-3">With traces</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300 divide-y divide-gray-800">
+                  <tr><td class="px-4 py-3">Carrying a calldata suffix</td><td class="px-4 py-3 text-right">3</td><td class="px-4 py-3 text-right">7</td></tr>
+                  <tr><td class="px-4 py-3">Attributed to any class</td><td class="px-4 py-3 text-right">4</td><td class="px-4 py-3 text-right">3</td></tr>
+                  <tr><td class="px-4 py-3">Fingerprinted, unidentified</td><td class="px-4 py-3 text-right">3</td><td class="px-4 py-3 text-right">7</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+                Those are per-transaction counts on fifty consecutive trades above $1,000, and they are not a coverage measurement. ClearTrace publishes coverage volume-weighted over the seven-day window, currently 89.5% on Ethereum; a fifty-trade slice of mostly retail-sized swaps is not comparable to it in either direction.
+            </p>
+            <p>
+                Traces more than doubled the fingerprints and left the sample <em>less</em> attributed. Five records changed state. Four of them simply gained the fingerprinted flag. One gained an identity: an originator labelled only <code>Market Maker</code> turned out to reach KyberSwap's MetaAggregationRouterV2 deeper in the call path, and recovered from <code>unattributed</code> to <code>aggregator_api_direct</code>. Two went the other way, from <code>aggregator_api_direct</code> at medium confidence down to fingerprinted-unattributed at low, because a suffix appeared on a sub-call and the aggregator rule says a tagged router is not the interface. The fifth is the sharpest case: an ERC-4337 EntryPoint call whose traces <em>also</em> reached MetaAggregationRouterV2, and whose recovered identity the suffix rule then discarded.
+            </p>
+            <p>
+                Net of one, that is a deliberate trade: better evidence bought one name and cost two. One of the two was never a published name in the first place, because its venue is withheld from output under a separate publication policy. A system tuned for coverage would have kept both.
+            </p>
+
+            <h3>4. Why the aggregate figure is an overlay and not volume</h3>
+            <p>
+                The same test runs at scale in the Dune query behind the aggregate attribution table, over every successful internal call rather than the top-level one. At that grain it fires on most of the market. Measured on the live API on 2026-09-30, against a trailing seven-day window whose attribution table was written 2026-09-29 16:20 UTC:
+            </p>
+            <div class="not-prose my-8 overflow-x-auto">
+              <table class="w-full text-sm font-mono border border-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-black/40 text-gray-400 border-b border-gray-800">
+                  <tr>
+                    <th class="text-left px-4 py-3">Chain</th>
+                    <th class="text-right px-4 py-3">Contracts</th>
+                    <th class="text-right px-4 py-3">Conserved volume</th>
+                    <th class="text-right px-4 py-3">Suffix overlay</th>
+                    <th class="text-right px-4 py-3">Overlay &gt; row's own volume</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300 divide-y divide-gray-800">
+                  <tr><td class="px-4 py-3">Ethereum</td><td class="px-4 py-3 text-right">4,077</td><td class="px-4 py-3 text-right">$6.16B</td><td class="px-4 py-3 text-right">$5.13B (83.3%)</td><td class="px-4 py-3 text-right">2,180</td></tr>
+                  <tr><td class="px-4 py-3">Base</td><td class="px-4 py-3 text-right">3,716</td><td class="px-4 py-3 text-right">$5.71B</td><td class="px-4 py-3 text-right">$4.10B (71.9%)</td><td class="px-4 py-3 text-right">1,392</td></tr>
+                  <tr><td class="px-4 py-3">Arbitrum</td><td class="px-4 py-3 text-right">852</td><td class="px-4 py-3 text-right">$1.07B</td><td class="px-4 py-3 text-right">$527M (49.2%)</td><td class="px-4 py-3 text-right">352</td></tr>
+                  <tr><td class="px-4 py-3">Optimism</td><td class="px-4 py-3 text-right">231</td><td class="px-4 py-3 text-right">$143M</td><td class="px-4 py-3 text-right">$117M (82.2%)</td><td class="px-4 py-3 text-right">112</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+                On 2,180 of Ethereum's 4,077 contract rows the suffix figure exceeds that row's entire conserved volume, because the two are counted at different grains: conserved volume takes each transaction's notional once, and the overlay sums the legs. The top row on Ethereum is that atomic-arb searcher, with a $982.1M overlay against $945.0M of its own routed volume.
+            </p>
+            <p>
+                A column that can exceed the total it sits beside cannot be added to it. It is carried as a reported overlay and excluded from the headline sum, with the reason written into the query rather than left to whoever reads the output next. The query's own note records what happens if the sibling fee overlay is folded back in: the Ethereum total jumps sharply and overshoots the independent third-party estimate of the same market. The first symptom of double-counting is a number that flatters you.
+            </p>
+            <p>
+                Which also settles what the vector is for. At the trace grain it is nearly ubiquitous, so it cannot discriminate between frontends. At the transaction grain it is rare, specific, and on a live sample names nobody. Its job in both places is to mark the boundary of what is known.
+            </p>
+
+            <h2>What It Shows</h2>
+            <p>
+                Reading a signal nothing else reads is the cheap half. The expensive half is building the layer that decides what a signal is permitted to conclude, and then measuring what it does on live data instead of asserting it from a docstring. Here that layer turns eight fingerprints into zero names and one honest flag, and gives up two medium-confidence attributions the moment better evidence says they were unsafe.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                Any vendor can report coverage. The number that is hard to produce is a defensible boundary between what a dataset knows, what it suspects, and what it has merely inferred, surfaced per record so a buyer can act on the difference. That boundary is what survives contact with an adversarial domain, and it is what Rantum builds.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+                <span><a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> &middot; <a href="/terms/" class="hover:text-white transition-colors">Terms</a></span>
+        </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
