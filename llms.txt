@@ -35,6 +35,7 @@ Site: https://rantum.xyz
 Written from real engagements, with the methodology stated rather than implied.
 Index: https://rantum.xyz/case-studies/
 
+- Fingerprinting Hidden DEX Frontends by the Bytes Standard Decoders Ignore — /case-studies/calldata-suffix-fingerprinting.html
 - Scraping Adversarial Municipal Portals: A Permit Pipeline That Knows When It Failed — /case-studies/adversarial-permit-portals.html
 - The Check I Didn't Run — /case-studies/checks-nobody-runs.html
 - Backed, or Just Named: 13 Forged Tokenized-Equity Tickers — /case-studies/backed-or-just-named.html
