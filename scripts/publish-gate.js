@@ -74,19 +74,38 @@ const HEX_ADDR = /\b0x[0-9a-fA-F]{6,}\b/g;
 const ALLOWLIST = [
   {
     file: 'index.html',
-    context: 'ex-0x, Uniswap, Art Blocks',
-    reason: "Andrew's own employment history in the studio bio and og:description. " +
-            'A personal credential, not venue data. DECIDED 2026-08-20: keep. The ' +
-            'employment credential stays on rantum.xyz even though the 2026-07-02 ' +
-            'scrub removed "ex-0x Labs" from ClearTrace\'s about.html — the two ' +
-            'properties differ deliberately, so do not re-raise this as a gap.',
-  },
-  {
-    file: 'index.html',
     context: '0x Labs',
-    reason: 'Same bio credential, in the prose and the client-logo row. DECIDED: keep.',
+    reason: "Andrew's own employment history, in the meta description, the " +
+            'og:description, the body prose and the founder blurb. A personal ' +
+            'credential, not venue data. DECIDED 2026-08-20: keep. The employment ' +
+            'credential stays on rantum.xyz even though the 2026-07-02 scrub removed ' +
+            '"ex-0x Labs" from ClearTrace\'s about.html — the two properties differ ' +
+            'deliberately, so do not re-raise this as a gap.',
   },
 ];
+// TWO ENTRIES COLLAPSED INTO ONE, 2026-10-01. There used to be a separate entry
+// anchored on 'ex-0x, Uniswap, Art Blocks', because the meta description and
+// og:description wrote the credential as a bare "ex-0x" with no "Labs", so the
+// '0x Labs' entry below did not reach them.
+//
+// That bundled phrasing was itself the defect: it filed all three venues under
+// "ex-", contradicting social_bios.md and branding_master_plan.md §1, where 0x is
+// employment, Uniswap is a PAST advisory and Art Blocks is client work. The brand
+// audit found the string had also propagated into search engines' own description
+// of the studio. Both meta tags were rewritten to "ex-0x Labs; past Uniswap Grants
+// advisor; data work for Art Blocks", matching the body prose that was already
+// correct.
+//
+// Once the copy says "ex-0x Labs", every window that matched the old entry
+// contains "0x Labs" too, so a second entry would be unreachable dead weight that
+// reads as live policy. Hence one entry. **The 2026-08-20 decision to keep the
+// credential is unchanged; only the anchor and the phrasing moved.**
+//
+// Note for whoever edits this next: the entry below is now the ONLY thing allowing
+// 0x on this page, and allowFor() compares `context` with a case-sensitive
+// String.includes. Writing "0x labs" in lower case anywhere in index.html will
+// block the publish. That is deliberate and is covered by the casing test in
+// scripts/publish-gate.test.js.
 
 function frozenTerms() {
   if (FROZEN_VENUES.length === 0) return [];

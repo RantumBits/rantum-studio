@@ -207,7 +207,7 @@ test('markup outside visible text is scanned too', () => {
 
 test('an allowlisted context passes and is reported as allowlisted', () => {
   const d = fixture();
-  commit(d, write(d, 'index.html', '<html><body><p>Led by Andrew Maury, ex-0x, Uniswap, Art Blocks.</p></body></html>\n'));
+  commit(d, write(d, 'index.html', '<html><body><p>Led by Andrew Maury: ex-0x Labs; past Uniswap Grants advisor.</p></body></html>\n'));
   const { code, out } = runGate(d);
   check(code === 0, `the allowlisted credential was blocked\n${out}`);
   check(/allowlisted/.test(out), `allowlisted hit was not reported\n${out}`);
@@ -217,16 +217,25 @@ test('an allowlisted context passes and is reported as allowlisted', () => {
 // with a case-sensitive String.includes, so an em-dash cleanup that ended the
 // previous clause with a period capitalised "ex-0x" to "Ex-0x", the allowlist
 // stopped matching, and the gate read a decided keep as a new naming.
-test('the allowlist is case-sensitive: "Ex-0x" is NOT allowlisted', () => {
+//
+// RETARGETED 2026-10-01. This used to assert on "Ex-0x", which worked while an
+// allowlist entry was anchored on the bundled string 'ex-0x, Uniswap, Art Blocks'.
+// That entry is gone (see the note in publish-gate.js) and the surviving anchor is
+// '0x Labs', so "Ex-0x Labs" is now allowlisted via that entry and the old fixture
+// passed for the wrong reason: blocked because nothing matched at all, not because
+// of casing. The trap is now demonstrated against the live anchor instead, by
+// lower-casing the L in "Labs". Same property, same incident, a subject that still
+// exists.
+test('the allowlist is case-sensitive: "0x labs" is NOT allowlisted', () => {
   const d = fixture();
-  commit(d, write(d, 'index.html', '<html><body><p>Led by Andrew Maury. Ex-0x, Uniswap, Art Blocks.</p></body></html>\n'));
+  commit(d, write(d, 'index.html', '<html><body><p>Led by Andrew Maury: ex-0x labs; past Uniswap Grants advisor.</p></body></html>\n'));
   const { code, out } = runGate(d);
-  check(code === 1, `capitalised "Ex-0x" was allowlisted; the 2026-08-25 trap is gone\n${out}`);
+  check(code === 1, `lower-case "0x labs" was allowlisted; the 2026-08-25 trap is gone\n${out}`);
 });
 
 test('the allowlist is file-scoped: the same context elsewhere is blocked', () => {
   const d = fixture();
-  commit(d, write(d, 'about.html', '<html><body><p>Led by Andrew Maury, ex-0x, Uniswap, Art Blocks.</p></body></html>\n'));
+  commit(d, write(d, 'about.html', '<html><body><p>Led by Andrew Maury: ex-0x Labs; past Uniswap Grants advisor.</p></body></html>\n'));
   const { code, out } = runGate(d);
   check(code === 1, `an index.html allowlist entry leaked to about.html\n${out}`);
 });
