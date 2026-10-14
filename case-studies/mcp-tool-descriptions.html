@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Null Is Not Zero: What an MCP Tool Description Has to Carry | Rantum Studio</title>
+    <meta name="description" content="An MCP tool description is the one piece of text a model reads on every single call, which makes it where you stop an agent misreporting your numbers. I shipped one for AddressIntel's permit data, then found two of my own instructions to the model had already gone stale.">
+    <meta property="og:title" content="Null Is Not Zero: What an MCP Tool Description Has to Carry | Rantum Studio">
+    <meta property="og:description" content="Four of the five rows a demo-key agent gets back carry no ROI at all. The tool description is what decides whether that reads as unknown or as zero.">
+    <meta property="og:image" content="https://rantum.xyz/og-mcp-tool-descriptions.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/mcp-tool-descriptions.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-mcp-tool-descriptions.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/mcp-tool-descriptions.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Styles built with Tailwind CSS — see src/input.css -->
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Null Is Not Zero: What an MCP Tool Description Has to Carry",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="address-intel.html" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            AddressIntel &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-green-900/30 text-green-400 border border-green-500/30">● Live</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">MCP</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">API Design</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">PropTech</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Null Is Not Zero: What an MCP Tool Description Has to Carry
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                A REST API's documentation is read by a developer once. An MCP tool description is the one piece of text a model reads on every single call, which makes it where you stop an agent misreporting your numbers. It is also prose, so it goes stale like prose.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>Case Study</span>
+            </div>
+        </header>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">312</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Lines of adapter</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">4 / 5</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Rows with no ROI at all</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl text-center">
+                <div class="text-2xl font-bold text-white font-mono">2</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Of my own instructions stale</div>
+            </div>
+        </div>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+
+            <h2>The Challenge</h2>
+            <p>
+                <a href="address-intel.html">AddressIntel</a> reads building permits and parcel records across the SF Peninsula and scores what could be built on a given lot. It already had a REST API. Putting a Model Context Protocol server in front of that API is, as engineering, close to trivial: the whole thing is 312 lines of TypeScript across two files, six tools, and a client that adds a header, builds a query string and unwraps the API's error envelope.
+            </p>
+            <p>
+                What is not trivial is that the consumer changed. A developer reading REST docs forms a mental model once, writes code against it, and that code then behaves the same way forever. A model reads the tool description on every call and decides, each time, what the returned numbers mean and how to report them to whoever asked. The description is not documentation. It is the contract, and it is enforced by nothing.
+            </p>
+            <p>
+                That matters here more than it would for most data, because this data is full of ways to be confidently wrong. A teardown ROI of <code>null</code> is not a zero. A score that ranks candidates is not a return. A negative number is usually correct. Get any of those wrong in a summary to a buyer and you have invented a deal that does not exist.
+            </p>
+
+            <h2>What We Built</h2>
+            <p>
+                Six tools over stdio, published to npm as <code>addressintel-mcp</code> and listed in the official MCP registry under the DNS-authenticated namespace <code>co.addressintel/permits</code>. <code>search_permits</code> for issued permits by city, keyword and valuation; <code>list_sb9_inventory</code> for lot-split and duplex eligibility with the per-parcel block reasons; <code>list_adu_leads</code> and <code>list_redevelopment_leads</code> for feasibility-ranked parcels; <code>list_market_signals</code> for the opportunity feed; <code>get_property_intelligence</code> for one property in depth.
+            </p>
+            <p>
+                The declaration keeps each tool's validation schema and its advertised JSON Schema side by side in one object, because a tool that spells its shape out twice in two separate blocks will eventually spell it differently:
+            </p>
+<pre><code class="language-typescript">interface ToolDef&lt;T extends z.ZodTypeAny&gt; {
+  name: string;
+  description: string;
+  inputSchema: { /* advertised to the client */ };
+  args: T;                    // validates the incoming call
+  run: (args: z.infer&lt;T&gt;) =&gt; Promise&lt;unknown&gt;;
+}</code></pre>
+            <p>
+                Two decisions in the transport layer are worth more than the rest of the code put together, and both exist because the caller is an installed agent rather than a developer at a terminal.
+            </p>
+            <p>
+                The first is what happens with no API key. The first draft of this client sent no auth header at all, so every endpoint returned 401 and the server was useless until you went and got a key. Now an unset key falls back to the literal string <code>demo</code>, which the API recognises as a public tier at 10 requests per minute and 5 rows per call. The server does something real the moment it is installed. A human will go find a key when they hit a wall; an agent will simply report that the tool is broken.
+            </p>
+            <p>
+                The second is error shape. The API returns a readable <code>error</code> in its failure envelope, and that string gets surfaced to the model rather than a bare status line, because it is what tells the agent whether to narrow the query, back off, or ask the user for a key. A status code tells a model nothing it can act on. For the same reason, a lookup that misses returns <code>{ found: false, message: "No property found with ID: …" }</code> rather than null: outside our coverage area a miss is a normal answer, not a failure, and it should arrive in words the model can pass along.
+            </p>
+            <p>
+                <code>API_BASE</code> defaults to the published domain rather than the bare App Hosting URL. Both serve the API, but the latter moves with the backend, and an installed client is the worst place to hard-code something that moves.
+            </p>
+
+            <h3>The descriptions are where the guardrails live</h3>
+            <p>
+                Here is the part I did not expect to spend the most time on. The description field for <code>list_market_signals</code> ends with three sentences that are not describing anything:
+            </p>
+            <blockquote>
+                Quote those assumptions alongside the number. <code>null</code> means not modellable, with <code>unmodellableReason</code> naming the missing input: treat it as unknown, never as zero. Negatives are normal here; most of this market does not pencil.
+            </blockquote>
+            <p>
+                That is an instruction to a model, sitting in a schema field. It is there because the alternative is an agent that says "four of these properties show a 0% return" when what the data said was "I could not model four of these properties." <code>get_property_intelligence</code> carries the matching one in the other direction: its scores rank candidates, none of them is a return, and the tool explicitly tells the model that this endpoint carries no ROI figure at all and points it at the other tool for one.
+            </p>
+            <p>
+                I went looking for how often that guard actually fires. Asking the live API for the five rows a demo-key agent gets, on 2026-10-14:
+            </p>
+            <div class="not-prose my-8 overflow-x-auto">
+              <table class="w-full text-sm font-mono border border-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-black/40 text-gray-400 border-b border-gray-800">
+                  <tr>
+                    <th class="text-left px-4 py-3">City</th>
+                    <th class="text-right px-4 py-3">proformaROI</th>
+                    <th class="text-left px-4 py-3">unmodellableReason</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300 divide-y divide-gray-800">
+                  <tr><td class="px-4 py-3">San Mateo</td><td class="px-4 py-3 text-right">null</td><td class="px-4 py-3">no_envelope_rule</td></tr>
+                  <tr><td class="px-4 py-3">San Jose</td><td class="px-4 py-3 text-right">null</td><td class="px-4 py-3">no_envelope_rule</td></tr>
+                  <tr><td class="px-4 py-3">Saratoga</td><td class="px-4 py-3 text-right">&minus;7</td><td class="px-4 py-3">&mdash;</td></tr>
+                  <tr><td class="px-4 py-3">Los Altos Hills</td><td class="px-4 py-3 text-right">null</td><td class="px-4 py-3">no_envelope_rule</td></tr>
+                  <tr><td class="px-4 py-3">San Jose</td><td class="px-4 py-3 text-right">null</td><td class="px-4 py-3">no_envelope_rule</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+                Four of five null, one modellable at &minus;7%, no positives. Both instructions are load-bearing on the very first call a new agent makes. An agent that reads null as zero reports four flat deals; an agent that does not know negatives are normal either suppresses the one real number or flips its sign. Five rows is a demo-tier sample and I am not generalising it to the corpus, but it is exactly what an agent sees, which is the population that matters for this question.
+            </p>
+            <p>
+                The reason the nulls are nulls took me a second read of the predicate to state correctly, and it is not the jurisdiction story I assumed. <code>no_envelope_rule</code> is parcel-scoped, not city-scoped: it is true when no curated allowable floor area governs a <em>single-family rebuild on that parcel</em>, which five separate conditions can cause. Measured against a production snapshot on 2026-09-03, 501 of 1,039 modelled active listings landed there, and 423 of those were condos, townhomes and multi-family units that never had an envelope to give. Another 56 were unincorporated county parcels, 2 were single-family rows the floor-area pass had not reached, and 20 carried a curated envelope more than four times the existing house, which is a rule that exists being deliberately distrusted. So the dominant case is a property type the model does not apply to, not a city nobody has curated.
+            </p>
+            <p>
+                In all five cases the served proforma refuses rather than substituting a default, which is the only defensible choice: a substituted envelope produces a number indistinguishable from a real one. The predicate was added after a Saratoga listing cleared an internal shortlist at 39.8% on a nine-thousand-square-foot build that nothing but <code>existing &times; 1.5</code> had sized. The on-page calculator still seeds a default for a human to drag; the served number never quotes it.
+            </p>
+
+            <h3>Two of my own instructions had already gone stale</h3>
+            <p>
+                While checking the above I found that the description I have been praising is wrong, in two places. One drifted three days after the server's last commit, the other about two weeks later.
+            </p>
+            <p>
+                <strong>The hard cost.</strong> The <code>list_market_signals</code> description tells the model the proforma assumes "$400/sqft build," and tells it to quote those assumptions alongside the number. The live API serves <code>assumptions.costPerSqft: 550</code>. The constant moved from 400 to 550 on 2026-08-21, three days after the server's last commit, because 550 is the midpoint of a verified $400&ndash;700 builder band and 400 was the band's floor, which flattered every deal. Measured over 407 gated active listings at the time of that change, moving the hard cost 400 &rarr; 550 &rarr; 700 took the median ROI from &minus;3.9% to &minus;14.3% to &minus;22.9%, and the count of parcels clearing 20% net from 60 to 28 to 15.
+            </p>
+            <p>
+                So the payload carries 550 and the prose next to it says 400, and the prose is the thing instructing the model to quote it. The field is right there in the same response, but nothing obliges a model to prefer a field it was not told to read over a sentence it was told to repeat. A stale number in REST docs misleads a developer who will probably notice. A stale number in a tool description is actively read out to the end user as an assumption behind a figure it does not match.
+            </p>
+            <p>
+                <strong>The history window.</strong> On 2026-09-03 the free tier was windowed to 30 days of history, grandfathering every key created before 2026-09-04. The server's paging argument still says only "Clamped to your API key's tier ceiling," which was a complete description of the tiers when it was written and is not one now. Nothing in the server mentions a history window at all; the word does not appear in its source, README or manifest.
+            </p>
+            <p>
+                The API itself is better behaved than its tool description, and the difference is the whole point. The two routes that apply the window, permits and market signals, both report a <code>historyWindow</code> field in the response, explicitly so a windowed caller can tell a quiet 30 days from a broken query; the other four routes the tools hit are not windowed at all. What is missing is any instruction to read it. For a question like "has anything been permitted at this address," a free key minted since that date is answering from the last 30 days, and the difference between a no and an unknown is sitting in a field the model was never told about. Worth being precise about the scope, too, since "30 days" sounds larger than it is: on the permits tool it windows permit history, but on <code>list_market_signals</code> it touches sold rows only and the active feed stays whole.
+            </p>
+            <p>
+                There is a third, cheaper instance I may as well report: <code>src/index.ts</code> still announces itself to clients as version <code>1.1.0</code> while the package and the registry manifest are both at 1.1.2. That one misleads nobody, which is exactly why it survived. I am not counting it alongside the other two, because those are instructions a model acts on and this is a string.
+            </p>
+            <p>
+                None of these is exotic. They are the ordinary consequence of putting operational constants into prose in a separate repository with its own release cycle, and they are the strongest argument I have for generating the volatile parts of a tool description from the same constants the API serves, rather than writing them by hand.
+            </p>
+
+            <h3>Getting listed is the other half of the work</h3>
+            <p>
+                Publishing an MCP server and having anyone able to find it are different projects. Seven surfaces, re-checked live on 2026-10-14:
+            </p>
+            <div class="not-prose my-8 overflow-x-auto">
+              <table class="w-full text-sm font-mono border border-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-black/40 text-gray-400 border-b border-gray-800">
+                  <tr>
+                    <th class="text-left px-4 py-3">Surface</th>
+                    <th class="text-left px-4 py-3">State</th>
+                    <th class="text-left px-4 py-3">What it took</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300 divide-y divide-gray-800">
+                  <tr><td class="px-4 py-3">Official MCP registry</td><td class="px-4 py-3">Listed, v1.1.2</td><td class="px-4 py-3">DNS-authenticated namespace; manifest validates against the schema</td></tr>
+                  <tr><td class="px-4 py-3">Glama</td><td class="px-4 py-3">Listed, tools indexed</td><td class="px-4 py-3">Auto-indexed, then claimed; the maintenance score wanted CI, a tagged release and a <code>glama.json</code></td></tr>
+                  <tr><td class="px-4 py-3">awesome-mcp-servers</td><td class="px-4 py-3">Merged 2026-09-07</td><td class="px-4 py-3">A PR, corrected to the repo's own category conventions</td></tr>
+                  <tr><td class="px-4 py-3">npm</td><td class="px-4 py-3">1.1.2, published from CI</td><td class="px-4 py-3">Scoped token; the <code>bin</code> shebang is what makes it npx-runnable</td></tr>
+                  <tr><td class="px-4 py-3">mcp.so</td><td class="px-4 py-3">Submission still open, 68 days</td><td class="px-4 py-3">Free listings are <code>nofollow ugc</code>; the paid dofollow tier was declined</td></tr>
+                  <tr><td class="px-4 py-3">Smithery</td><td class="px-4 py-3">Blocked upstream</td><td class="px-4 py-3">The bundle path rejects any bundle declaring tools; their issue is open since June</td></tr>
+                  <tr><td class="px-4 py-3">PulseMCP</td><td class="px-4 py-3">Structurally closed</td><td class="px-4 py-3">New submissions paused while they rework ingestion</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+                Four of seven landed cleanly, one is open indefinitely, one is blocked by a bug in somebody else's tooling and one has the door shut. The useful pattern is that the surfaces which worked are the ones with a machine-checkable artifact behind them: a manifest that validates, a published package, a repo a crawler can read. The ones that stalled are the ones gated on a human reading a queue. If you are planning this work, budget for the manifest and the package, and treat the directory listings as a lottery you enter cheaply.
+            </p>
+            <p>
+                On adoption I have nothing to report and will not pretend otherwise. npm shows 191 downloads in the 30 days to 2026-10-13, which for a package in this position is mostly mirrors and crawlers rather than people; the repo has no stars; PulseMCP alone lists over 21,700 servers. AddressIntel has never been monetized and has no customers. What exists is a published, installable capability, measured honestly.
+            </p>
+
+            <h2>What It Shows</h2>
+            <p>
+                The adapter was an afternoon. The work was deciding what a model is allowed to conclude from each field, writing that into the one place the model reads on every call, and then going back and checking the contract against the live API instead of trusting it. That check is what found the $400 and the missing history window, and neither was visible from the code, the README or the repo's own commit history.
+            </p>
+
+            <h2>What It Proves to a Client</h2>
+            <p>
+                Exposing data to agents is becoming the default ask, and the easy part of it is the protocol. The hard part is that an agent will restate your numbers to someone who cannot see the payload, which means every caveat that used to live in a footnote now has to be machine-readable and kept in sync with the system that produces it. Building that discipline into a data product, and then measuring whether it held, is the part Rantum does.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Have hard data to make useful?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://cleartracedata.com" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">ClearTrace</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+                <span><a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> &middot; <a href="/terms/" class="hover:text-white transition-colors">Terms</a></span>
+        </footer>
+
+    <!-- Prism.js script for Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+</body>
+</html>
