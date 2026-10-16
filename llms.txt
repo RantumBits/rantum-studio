@@ -59,7 +59,7 @@ Index: https://rantum.xyz/case-studies/
 ## Research
 - Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume —
   https://rantum.xyz/research/cross-frontend-attribution.html
-  (PDF: /research/cross-frontend-attribution-whitepaper.pdf)
+  (PDF on Zenodo: https://doi.org/10.5281/zenodo.21513262)
 - One Pool Deep: What Capacity Concentration Means for Realized Execution —
   https://rantum.xyz/research/capacity-vs-realized-execution.html
 

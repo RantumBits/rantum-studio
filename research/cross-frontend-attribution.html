@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume | Rantum Studio</title>
-    <meta name="description" content="Preprint: four independent heuristics for recovering frontend origin from raw DEX transaction and trace data (calldata-suffix trapping, proxy-router mismatch detection, multi-hop origin tracing, and fee-recipient clustering), with validation results from a live production sampler. DOI 10.5281/zenodo.21513262.">
+    <meta name="description" content="Preprint (v3, October 2026): how ClearTrace assigns DEX volume to the contract, aggregator or partner that originated it, and what the resulting names actually identify. Over one week on four chains, 86.9% of $13.0B carried a name but only about 19% a user-facing frontend. DOI 10.5281/zenodo.21513262.">
     <meta property="og:title" content="Cross-Frontend Attribution Methodologies in Decentralized Exchange Volume">
-    <meta property="og:description" content="Preprint on recovering frontend origin from raw DEX transaction data, with the execution-quality scoring layer built on top of it. Published on Zenodo, DOI 10.5281/zenodo.21513262.">
+    <meta property="og:description" content="Preprint on attributing DEX volume to its originating frontend, and on how much named volume is market makers, searchers and bots rather than users. v3, October 2026. Zenodo, DOI 10.5281/zenodo.21513262.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -20,7 +20,8 @@
     <meta name="citation_author" content="Maury, Andrew">
     <meta name="citation_publication_date" content="2026/07/23">
     <meta name="citation_online_date" content="2026/07/23">
-    <meta name="citation_pdf_url" content="https://rantum.xyz/research/cross-frontend-attribution-whitepaper.pdf">
+    <!-- The PDF is hosted on Zenodo only; this URL resolves to the newest version record. -->
+    <meta name="citation_pdf_url" content="https://doi.org/10.5281/zenodo.21513262">
     <meta name="citation_doi" content="10.5281/zenodo.21513262">
     <meta name="citation_abstract_html_url" content="https://rantum.xyz/research/cross-frontend-attribution.html">
     <meta name="citation_language" content="en">
@@ -51,8 +52,8 @@
         }
       },
       "datePublished": "2026-07-23",
-      "dateModified": "2026-08-06",
-      "version": "v2",
+      "dateModified": "2026-10-16",
+      "version": "v3",
       "sameAs": "https://doi.org/10.5281/zenodo.21513262",
       "identifier": "https://doi.org/10.5281/zenodo.21513262",
       "license": "https://creativecommons.org/licenses/by/4.0/",
@@ -99,7 +100,7 @@
                     <span>Andrew Maury</span>
                 </div>
                 <span>&bull;</span>
-                <span>July 23, 2026 &middot; v2, August 6, 2026</span>
+                <span>July 23, 2026 &middot; v3, October 16, 2026</span>
                 <span>&bull;</span>
                 <a href="https://doi.org/10.5281/zenodo.21513262" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 transition-colors">DOI 10.5281/zenodo.21513262</a>
             </div>
@@ -107,9 +108,9 @@
 
         <!-- Download / Zenodo actions -->
         <div class="flex flex-wrap gap-4 mb-16">
-            <a href="cross-frontend-attribution-whitepaper.pdf" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-6 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+            <a href="https://doi.org/10.5281/zenodo.21513262" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-6 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                Download PDF
+                PDF on Zenodo
             </a>
             <a href="https://zenodo.org/doi/10.5281/zenodo.21513262" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 border border-gray-700 hover:border-purple-500/50 text-gray-300 hover:text-white font-semibold py-3 px-6 rounded-full transition-colors text-sm">
                 View on Zenodo
@@ -121,13 +122,16 @@
         <article class="prose prose-invert prose-gray max-w-none">
             <h2>Abstract</h2>
             <p>
-                Decentralized exchange (DEX) volume is routinely used by liquidity-mining programs, Layer-2 (L2) foundations, and grant committees as a proxy for organic user adoption. This proxy is unreliable: the same underlying trade-execution infrastructure exposes no standard mechanism by which a frontend (a wallet-native swap widget, an aggregator, an institutional smart contract, a meta-router) announces its own identity on-chain. Volume figures that are not attributed to a true origin are trivially inflated by wash trading, proxy routing, and MEV-adjacent flow, and incentive programs built on top of them reward the wrong behavior.
+                Decentralized exchange (DEX) volume is used by liquidity-mining programs, Layer-2 (L2) foundations and grant committees as a proxy for user adoption. Once a trade settles in a shared liquidity pool, nothing in the protocol records which frontend (a wallet swap widget, an aggregator, an institutional contract, a meta-router) originated it, so volume figures cannot be tied to an origin without additional work.
             </p>
             <p>
-                This paper presents the attribution methodology developed for ClearTrace, a neutral, third-party execution-intelligence system covering Ethereum, Base, Arbitrum, and Optimism. We describe four independent heuristics for recovering frontend origin from raw transaction and trace data (a calldata-suffix trapper, a proxy-router mismatch detector, a multi-hop origin tracer, and a fee-recipient clustering method) and a companion execution-quality layer that benchmarks realized trade price against a volume-weighted average price (VWAP) oracle, kept deliberately separate from a sandwich/MEV-exposure score.
+                This paper describes the attribution method used by ClearTrace on Ethereum, Base, Arbitrum and Optimism. Each transaction's volume is counted once and assigned to the contract the transaction entered through, to an aggregator, or (on Ethereum only) to an aggregator's integrating partner, and that contract is resolved to a name. Two further signals, an appended-calldata check and the recipients of fee transfers, are recorded alongside without adding to volume.
             </p>
             <p>
-                We report validation results from an in-production quote-accuracy sampler (112 of 168 tracked cells reaching statistical significance over a 9.6-day window), a worked example of a hypothesis reversal under additional data (order-size-dependent quote degradation at a major aggregator), and a structural finding on Arbitrum, where a near-zero sandwich-attack count is confirmed as genuine structural immunity rather than a coverage gap. We close with the limitations of single-team validation and the case for treating cross-frontend attribution as a first-class, auditable input to incentive design rather than an afterthought to volume dashboards.
+                Over the seven days to 2026-10-12, ClearTrace attached a name to 86.9% of $13.00B in tracked DEX volume, but only 57.9% carried a name of a kind that identifies a protocol, organization or person, and about 40% did so on evidence other than the author's own inference or a labelling heuristic; 29.0% carried a descriptive label such as "Automated Trading Contract" or "Anonymous Vault Router", and 13.1% was untraced. Classified by ClearTrace's own name taxonomy, 18.6% of volume went to contracts named as user-facing frontends and 0.2% to in-wallet swap surfaces, while market makers, searchers, bots and anonymous contracts accounted for much of the rest. We also report a quote-deliverability study of six aggregators on Ethereum (2026-06-23 to 2026-07-02) and a reading of near-zero sandwich counts on Arbitrum. Attribution precision has not been measured against labelled ground truth (Section 6).
+            </p>
+            <p class="text-sm text-gray-400">
+                v3 (October 2026) corrects v2 on its description of the method, the size and source of the contract registry, the reference price, the sampler figures and the Arbitrum sequencing account. The full list is in the Version Note at the end of the PDF. v2 remains citable under the same concept DOI.
             </p>
 
             <h2>Cite</h2>
@@ -139,8 +143,8 @@
   title        = {Cross-Frontend Attribution Methodologies in
                   Decentralized Exchange Volume},
   year         = {2026},
-  month        = aug,
-  version      = {v2},
+  month        = oct,
+  version      = {v3},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.21513262},
   url          = {https://doi.org/10.5281/zenodo.21513262},
