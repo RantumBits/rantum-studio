@@ -63,10 +63,6 @@ Index: https://rantum.xyz/case-studies/
 - One Pool Deep: What Capacity Concentration Means for Realized Execution —
   https://rantum.xyz/research/capacity-vs-realized-execution.html
 
-## Book
-**The DeFi Data Quick-Start: Reading On-Chain Truth with Dune Analytics** by
-Andrew Maury. Companion page: https://rantum.xyz/quickstart/
-
 ## About Andrew Maury
 Senior data scientist and ML engineer; founder of Rantum. San Mateo, California.
 Personal hub and canonical identity record: https://andrewmaury.com
