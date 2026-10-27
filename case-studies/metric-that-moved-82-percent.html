@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Metric That Moved 82 Percent and Measured Nothing | Rantum Studio</title>
-    <meta name="description" content="ParaSwap's published execution slippage on Ethereum fell 82.6 percent in 90 days. Most of that was where the window fell and who was trading. The part that survives is about half as large, and the cell cannot say what caused it.">
-    <meta property="og:title" content="The Metric That Moved 82 Percent and Measured Nothing | Rantum Studio">
-    <meta property="og:description" content="ParaSwap's published execution slippage on Ethereum fell 82.6 percent in 90 days. Most of that was where the window fell and who was trading. The part that survives is about half as large, and the cell cannot say what caused it.">
+    <title>The Metric That Moved 82 Percent and the One That Didn't | Rantum Studio</title>
+    <meta name="description" content="ParaSwap's published execution slippage on Ethereum fell 82.6 percent in a quarter. The dates it was measured between and a population that more than doubled inflate the figure, and a paired measurement of the same venue barely moved.">
+    <meta property="og:title" content="The Metric That Moved 82 Percent and the One That Didn't | Rantum Studio">
+    <meta property="og:description" content="ParaSwap's published execution slippage on Ethereum fell 82.6 percent in a quarter. The dates it was measured between and a population that more than doubled inflate the figure, and a paired measurement of the same venue barely moved.">
     <meta property="og:image" content="https://rantum.xyz/og-cleartrace.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -28,7 +28,7 @@
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "The Metric That Moved 82 Percent and Measured Nothing",
+      "headline": "The Metric That Moved 82 Percent and the One That Didn't",
       "author": {
         "@type": "Person",
         "name": "Andrew Maury"
@@ -68,10 +68,10 @@
                 <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Measurement</span>
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
-                The Metric That Moved 82 Percent and Measured Nothing
+                The Metric That Moved 82 Percent and the One That Didn't
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                The largest move in ClearTrace's published execution data last quarter came mostly from the calendar and the population. What survives is half as large and has no attributable cause.
+                ParaSwap's published execution slippage fell 82.6 percent in a quarter. Measured on fixed pairs against a fixed baseline, the same venue's execution barely moved.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -88,21 +88,24 @@
         <!-- Article Content (Prose) -->
         <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
             <p>
-                ClearTrace publishes a median execution slippage for every venue it measures. On 21 October the cell for ParaSwap on Ethereum read 6.40 basis points, over 17,913 trades in the trailing seven days. On 29 July the same cell read 36.83. That is a fall of 82.6 percent, and it is the largest move over the quarter of any venue cell ClearTrace publishes.
+                ClearTrace publishes a median execution slippage for each venue on its leaderboard. On 21 October the cell for ParaSwap on Ethereum read 6.40 basis points, over 17,913 transactions in the trailing seven days. On 29 July the same cell read 36.83. That is a fall of 82.6 percent, and measured in basis points it is the largest move over the quarter of any venue cell ClearTrace publishes.
             </p>
             <p>
-                Executing through ParaSwap did not get 82 percent cheaper. Most of that figure comes from where the 90-day window happened to fall and from a change in who was trading. The part that survives is about half as large, and the cell has no way to say what caused it. Each of the reasons applies to any metric reported as the change between two dates, which is why they are worth going through one at a time.
+                Two things inflate that figure: the dates it is measured between, and a change in the transactions underneath it. A second ClearTrace instrument holds the comparison steady, pricing the same pairs at the same sizes against the same baseline at the same moment, and across the same quarter it shows ParaSwap's execution barely moving at all.
             </p>
 
             <h2>What the number is</h2>
             <p>
-                The cell is a median. For every fill routed through the venue on Ethereum in a trailing seven-day window, ClearTrace values both legs at that minute's oracle price, takes the size of the gap between them, and reports the median in basis points. It is computed on Dune from <code>dex.trades</code>, where the venue is labelled <code>velora</code>, the name ParaSwap now trades under. Each sync stores the reading and the number of trades behind it, and between 1 July and 21 October there are 52 of those snapshots.
+                The cell is a median. For every fill routed through the venue on Ethereum in a trailing seven-day window, ClearTrace values both legs at Dune's price for that minute, takes the size of the gap between them, and reports the median in basis points. The fills come from Dune's <code>dex_aggregator.trades</code>, where the venue is labelled <code>velora</code>, the name ParaSwap now trades under. The count published beside the median is distinct transactions, while the median itself runs over fills; on 21 October that was 17,913 transactions and 17,955 fills.
+            </p>
+            <p>
+                Three details of the query matter later. A transaction is credited to one project only, through a fixed priority order, so a change in how Dune attributes shared transactions moves this count. A fill is dropped unless Dune has a price for both tokens in that minute, so a change in price coverage moves it too. And the query itself changed during the quarter: its file was committed eight times between 10 July and 2 October, some of those to comments, with the measurement changes on 20 August, 9 September and 23 September. The 52 snapshots between 1 July and 21 October are readings from an instrument that changed while it was being read.
             </p>
 
             <figure class="not-prose my-10">
 <svg viewBox="0 0 720 440" role="img" aria-labelledby="chart-title chart-desc" style="width:100%;height:auto;display:block;font-family:Inter,system-ui,sans-serif">
 <title id="chart-title">ParaSwap on Ethereum: published execution slippage and its sample count, 1 July to 21 October 2026</title>
-<desc id="chart-desc">Top panel: the seven-day median execution slippage in basis points at each snapshot. The 90-day window opens on 29 July at 36.83, the highest reading in the series, and closes on 21 October at 6.40, the lowest. Bottom panel: the number of trades behind each reading, steady between about 3,900 and 7,900 until it rises from 6,838 to 16,940 between 14 and 19 October.</desc>
+<desc id="chart-desc">Top panel: the seven-day median execution slippage in basis points at each snapshot. The 90-day window opens on 29 July at 36.83, the highest reading in the series, and closes on 21 October at 6.40, the lowest. Bottom panel: the number of transactions behind each reading, steady between about 3,900 and 7,900 until it rises from 6,838 to 16,940 between 14 and 19 October.</desc>
 <line x1="56" x2="696" y1="250.0" y2="250.0" stroke="#374151" stroke-width="1" opacity="0.9"/>
 <text x="48" y="254.0" text-anchor="end" font-size="11" fill="#9ca3af">0</text>
 <line x1="56" x2="696" y1="193.5" y2="193.5" stroke="#374151" stroke-width="1" opacity="0.45"/>
@@ -120,7 +123,7 @@
 <text x="48" y="354.0" text-anchor="end" font-size="11" fill="#9ca3af">10k</text>
 <line x1="56" x2="696" y1="300.0" y2="300.0" stroke="#374151" stroke-width="1" opacity="0.45"/>
 <text x="48" y="304.0" text-anchor="end" font-size="11" fill="#9ca3af">20k</text>
-<text x="56" y="290" font-size="12" fill="#e5e7eb" font-weight="600">Trades behind each reading</text>
+<text x="56" y="290" font-size="12" fill="#e5e7eb" font-weight="600">Transactions behind each reading</text>
 <text x="56.0" y="418" text-anchor="middle" font-size="11" fill="#9ca3af">Jul</text>
 <line x1="56.0" x2="56.0" y1="400" y2="405" stroke="#374151"/>
 <text x="228.5" y="418" text-anchor="middle" font-size="11" fill="#9ca3af">Aug</text>
@@ -151,7 +154,7 @@
                 <details style="margin-top:12px;font-size:13px;color:#d1d5db">
                     <summary style="cursor:pointer;color:#c084fc">All 52 readings as a table</summary>
                     <table style="margin-top:8px;width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:12px">
-                        <thead><tr style="text-align:left;color:#9ca3af"><th style="padding:4px 8px 4px 0">Snapshot</th><th style="padding:4px 8px">Median, bps</th><th style="padding:4px 0 4px 8px">Trades</th></tr></thead>
+                        <thead><tr style="text-align:left;color:#9ca3af"><th style="padding:4px 8px 4px 0">Snapshot</th><th style="padding:4px 8px">Median, bps</th><th style="padding:4px 0 4px 8px">Transactions</th></tr></thead>
                         <tbody>
 <tr><td>2026-07-01</td><td>13.94</td><td>4,434</td></tr>
 <tr><td>2026-07-03</td><td>11.93</td><td>4,291</td></tr>
@@ -215,76 +218,87 @@
                 36.83 is the highest reading in the whole series, and it is the reading the 90-day window opens on. 6.40 is the lowest, and it is the reading the window closes on. A change measured between those two dates is the full range of the series, by the accident of where the calendar landed.
             </p>
             <p>
-                The opening value is also older than its date. It was first recorded on 24 July and appears again, identical, on 27 July and on 29 July. That is a table that was not refetched: 40 of the 42 venue cells carry the same trade count on all three snapshots. The window opens on a measurement taken five days before the window began.
+                The opening value is also older than its date. It was first recorded on 24 July and appears again, identical, on 27 July and on 29 July, and so does every one of the other 39 venue cells. When a Dune run fails, ClearTrace's sync serves the last cached result instead, which is consistent with three identical snapshots across all 40 cells. The window opens on a measurement taken five days before the window began. The same series carries two more repeated pairs, on 13 and 15 July and on 26 and 29 August; the second is the late-August peak.
             </p>
             <p>
-                Between the endpoints the series does not trend. It rose to 29.43 in late August, fell to 16.62 by mid-September, climbed to 30.92 by the end of September and dropped 17 points the following week. That pattern is ordinary in this data. Across 35 per-chain cells in the snapshot history, leaving out the ones ClearTrace has withdrawn or does not publish, the median net change over the quarter is 2.67 bps and the median range is 10.44. For the typical cell, the range inside the quarter is about three times the net move across it.
+                Between the endpoints the series does not trend. It rose to 29.43 in late August, fell to 16.62 by mid-September, climbed to 30.92 by the end of September and dropped 17 points the following week. That is ordinary in this data. Across 35 per-chain cells in the snapshot history, leaving out the ones ClearTrace has withdrawn or does not publish, the median absolute change over the quarter is 2.67 bps and the median range is 10.44. For the typical cell, the range inside the quarter is about three times the net move across it.
             </p>
 
-            <h2>Then the population tripled</h2>
+            <h2>Then the population more than doubled</h2>
             <p>
-                The last step down, from 8.89 on 14 October to 6.43 on 19 October, coincides with the count behind the reading going from 6,838 trades to 16,940. Two days later it was 17,913. Both readings cover seven days, so the week ending 19 October held about two and a half times as many ParaSwap trades on Ethereum as the week ending 14 October.
+                The last step down, from 8.89 on 14 October to 6.43 on 19 October, coincides with the count behind the reading going from 6,838 transactions to 16,940. Two days later it was 17,913. Both readings cover seven days, so the week ending 19 October held about two and a half times as many ParaSwap transactions on Ethereum as the week ending 14 October.
             </p>
             <p>
-                The jump belongs to that venue on that chain. The same venue on Base went from 4,961 trades to 5,003 on the same sync. Among the other 33 venue cells, the largest rise was 1.41 times, and 23 of them fell. Dune's public model repository does not explain it either: the ParaSwap models there were last changed in June.
+                The jump belongs to that venue on that chain. The same venue on Base went from 4,961 transactions to 5,003 on the same sync. Of the 23 other venue cells on individual chains present on both snapshots, the largest rise was 1.37 times, and 16 of them fell. In Dune's public model repository, ParaSwap's own models were last changed in June, and I found no change to the shared aggregator models after 23 September.
             </p>
             <p>
-                The new flow did not arrive through the two ParaSwap entrypoints that the snapshot history tracks separately. Between them they held 1,487 trades before the jump and 1,396 after it. Roughly ten thousand trades a week came through other contracts, and identifying them takes a query I have not run for this piece. Without it, the most that can be said is that a median over 6,838 trades and a median over 16,940 trades are medians over different populations.
+                The two ParaSwap entrypoints that the snapshot history tracks separately did not grow either: together they show 1,487 transactions on 14 October and 1,396 on 19 October, although those rows refresh less often than the venue cell. The additional ten thousand or so transactions came through other contracts. They could be new flow, or flow that the priority order or the price coverage had been assigning elsewhere or dropping. Telling those apart takes a query I have not run for this piece. Either way, a median over 6,838 transactions and a median over 16,940 are medians over different populations.
             </p>
             <p>
-                There is one more signal in the closing reading. On 21 October the signed median, which keeps the direction of each gap, was 0.67 bps, and 53.9 percent of scored fills were costs to the taker. The distribution was close to centred on zero. ClearTrace's own <a href="https://cleartracedata.com/research/how-execution-quality-works" target="_blank" rel="noopener noreferrer">methodology note</a> explains why that matters: when the gaps centre near zero, the absolute median measures how noisy the oracle is for those token pairs more than it measures execution. The window closes on a reading close to that regime.
+                The closing reading has a second problem. On 21 October the signed median, which keeps the direction of each gap, was 0.67 bps, and 53.9 percent of scored fills were costs to the taker. The distribution was close to centred on zero. ClearTrace's own <a href="https://cleartracedata.com/research/how-execution-quality-works" target="_blank" rel="noopener noreferrer">methodology note</a> explains the consequence: when the gaps centre near zero, the absolute median reports how noisy the price feed is for those token pairs more than it reports execution. The window closes on a reading close to that regime.
             </p>
             <p>
-                The surge has since passed. Read from ClearTrace's public API on 27 October, the same cell shows 7.72 bps over 7,394 trades, with a signed median of 3.14 and 66.4 percent of fills as costs. The count is back near where it sat before 19 October, and the reading has moved back up with it.
+                The surge has since passed. Read from ClearTrace's public API on 27 October, the same cell shows 7.72 bps over 7,394 transactions, with a signed median of 3.14 and 66.4 percent of fills as costs. The count is back near where it sat before 19 October, and the reading has moved back up with it.
             </p>
 
             <h2>A steady count is not a steady population</h2>
             <p>
-                My first reading of this went wrong in a way worth recording. One of those two entrypoints, <code>AugustusV6_2</code>, fell from 62.31 bps to 4.31 over the same quarter while its count barely moved, from 871 trades to 862. I took that as the part of the fall that was real: same population, lower cost.
+                My first reading of this was wrong. One of the two entrypoints, <code>AugustusV6_2</code>, fell from 62.31 bps to 4.31 over the same quarter while its count barely moved, from 871 transactions to 862. I took that as the part of the fall that was real: same population, lower cost.
             </p>
             <p>
-                It does not hold. That row was refreshed far less often, with 11 distinct readings across 38 snapshots, and its window also opens on its own high and closes on its own low. Its readings span 4.31 to 62.31 on counts that never left the range from 627 to 1,239.
+                It does not hold. That row was refreshed far less often, with 11 distinct readings across 38 snapshots, and its window also opens on its own high and closes on its own low. Its readings span 4.31 to 62.31 on counts that never left the range from 627 to 1,239. The other entrypoint, <code>AugustusFeeVault</code>, went from 67.72 to 63.69 over the same window.
             </p>
             <p>
-                The venue cell shows the same thing more plainly. Between 29 September and 5 October it fell from 30.92 to 13.81 while its count moved by two trades, from 5,919 to 5,921. A count says how many fills went into a median and nothing about which ones. The mix can change completely under an unchanged count, and a median follows the mix.
+                The venue cell shows the same thing more plainly. Between 29 September and 5 October it fell from 30.92 to 13.81 while its count moved by two transactions, from 5,919 to 5,921. A count says how many transactions went into a median and nothing about which ones. The mix can change completely under an unchanged count, and a median follows the mix.
             </p>
 
-            <h2>What survives</h2>
+            <h2>What survives depends on the baseline</h2>
             <p>
-                Set the endpoints aside and compare whole months instead. The median of the distinct readings was 19.44 bps in August and 20.78 in September. In the first half of October, before the count jumped, the five readings ran from 13.81 down to 8.89 with a median of 11.36, and four of the five sit below every reading from August and September.
+                Comparing periods instead of endpoints helps, but it does not settle the question. In the first half of October, before the count jumped, the five readings ran from 13.81 down to 8.89, with a median of 11.36. Against August and September, whose readings had medians of 19.44 and 20.78, that is a fall of about 45 percent. Against the first three weeks of July, median 14.5, it is a fall of about 22 percent.
             </p>
             <p>
-                So something did move, on a count that held between 5,900 and 6,900 trades: from about 20 bps to about 11, a fall of roughly 45 percent. That is about half the headline figure, and it is the most the cell supports. Whether it reflects cheaper execution, a different mix of pairs and sizes, or a different set of integrators sending flow, a median cannot distinguish.
+                Neither baseline is the obvious one, and the evidence behind each is thinner than the number of readings suggests. The readings are seven-day windows taken every two or three days, so the five October readings cover about two weeks of transactions. The counts are no help either: they held between 5,900 and 6,900 in early October but ran from 4,121 to 7,881 in August and September, and the previous section shows what a steady count is worth. On this cell alone, ParaSwap's October readings were lower than its late-summer ones, by an amount that depends on which period you call normal, for a reason the median cannot identify.
+            </p>
+
+            <h2>The measurement that holds the comparison still</h2>
+            <p>
+                ClearTrace runs a second instrument that avoids most of this. Its quote sampler asks each aggregator for a route on a set of token pairs at four sizes, from $1,000 to $1 million, and simulates the swap against chain state from a neutral address. It then compares the output with what Uniswap's default route delivers for the same pair and size in the same time window. Each observation carries its own baseline, and the pairs are chosen by ClearTrace rather than by whoever happened to trade that week.
+            </p>
+            <p>
+                On the seven pairs the sampler priced in every period of the quarter, ParaSwap's median output against the Uniswap default stayed between &minus;0.76 and &minus;1.59 bps at every size, in every period from early July to late October, over 8,191 matched windows. The first half of October sits inside the range of the months before it, and the days of the surge match the fortnight before them. Most of that steady gap is the flat 1 basis point fee ClearTrace's sampler has measured ParaSwap taking on major pairs.
+            </p>
+            <p>
+                The sampler measures something narrower than the on-chain cell. Its figure is ParaSwap's routing relative to one baseline route, on chosen pairs, with simulated swaps, and the pairs it tracks have shifted at the edges over the quarter, which is why only the seven present throughout are used here. What it shows is that whatever moved the on-chain cell did not show up in how ParaSwap routed these seven pairs at these four sizes.
             </p>
 
             <h2>How the 82 percent got chosen</h2>
             <p>
-                I found this number by asking which metric had moved most over the last 90 days, ranking every per-chain cell by the change between its first and last reading in the window, and taking the top.
+                I found this number by asking which metric had moved most over the last 90 days, ranking every per-chain cell by the change between its first and last reading in the window, and taking the largest among the venue cells ClearTrace publishes.
             </p>
             <p>
-                That ranking leans toward exactly this case. Of the 41 per-chain cells with at least ten snapshots in the window, three open on their own series high and close on their own series low, or the reverse. The ranking put those three first, fourth and seventh. Asking for the biggest mover between two dates is partly asking which series the calendar caught at its extremes.
+                That ranking leans toward exactly this case. Of the 41 per-chain cells with at least ten snapshots in the window, three open on their own series high and close on their own series low, or the reverse. The ranking put those three first, fourth and seventh, and ParaSwap's cell is the fourth. Asking for the biggest mover between two dates is partly asking which series the calendar caught at its extremes. The unit matters as well: in percentage terms the largest published move went the other way, OKX on Base rising from 7.03 to 16.48 bps, on a count that fell from 5,032 transactions to 1,870.
             </p>
             <p>
-                The rest of the top of the list makes the same point from another side. Three of the six largest moves sit in cells ClearTrace has withdrawn or does not publish, and two of those were withdrawn after we found the number did not mean what the column said. A large move is a reason to inspect a cell before it is a finding.
+                Three of the six largest moves sit in cells ClearTrace has withdrawn or does not publish, and two of those were withdrawn after we found the number did not mean what the column said.
             </p>
 
             <h2>What would make the comparison mean something</h2>
             <ul>
-                <li><strong>Compare periods, with their spread.</strong> A month of readings has a median and a range. A change smaller than the range inside each month is weak evidence of anything.</li>
+                <li><strong>Compare periods, with their spread, and say which baseline.</strong> A month of readings has a median and a range. A change smaller than the range inside each month is weak evidence of anything, and a change whose size depends on the baseline needs every plausible baseline shown.</li>
                 <li><strong>Print the count beside every value.</strong> A reading whose count jumps far outside its usual range starts a new series, and it should be read as one rather than as the next point on the old line.</li>
-                <li><strong>Mark carried-forward readings.</strong> A snapshot that repeats the last value because a table was not refetched is not a new observation, and a window that opens on one inherits its age.</li>
-                <li><strong>Hold the population fixed where the question allows it.</strong> The comparison practitioners use when it has to hold up is implementation shortfall: the price quoted against the price achieved, on the same order, so every observation carries its own baseline. ClearTrace's quote sampler is built that way, pairing each solicited quote with a fill simulated against chain state at the same moment.</li>
+                <li><strong>Mark carried-forward readings and query versions.</strong> A snapshot that repeats the last value because a run failed is not a new observation, and a series that spans a query revision is two series.</li>
+                <li><strong>Pair each observation with its own baseline where the question allows it.</strong> The discipline for this is implementation shortfall: the gap between the price at the moment of decision and the price achieved. ClearTrace's sampler is built on that pairing: each row holds a solicited quote and the simulated fill for it, and the comparison above sets each fill beside the baseline route's fill in the same window. Comparing two routes removes the price feed from the comparison, and fixing the pairs removes the change in mix between periods. Neither is available on a median of whatever traded that week.</li>
             </ul>
 
-            <h2>Why this one drew no questions</h2>
+            <h2>Why the direction of the move matters</h2>
             <p>
-                A cost metric that rises 82 percent gives the venue a reason to write in and ask why. One that falls 82 percent gives nobody a reason to do anything. Errors in the flattering direction last longer for that reason alone, because the feedback that catches the other kind never arrives.
+                A cost reading that rises 82 percent gives the venue a reason to ask why. One that falls 82 percent gives nobody outside the measurement a reason to look, so the check has to come from whoever publishes it.
             </p>
             <p>
-                ClearTrace has met this before. Its <a href="https://cleartracedata.com/scorecard/edition-3" target="_blank" rel="noopener noreferrer">Scorecard Edition 3</a> records that the cell for the 1inch Limit Order Protocol published 13.27 bps where the population left after removing one resolver's maker-side edge measured 29.73. The venue read about twice as good as it was, and the number drew no complaint.
+                ClearTrace has a precedent in the same direction. Its <a href="https://cleartracedata.com/scorecard/edition-3" target="_blank" rel="noopener noreferrer">Scorecard Edition 3</a> records that, in the window then measured, the cell for the 1inch Limit Order Protocol published 13.27 bps where the population left after removing one resolver's maker-side edge measured 29.73. That venue read about twice as good as it was.
             </p>
             <p>
-                The moves that most need checking are the ones in the direction everyone likes. This one was a published number and the largest of the quarter, and close to half of it was the calendar and the population rather than the venue.
+                ParaSwap's cell was a published number, it held the largest move of the quarter, and on the instrument that holds the comparison still, the quarter barely registers.
             </p>
 
         </article>
@@ -325,10 +339,9 @@
       var P = [[56.0,171.2,377.8,"2026-07-01",13.94,4434],[67.1,182.6,378.5,"2026-07-03",11.93,4291],[78.3,175.9,378.7,"2026-07-05",13.11,4258],[83.8,168.9,379.2,"2026-07-06",14.36,4165],[89.4,167.6,379.8,"2026-07-07",14.59,4043],[95.0,168.2,379.5,"2026-07-08",14.48,4099],[106.1,154.5,380.4,"2026-07-10",16.9,3917],[122.8,150.3,380.6,"2026-07-13",17.64,3878],[133.9,150.3,380.6,"2026-07-15",17.64,3878],[145.0,157.5,379.8,"2026-07-17",16.38,4046],[161.7,136.9,378.9,"2026-07-20",20.01,4223],[172.9,79.9,379.5,"2026-07-22",30.1,4103],[184.0,41.9,379.1,"2026-07-24",36.83,4171],[200.7,41.9,379.1,"2026-07-27",36.83,4171],[211.8,41.9,379.1,"2026-07-29",36.83,4171],[223.0,106.8,378.4,"2026-07-31",25.35,4319],[239.7,98.5,377.8,"2026-08-03",26.82,4439],[245.2,140.2,377.7,"2026-08-04",19.44,4452],[250.8,148.6,377.6,"2026-08-05",17.95,4472],[261.9,144.0,377.9,"2026-08-07",18.76,4411],[278.6,174.5,378.6,"2026-08-10",13.36,4289],[289.7,163.7,378.1,"2026-08-12",15.28,4390],[300.9,172.5,378.2,"2026-08-14",13.72,4364],[317.6,174.2,379.4,"2026-08-17",13.42,4121],[328.7,141.8,378.1,"2026-08-19",19.15,4383],[334.3,110.3,374.0,"2026-08-20",24.73,5201],[339.8,103.6,370.6,"2026-08-21",25.92,5875],[356.5,84.6,364.2,"2026-08-24",29.27,7166],[362.1,91.3,360.6,"2026-08-25",28.08,7881],[367.7,83.7,362.0,"2026-08-26",29.43,7598],[384.3,83.7,362.0,"2026-08-29",29.43,7598],[395.5,118.7,368.4,"2026-08-31",23.24,6330],[417.7,155.5,369.8,"2026-09-04",16.72,6038],[440.0,142.7,373.0,"2026-09-08",18.99,5409],[445.6,132.6,374.2,"2026-09-09",20.78,5156],[451.1,132.3,374.0,"2026-09-10",20.84,5206],[456.7,147.8,375.2,"2026-09-11",18.08,4967],[473.4,156.1,375.6,"2026-09-14",16.62,4877],[484.5,141.9,375.0,"2026-09-16",19.14,4994],[495.7,134.7,374.1,"2026-09-18",20.4,5190],[512.3,122.8,370.7,"2026-09-21",22.52,5864],[523.5,113.7,367.6,"2026-09-23",24.12,6479],[529.0,109.2,368.0,"2026-09-24",24.92,6398],[534.6,101.7,369.0,"2026-09-25",26.24,6196],[556.9,75.3,370.4,"2026-09-29",30.92,5919],[590.3,172.0,370.4,"2026-10-05",13.81,5921],[601.4,185.8,370.4,"2026-10-07",11.36,5910],[612.5,185.0,370.2,"2026-10-09",11.51,5958],[629.2,197.2,368.4,"2026-10-12",9.35,6323],[640.3,199.8,365.8,"2026-10-14",8.89,6838],[668.2,213.7,315.3,"2026-10-19",6.43,16940],[679.3,213.8,310.4,"2026-10-21",6.4,17913]];
       var svg = document.querySelector('svg[aria-labelledby="chart-title chart-desc"]');
       if (!svg) return;
-      var hit = svg.getElementById ? svg.querySelector('#hit') : null, g = svg.querySelector('#xhair');
+      var hit = svg.querySelector('#hit'), g = svg.querySelector('#xhair');
       var ln = svg.querySelector('#xh-line'), a = svg.querySelector('#xh-a'), b = svg.querySelector('#xh-b');
       var tip = document.getElementById('xh-tip');
-      function fmt(n) { return n.toLocaleString('en-US'); }
       hit.addEventListener('mousemove', function (e) {
         var pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
         var x = pt.matrixTransform(svg.getScreenCTM().inverse()).x, best = P[0];
@@ -337,7 +350,7 @@
         ln.setAttribute('x1', best[0]); ln.setAttribute('x2', best[0]);
         a.setAttribute('cx', best[0]); a.setAttribute('cy', best[1]);
         b.setAttribute('cx', best[0]); b.setAttribute('cy', best[2]);
-        tip.textContent = best[3] + '  ·  ' + best[4].toFixed(2) + ' bps  ·  ' + fmt(best[5]) + ' trades';
+        tip.textContent = best[3] + '  ·  ' + best[4].toFixed(2) + ' bps  ·  ' + best[5].toLocaleString('en-US') + ' transactions';
       });
       hit.addEventListener('mouseleave', function () { g.style.display = 'none'; });
     })();
