@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Outside the Polygon, or No Polygon at All | Rantum Studio</title>
-    <meta name="description" content="AddressIntel runs point-in-polygon lookups against county ArcGIS layers over 489,915 parcels. The spatial join is the easy part. Four times the overlay returned a confident answer where the correct one was unknown.">
+    <meta name="description" content="AddressIntel runs point-in-polygon lookups against county ArcGIS layers over 489,915 parcels. The spatial join is the easy part. Four times the overlay gave a definite answer where something weaker was called for.">
     <meta property="og:title" content="Outside the Polygon, or No Polygon at All | Rantum Studio">
-    <meta property="og:description" content="AddressIntel runs point-in-polygon lookups against county ArcGIS layers over 489,915 parcels. The spatial join is the easy part. Four times the overlay returned a confident answer where the correct one was unknown.">
+    <meta property="og:description" content="AddressIntel runs point-in-polygon lookups against county ArcGIS layers over 489,915 parcels. The spatial join is the easy part. Four times the overlay gave a definite answer where something weaker was called for.">
     <meta property="og:image" content="https://rantum.xyz/og-point-in-polygon-parcel-overlays.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -88,21 +88,24 @@
         <!-- Article Content (Prose) -->
         <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
             <p>
-                <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer">AddressIntel</a>, our predictive real-estate intelligence platform, fuses San Mateo and Santa Clara County GIS layers onto parcels: zoning, fire hazard severity, flood, fault, liquefaction, landslide, farmland, Williamson Act contracts, Coastal Zone. The mechanism is a point-in-polygon lookup against each county's ArcGIS REST endpoint, and then a derived answer about what can legally be built. The scored table holds 489,915 parcels across 16 cities.
+                <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer">AddressIntel</a>, our predictive real-estate intelligence project, fuses San Mateo and Santa Clara County GIS layers onto parcels: zoning, fire hazard severity, flood, fault, liquefaction, landslide, farmland, Williamson Act contracts, Coastal Zone. The mechanism is a point-in-polygon lookup against each county's ArcGIS REST endpoint, and then a derived answer about what can legally be built. The scored table holds 489,915 parcels across 16 cities.
             </p>
             <p>
-                Writing the lookup took an afternoon. Every expensive mistake since has been the same mistake, in four different places: the pipeline produced a definite answer where the available answer was that it did not know. A layer that had been emptied upstream read as a clean negative. A polygon hit got reported as a legal conclusion it does not support. A fallback rule chosen to be conservative was not conservative in the one place it mattered. And a city publishing that it declines to assess a parcel nearly became a number anyway.
+                Writing the lookup took an afternoon. Every expensive mistake since has come from the same place: the pipeline had a definite answer to give and gave it, where something weaker was called for. Four of them are below. Two are the pure form, a confident answer standing in for one the pipeline did not have: a layer emptied upstream that read as a clean negative, and a fallback rule chosen to be conservative that was not conservative where it mattered. The other two are its neighbours, and they are worth separating rather than folding in. One is a confident answer that was simply the wrong answer, a polygon hit reported as a legal conclusion it does not support. One is a refusal that survived, a city declining to assess a parcel, which the pipeline carries instead of filling in, and which a careless query nearly flattened anyway.
             </p>
             <p>
-                Each fix has the same shape: make unknown representable, and keep it distinct from no.
+                The fixes converge even where the faults differ: make the weaker answer representable, and keep it distinct from no.
+            </p>
+            <p>
+                A sibling piece, <a href="adversarial-permit-portals.html">Scraping Adversarial Municipal Portals</a>, covers the same shape in a different layer: a source that answers cheerfully and wrong, a rejected login returning an empty list. That one is about scraping HTML portals and detecting silent truncation. This one is about the spatial join and what a polygon lookup is entitled to conclude.
             </p>
 
             <h2>What the lookup is</h2>
             <p>
-                For each parcel centroid the pipeline posts the point to the county's layer with <code>geometryType=esriGeometryPoint</code> and <code>spatialRel=esriSpatialRelIntersects</code>, and reads back either the intersecting feature's attributes or a count. San Mateo County's layers sit on a self-hosted <code>gis.smcgov.org</code> MapServer; Santa Clara County's sit on ArcGIS Online, with two towns publishing their own zoning from their own ArcGIS organisations because the county layer does not carry it. FEMA's National Flood Hazard Layer is a third host. The enrichment module that holds these is 2,223 lines, and most of that is neither geometry nor SQL.
+                For each parcel centroid the pipeline posts the point to the county's layer with <code>geometryType=esriGeometryPoint</code> and <code>spatialRel=esriSpatialRelIntersects</code>, and reads back either the intersecting feature's attributes or a count. San Mateo County's layers sit on a self-hosted <code>gis.smcgov.org</code> MapServer, and two of its towns publish their own zoning from their own ArcGIS organisations because the county layer answers <code>NO DATA ASSIGNED</code> for them. Santa Clara County's sit on ArcGIS Online. Counting only the scoring path there are fourteen distinct hosts, plus those two town organisations and one city delivered as a local shapefile: FEMA, the counties, and seven cities that publish their own. The enrichment module that holds these is 2,223 lines, and most of that is neither geometry nor SQL.
             </p>
             <p>
-                The reliability work is the visible part. The Santa Clara host answers bursts with read timeouts and connection resets, so calls to it pass through a two-permit semaphore, two attempts with exponential backoff and jitter, and a staggered release so threads queued on the semaphore do not all fire the instant a slot frees. Above that sits a circuit breaker that opens after three consecutive call failures and skips the rest of the run. The breaker's own counters had to be put under a lock: without one, concurrent threads each crossed the threshold independently and logged the same trip line several times a few milliseconds apart, which is how the race was found.
+                The reliability work is the visible part. The Santa Clara host answers bursts with read timeouts and connection resets, so calls to it pass through a two-permit semaphore, two attempts with a jittered backoff sleep between them, and a staggered release so threads queued on the semaphore do not all fire the instant a slot frees. Above that sits a circuit breaker that opens after three consecutive call failures and skips the rest of the run. The breaker's own counters had to be put under a lock: without one, concurrent threads each crossed the threshold independently and logged the same trip line several times a few milliseconds apart, which is how the race was found.
             </p>
             <p>
                 None of that is the interesting failure. A timed-out call is loud. The failures below were all quiet.
@@ -125,7 +128,10 @@
 print(f"    WARN {label}: fetch failed ({e}) &mdash; layer treated as unknown")
 return None</code></pre>
             <p>
-                An empty list and <code>None</code> are different values, deliberately, and every caller has to handle both. That distinction is the whole fix. The preserve signal itself now comes from a frozen snapshot taken before the layer was emptied, rather than from a live lookup that cannot tell us when it has stopped working.
+                An empty list and <code>None</code> are different values, deliberately, and every caller has to handle both.
+            </p>
+            <p>
+                That discriminator sits on the bulk collection path, and it is worth being exact about which path it does not sit on. The per-point lookups the listing-level enrichment uses still ask <code>returnCountOnly</code> one parcel at a time and still end in <code>return c &gt; 0</code>, with no row-count probe. The farmland, Williamson Act and county SB 9 layers all go through that path, and every one of them would still read an emptied layer as a clean negative. The ag-preserve signal was not fixed by teaching that path the difference. It was fixed by retiring the live lookup and reading a snapshot taken before the layer was emptied, which the file itself qualifies: it was recovered from pre-emptying caches, two cities' caches had already been overwritten, and it is complete for the scored footprint rather than countywide. The general lesson survives the specific fix, and so does the exposure.
             </p>
 
             <h2>A polygon hit is not a legal conclusion</h2>
@@ -141,7 +147,7 @@ return None</code></pre>
                 <li><strong>4,107 parcels</strong> sit in an agricultural preserve, 2,626 of them in Los Gatos and 1,228 in San Jose. An ag preserve is neither prime farmland nor a voter-approved agricultural protection measure, so it is not an SB 9 bar at all.</li>
             </ul>
             <p>
-                Those sets nest: all 216 Williamson parcels are also inside an ag preserve, and the union of the three labels is 4,123 parcels. Under the old flag, every one of those 4,123 was reported as SB 9-disqualified for being prime farmland. Today 233 are disqualified, and only 17 of those are disqualified for the reason the column used to give. The repository's own record of the fix notes that among the parcels the old flag blocked were ordinary San Jose tract houses that the state farmland map classifies as urban and built-up land.
+                The three overlap only partly. All 216 Williamson parcels are also inside an ag preserve, but 16 of the 17 prime-farmland parcels are in neither other set, and the union of the three labels is 4,123 parcels today. The repository's record of the fix puts the old flag's reach at 4,104 Santa Clara parcels blocked as prime farmland, 104 of them ordinary San Jose tract houses the state farmland map classifies as urban and built-up land. That historical set is not the same set as today's union, because the old flag read the farmland layer unfiltered and today's reads only the two statutory categories. Of the 4,123, exactly 233 now carry a farmland-family disqualifier and only 17 of those carry the one the column used to give. The rest of the union is not thereby buildable: 3,157 of the 4,123 are still SB 9-blocked, almost all of them on lot size, flood, fire or fault rather than on anything agricultural.
             </p>
             <p>
                 The Williamson parcels are still blocked, under their own name. The contract forbids the housing project for the length of its rolling term, so reporting such a parcel as eligible would be wrong in the more dangerous direction: it would tell someone they can split land they legally cannot. Blocked, with its reason named accurately, is the correct report, and the reason string is what carries the accuracy.
@@ -165,13 +171,13 @@ return None</code></pre>
 
             <h2>The fallback that was not conservative</h2>
             <p>
-                The second half of the pipeline is rules as code. A screening signal we care about is how built out a lot is, living area over allowable floor area, which needs each jurisdiction's floor-area rule. Those are 19 jurisdictions in a table of formulas, every entry carrying <code>source</code>, <code>asOf</code> and <code>confidence</code>: 9 high, 7 medium, 3 estimated, researched between 30 June and 3 September 2026. The three marked estimated were never individually curated and fall back to a default floor-area ratio of 0.40.
+                The second half of the pipeline is rules as code. A screening signal we care about is how built out a lot is, living area over allowable floor area, which needs each jurisdiction's floor-area rule. Those are 19 jurisdictions in a table of formulas, every entry carrying <code>source</code>, <code>asOf</code> and <code>confidence</code>: 9 high, 7 medium, 3 estimated, researched between 30 June and 3 September 2026. Only one of the three marked estimated is a bare fallback, and it is the interesting one: it applies the default ratio of 0.40 to lot coverage and multiplies by a stories factor, which lands at roughly 0.52 effective, <em>above</em> the curated cluster rather than below it. The other two carry a partial curation that the confidence field declines to promote, one capped from a table in the town's own code with the slope half still missing.
             </p>
             <p>
-                0.40 was chosen to be conservative. It sits at the low end of the curated cluster, so for a city near that cluster it understates allowable area, which biases against false <em>this lot has headroom</em> signals. That reasoning is sound and it is not a safety property, which is a distinction worth the paragraph it costs.
+                The default of 0.40 was chosen to be conservative. It sits at the low end of the curated cluster, so for a city near that cluster it understates allowable area, which biases against false <em>this lot has headroom</em> signals. That reasoning is sound and it is not a safety property, which is a distinction worth the paragraph it costs.
             </p>
             <p>
-                One town was uncurated until 3 September 2026. Its real rule is a ratio of 0.25 tapering to 0.15 above an acre. Against that rule the conservative default overstates allowable floor area by 1.60 times on a half-acre lot and by 2.33 times at 200,000 square feet. The error is largest exactly where lots are biggest and a teardown call carries the most money. An estate town with large lots and a tapering ratio is the shape a flat default gets most wrong, and that is also the shape where the signal gets used hardest.
+                Two towns were curated on 3 September 2026 after an audit, and until that day both inherited the default. One has a ratio of 0.25 tapering to 0.15 above an acre, against which the default overstates allowable floor area by 1.60 times on a half-acre lot and 2.33 times at 200,000 square feet. The other is worse by an order of magnitude, because its caps are absolute rather than proportional: the repo records the default overstating it by 2.7 times at the minimum R-1 lot, 5.8 times at an acre and 29 times on a ten-acre parcel. In both the error is largest exactly where lots are biggest and a teardown call carries the most money. An estate town is the shape a flat default gets most wrong, and it is also the shape where the signal gets used hardest.
             </p>
             <p>
                 The lesson is not that the default was badly chosen. It is that a default is an answer. Uncurated should read as unknown, not as safe, and the <code>confidence</code> field exists so that a caller can tell the difference instead of inheriting our optimism.
@@ -193,14 +199,17 @@ return None</code></pre>
 
             <h2>Unknown is also the resume cursor</h2>
             <p>
-                Keeping unknown distinct from no stops being an honesty argument once the backfill runs. The overlay backfill walks already-enriched rows with an eight-worker pool, and rows whose lookups time out are left undone and picked up next run. What makes that work is that a failed lookup writes <code>None</code> rather than <code>False</code>. The resume predicate reads those nulls as outstanding work:
+                Keeping unknown distinct from no stops being an honesty argument once the backfill runs. The overlay backfill walks already-enriched rows with a four-worker pool, and rows whose lookups time out are left undone and picked up next run. What makes that work is that a failed lookup writes <code>None</code> rather than <code>False</code>. The resume predicate reads those nulls as outstanding work:
             </p>
             <pre><code># Only mark the SCC pass done when BOTH resolved; a None in either
 # means that lookup errored -> retry next run.
 if r["city"] in SCC_CITIES and prime is not None and wact is not None:
     payload["sccPrimeChecked"] = True</code></pre>
             <p>
-                If a transient ArcGIS timeout had been recorded as a negative, the pipeline would be self-consistent, would converge, and would be wrong, with nothing left in the data to indicate which rows had never actually been asked. In the current enrichment rows, 221 parcels have an unresolved farmland lookup against 13 positive and 3,770 negative, and 1,511 have an unresolved corner-lot lookup. Those nulls are not gaps in the dataset. They are the queue.
+                If a transient ArcGIS timeout had been recorded as a negative, the pipeline would be self-consistent, would converge, and would be wrong, with nothing left in the data to indicate which rows had never actually been asked. In the current enrichment rows, 1,511 have an unresolved corner-lot lookup, and the resume predicate names that field, so every one of them will be asked again next run. Those nulls are the queue rather than gaps in the dataset.
+            </p>
+            <p>
+                A second set of nulls looks identical and is not. 221 rows carry an unresolved farmland value against 13 positive and 3,770 negative, and all 221 are San Mateo County listings. The backfill sets farmland to null for that county unconditionally, because no state farmland source is wired for it, so no run will ever resolve them. Both sets are nulls and only one is work. A null says that a value is not known; it does not say whether anyone is still going to look, and a pipeline that wants to act on the difference has to record that separately.
             </p>
 
             <h2>What this pipeline still does not know</h2>
@@ -208,13 +217,13 @@ if r["city"] in SCC_CITIES and prime is not None and wact is not None:
                 Three limits belong on the page rather than in a footnote.
             </p>
             <p>
-                <strong>Zoning is mostly absent at the listing level.</strong> 3,055 of the 4,004 enrichment rows have no GIS zoning value. Without it the derivation cannot reach a hard <em>eligible</em> and returns <em>likely</em> instead, which is why 109,132 of the 489,915 scored parcels sit in that middle state. Absence of a block reason means no disqualifier was found rather than that eligibility was established.
+                <strong>Zoning is mostly absent at the listing level.</strong> 3,055 of the 4,004 enrichment rows have a null GIS zoning value, and a further 782 carry the county layer's own <code>NO DATA ASSIGNED</code> sentinel, which the backfill treats as absent. By the pipeline's own test, 3,837 of 4,004 have no usable zoning and 167 do. Without it the derivation cannot reach a hard <em>eligible</em> and returns <em>likely</em> instead, which is why 109,132 of the 489,915 scored parcels sit in that middle state. Absence of a block reason means no disqualifier was found rather than that eligibility was established.
             </p>
             <p>
                 <strong>A resume cursor can mark a new question answered.</strong> The Williamson Act check became its own signal on 28 September 2026, and the targeted re-pass for it has not reached the listing-level rows: none of the 4,004 carries a <code>williamsonAct</code> value, while 1,943 of them are already marked as having completed the farmland pass under the previous rule. The predicate that skips completed rows looks at that mark, so those rows will not be re-asked until it is invalidated. The parcel-scoring path, which the counts above come from, does carry the separated signals. The same mechanism that makes the backfill resumable is the one that lets a stale <em>done</em> outlive the question it answered, which is worth knowing before trusting any field added after a row was first enriched.
             </p>
             <p>
-                <strong>These counts come from the enrichment copy of the database, which is the only copy that has them.</strong> AddressIntel keeps two copies of a file with the same name: a canonical one that the application serves, and a working one on a development machine. They are not supersets of each other, and on 15 September 2026 four separate published figures were wrong from exactly that confusion. The provenance test written in response identifies a canonical database by requiring a marker table it carries and no marker tables only a development machine builds. The parcel scoring and enrichment tables are in the second set: they are named in the test as development markers, because they are never synced. So every figure in this piece is measured on that copy by necessity, and no canonical counterpart exists to check them against. Saying so is the only available form of provenance here.
+                <strong>These counts come from the enrichment copy of the database, which is the only copy that has them.</strong> AddressIntel keeps two copies of a file with the same name: a canonical one that the application serves, and a working one on a development machine. They are not supersets of each other, and on 15 September 2026 four separate published figures were wrong from exactly that confusion. The provenance test written in response identifies a canonical database by requiring a marker table it carries and no marker tables only a development machine builds. The parcel scoring table is in the second set, named in the test as a development marker because it is never synced. The listing enrichment table is not named in either set, so the test neither confirms nor denies it; it travels with the first because the two sit in the same file. So every figure in this piece is measured on that copy by necessity, and no canonical counterpart exists to check them against. Saying so is the only available form of provenance here.
             </p>
 
             <h2>What to take from it</h2>
