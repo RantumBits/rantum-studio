@@ -115,7 +115,7 @@
                 Token discovery surfaces have a verification problem that price feeds do not. A ticker is not an identifier. Anyone can deploy a contract whose <code>name()</code> returns "Dai Stablecoin" and whose <code>symbol()</code> returns "DAI", and nothing about the resulting row in a search result distinguishes it from the real one. The contract address does, but the address is exactly the field that gets truncated in every list view.
             </p>
             <p>
-                The usual answer is a scam blocklist, which is an unwinnable race: new contracts deploy faster than any list is maintained. The inverse works better, and it is the approach used here. Instead of enumerating what is fake, enumerate what is canonical, keyed on <code>(ticker, chainId)</code>, and treat a same-ticker, same-chain, different-address row as the thing worth flagging.
+                The usual answer is a scam blocklist, which is an unwinnable race: new contracts deploy faster than any list is maintained. The inverse works better, and it is the approach used here. Instead of enumerating what is fake, enumerate what is canonical, keyed on <code>(ticker, chainId)</code>, and flag any same-ticker, same-chain, different-address row.
             </p>
             <p>
                 Building that check surfaced something more interesting than the check itself.
@@ -151,7 +151,7 @@ slot0().tick              =          -75,180   -- chosen at initialization
 price(token1/token0)      =    0.0005434 WETH  -- derived from that tick</code></pre>
 
             <p>
-                A Uniswap V3 pool is initialized at whatever price its creator chooses, because that price is a tick rather than a consequence of deposited capital. A V3 position is then defined by a price <em>range</em>, and that is the part that does the work here.</p>
+                A Uniswap V3 pool is initialized at whatever price its creator chooses, because that price is a tick rather than a consequence of deposited capital. A V3 position is then defined by a price <em>range</em>, and that range does the work here.</p>
             <p>
                 The Mint event for this pool provides liquidity across the range <code>[-75180, 887220]</code>. The lower bound is exactly the initialization tick, the price the pool still sits at today. The upper bound, 887220, is the highest tick the 0.3% fee tier permits, so the range runs from the chosen price to effectively infinite price. When the price sits at the very bottom of a range, the position is denominated entirely in token0 and requires none of token1 at all.</p>
             <p>
