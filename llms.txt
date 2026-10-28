@@ -76,8 +76,8 @@ who share the name.
 - **Privacy Policy** — what the site collects (nothing directly; no forms), which
   third parties see a request, and how to opt out. https://rantum.xyz/privacy/
 - **Terms of Use** — what the published figures are and are not, quoting and
-  citation rules, and what the site does not constitute.
-  https://rantum.xyz/terms/
+  citation rules, how corrections are published on the page itself, and what the
+  site does not constitute. https://rantum.xyz/terms/
 
 ## Contact
 Via https://rantum.xyz — see "Have hard data to make useful?" on the homepage.
