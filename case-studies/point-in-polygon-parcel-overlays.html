@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outside the Polygon, or No Polygon at All | Rantum Studio</title>
+    <meta name="description" content="AddressIntel runs point-in-polygon lookups against county ArcGIS layers over 489,915 parcels. The spatial join is the easy part. Four times the overlay returned a confident answer where the correct one was unknown.">
+    <meta property="og:title" content="Outside the Polygon, or No Polygon at All | Rantum Studio">
+    <meta property="og:description" content="AddressIntel runs point-in-polygon lookups against county ArcGIS layers over 489,915 parcels. The spatial join is the easy part. Four times the overlay returned a confident answer where the correct one was unknown.">
+    <meta property="og:image" content="https://rantum.xyz/og-point-in-polygon-parcel-overlays.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/point-in-polygon-parcel-overlays.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-point-in-polygon-parcel-overlays.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/point-in-polygon-parcel-overlays.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Outside the Polygon, or No Polygon at All",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            Visit AddressIntel &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-indigo-900/20 text-indigo-400 border border-indigo-500/20">Case Study</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">GIS Enrichment</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Rules as Code</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Outside the Polygon, or No Polygon at All
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                The spatial join is the easy part. Four times, an overlay returned a confident answer about a parcel where the correct one was unknown.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>October 2026</span>
+            </div>
+        </header>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+            <p>
+                <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer">AddressIntel</a>, our predictive real-estate intelligence platform, fuses San Mateo and Santa Clara County GIS layers onto parcels: zoning, fire hazard severity, flood, fault, liquefaction, landslide, farmland, Williamson Act contracts, Coastal Zone. The mechanism is a point-in-polygon lookup against each county's ArcGIS REST endpoint, and then a derived answer about what can legally be built. The scored table holds 489,915 parcels across 16 cities.
+            </p>
+            <p>
+                Writing the lookup took an afternoon. Every expensive mistake since has been the same mistake, in four different places: the pipeline produced a definite answer where the available answer was that it did not know. A layer that had been emptied upstream read as a clean negative. A polygon hit got reported as a legal conclusion it does not support. A fallback rule chosen to be conservative was not conservative in the one place it mattered. And a city publishing that it declines to assess a parcel nearly became a number anyway.
+            </p>
+            <p>
+                Each fix has the same shape: make unknown representable, and keep it distinct from no.
+            </p>
+
+            <h2>What the lookup is</h2>
+            <p>
+                For each parcel centroid the pipeline posts the point to the county's layer with <code>geometryType=esriGeometryPoint</code> and <code>spatialRel=esriSpatialRelIntersects</code>, and reads back either the intersecting feature's attributes or a count. San Mateo County's layers sit on a self-hosted <code>gis.smcgov.org</code> MapServer; Santa Clara County's sit on ArcGIS Online, with two towns publishing their own zoning from their own ArcGIS organisations because the county layer does not carry it. FEMA's National Flood Hazard Layer is a third host. The enrichment module that holds these is 2,223 lines, and most of that is neither geometry nor SQL.
+            </p>
+            <p>
+                The reliability work is the visible part. The Santa Clara host answers bursts with read timeouts and connection resets, so calls to it pass through a two-permit semaphore, two attempts with exponential backoff and jitter, and a staggered release so threads queued on the semaphore do not all fire the instant a slot frees. Above that sits a circuit breaker that opens after three consecutive call failures and skips the rest of the run. The breaker's own counters had to be put under a lock: without one, concurrent threads each crossed the threshold independently and logged the same trip line several times a few milliseconds apart, which is how the race was found.
+            </p>
+            <p>
+                None of that is the interesting failure. A timed-out call is loud. The failures below were all quiet.
+            </p>
+
+            <h2>A layer can be emptied without erroring</h2>
+            <p>
+                Santa Clara County republished two of its planning layers with zero rows countywide on 25 September 2026. The pipeline asked one of them, the Agricultural Preserves layer, whether each point fell inside a preserve, using <code>returnCountOnly</code>. An empty hosted layer answers that query perfectly well. It returns a count of zero. So the lookup did not error, did not time out, and did not trip the breaker. It simply began answering <em>no</em> for every parcel in the county, in the same shape as a true negative, and it would have gone on doing so indefinitely.
+            </p>
+            <p>
+                This is the failure mode worth naming, because a spatial join over someone else's layer is exactly where it hides. A join has three possible answers and the API gives you two. There is inside the polygon, outside the polygon, and no polygon to be inside of, and the third arrives wearing the second's clothes.
+            </p>
+            <p>
+                The discriminator we ended up with is a quirk of the hosting. A zero-row layer answers a bare <code>returnCountOnly</code> request fine, but rejects with HTTP 400 and <em>Cannot perform query. Invalid query parameters.</em> any request that both filters by geometry and materialises features. So when a feature fetch fails, the collector asks the layer for its unfiltered total row count. Zero means the layer really is empty upstream, and zero coverage is the correct report. Anything else, including a count it cannot obtain, leaves the layer marked unknown so the run still reads as failed:
+            </p>
+            <pre><code>if _layer_row_count(url) == 0:
+    print(f"    WARN {label}: layer is EMPTY upstream (0 rows countywide) "
+          f"&mdash; reporting zero coverage, not a fetch failure ({e})")
+    return []
+print(f"    WARN {label}: fetch failed ({e}) &mdash; layer treated as unknown")
+return None</code></pre>
+            <p>
+                An empty list and <code>None</code> are different values, deliberately, and every caller has to handle both. That distinction is the whole fix. The preserve signal itself now comes from a frozen snapshot taken before the layer was emptied, rather than from a live lookup that cannot tell us when it has stopped working.
+            </p>
+
+            <h2>A polygon hit is not a legal conclusion</h2>
+            <p>
+                The second failure is the one that produced wrong numbers rather than silence. SB 9, California's urban lot split law, disqualifies a site that is prime farmland or farmland of statewide importance. Santa Clara County publishes several agriculture-related layers, and for a while the pipeline folded three of them into one <code>primeFarmland</code> flag: the state farmland mapping, Williamson Act contracts, and agricultural preserves. A hit on any of them disqualified the parcel as prime farmland.
+            </p>
+            <p>
+                They are three different things, and only one of them is the statutory category. Measured against the scored table today, after the three were separated on 28 September 2026:
+            </p>
+            <ul>
+                <li><strong>17 parcels</strong> are prime farmland or farmland of statewide importance, the category the statute actually names. 15 in San Jose, 2 in Los Gatos.</li>
+                <li><strong>216 parcels</strong> are under a Williamson Act contract. That is a tax-assessment contract restricting land to agricultural use. It is not prime farmland, and strictly it is not one of the statutory site criteria either.</li>
+                <li><strong>4,107 parcels</strong> sit in an agricultural preserve, 2,626 of them in Los Gatos and 1,228 in San Jose. An ag preserve is neither prime farmland nor a voter-approved agricultural protection measure, so it is not an SB 9 bar at all.</li>
+            </ul>
+            <p>
+                Those sets nest: all 216 Williamson parcels are also inside an ag preserve, and the union of the three labels is 4,123 parcels. Under the old flag, every one of those 4,123 was reported as SB 9-disqualified for being prime farmland. Today 233 are disqualified, and only 17 of those are disqualified for the reason the column used to give. The repository's own record of the fix notes that among the parcels the old flag blocked were ordinary San Jose tract houses that the state farmland map classifies as urban and built-up land.
+            </p>
+            <p>
+                The Williamson parcels are still blocked, under their own name. The contract forbids the housing project for the length of its rolling term, so reporting such a parcel as eligible would be wrong in the more dangerous direction: it would tell someone they can split land they legally cannot. Blocked, with its reason named accurately, is the correct report, and the reason string is what carries the accuracy.
+            </p>
+
+            <h2>Two layers of answer, because one is not enough</h2>
+            <p>
+                The separation that makes this expressible is that the derivation emits two lists rather than one verdict. <code>sb9BlockReasons</code> holds statutory disqualifiers only. <code>developmentBlockers</code> holds everything that raises cost, risk or process friction, disqualifying or not. Several signals appear in one list and not the other, and the choice is load-bearing each time:
+            </p>
+            <ul>
+                <li><strong>Fire.</strong> Only a Very High Fire Hazard Severity Zone is statutorily SB 9-disqualifying. Plain High raises construction and insurance cost and bars nothing. 5,214 parcels are Very High and blocked; 10,780 are High and carry a cost blocker only.</li>
+                <li><strong>Coastal Zone.</strong> SB 9 and state ADU law do not override the Coastal Act, so a Coastal Development Permit is still required. The parcel is encumbered without being ineligible, so the signal is a development blocker and never a block reason.</li>
+                <li><strong>Liquefaction and landslide.</strong> 201,670 and 14,085 parcels respectively. Neither bars anything; both change what building there costs. Putting them in the disqualifier list would have made two fifths of the coverage area read as undevelopable.</li>
+            </ul>
+            <p>
+                Writing the overlay as <em>a Coastal Zone hit flips eligibility</em> would be the same defect class as the farmland flag, just in the other direction. The accurate statement is narrower and less quotable: the overlay changes what the parcel costs and how long it takes, and sometimes, for specific named layers, it changes what is permitted.
+            </p>
+            <p>
+                One figure here cuts against the way this layer gets described, including in our own earlier notes. Across the 4,004 listing-level enrichment rows, exactly <strong>one</strong> carries a Coastal Zone hit. The covered cities are inland. The layer is correct, queried, and almost entirely inert, and a case study that led with it would be dressing up a single row as a pipeline feature.
+            </p>
+
+            <h2>The fallback that was not conservative</h2>
+            <p>
+                The second half of the pipeline is rules as code. A screening signal we care about is how built out a lot is, living area over allowable floor area, which needs each jurisdiction's floor-area rule. Those are 19 jurisdictions in a table of formulas, every entry carrying <code>source</code>, <code>asOf</code> and <code>confidence</code>: 9 high, 7 medium, 3 estimated, researched between 30 June and 3 September 2026. The three marked estimated were never individually curated and fall back to a default floor-area ratio of 0.40.
+            </p>
+            <p>
+                0.40 was chosen to be conservative. It sits at the low end of the curated cluster, so for a city near that cluster it understates allowable area, which biases against false <em>this lot has headroom</em> signals. That reasoning is sound and it is not a safety property, which is a distinction worth the paragraph it costs.
+            </p>
+            <p>
+                One town was uncurated until 3 September 2026. Its real rule is a ratio of 0.25 tapering to 0.15 above an acre. Against that rule the conservative default overstates allowable floor area by 1.60 times on a half-acre lot and by 2.33 times at 200,000 square feet. The error is largest exactly where lots are biggest and a teardown call carries the most money. An estate town with large lots and a tapering ratio is the shape a flat default gets most wrong, and that is also the shape where the signal gets used hardest.
+            </p>
+            <p>
+                The lesson is not that the default was badly chosen. It is that a default is an answer. Uncurated should read as unknown, not as safe, and the <code>confidence</code> field exists so that a caller can tell the difference instead of inheriting our optimism.
+            </p>
+
+            <h2>When the city itself declines to answer</h2>
+            <p>
+                The best-behaved source in this pipeline is the one that publishes its own uncertainty. Palo Alto's assessor parcel layer carries a floor-area field, and for some parcels it does not state a figure. It says instead that it cannot assess one, naming a creek, a flag lot or a right-of-way. That is a city telling you a constraint binds that it will not quantify.
+            </p>
+            <p>
+                1,317 of the 20,849 scored Palo Alto parcels carry the resulting <code>far_not_assessable</code> blocker. The arithmetic for those parcels is still run and still correct for the lot, and the flag rides alongside it to say that something we do not model is known to apply. That is a different statement from a missing value, and it is more useful than either a number or a blank.
+            </p>
+            <p>
+                Extracting it took two tries, and the first try is instructive. Matching the field loosely on the phrase <em>can't assess</em> also catches a different sentence the same layer uses, which means the district is not residential rather than that a physical constraint binds. The loose predicate pulled 7,593 parcels where the specific one pulls about 1,359, so more than four fifths of the matches were a different statement entirely. Two sentences in the same column, both reading as absence of a number, meaning unrelated things.
+            </p>
+            <p>
+                We ingest that layer's judgement and not its numbers, on purpose. Its floor-area values agree with our own formula for Palo Alto on 99.23 percent of 14,044 parcels, checked 28 August 2026, with the residual explained by rounding in its acreage strings. That agreement is what makes the layer trustworthy on the question, and it is also why its figures are not worth importing: they are our own arithmetic coming back to us. The non-redundant content is the refusal.
+            </p>
+
+            <h2>Unknown is also the resume cursor</h2>
+            <p>
+                Keeping unknown distinct from no stops being an honesty argument once the backfill runs. The overlay backfill walks already-enriched rows with an eight-worker pool, and rows whose lookups time out are left undone and picked up next run. What makes that work is that a failed lookup writes <code>None</code> rather than <code>False</code>. The resume predicate reads those nulls as outstanding work:
+            </p>
+            <pre><code># Only mark the SCC pass done when BOTH resolved; a None in either
+# means that lookup errored -> retry next run.
+if r["city"] in SCC_CITIES and prime is not None and wact is not None:
+    payload["sccPrimeChecked"] = True</code></pre>
+            <p>
+                If a transient ArcGIS timeout had been recorded as a negative, the pipeline would be self-consistent, would converge, and would be wrong, with nothing left in the data to indicate which rows had never actually been asked. In the current enrichment rows, 221 parcels have an unresolved farmland lookup against 13 positive and 3,770 negative, and 1,511 have an unresolved corner-lot lookup. Those nulls are not gaps in the dataset. They are the queue.
+            </p>
+
+            <h2>What this pipeline still does not know</h2>
+            <p>
+                Three limits belong on the page rather than in a footnote.
+            </p>
+            <p>
+                <strong>Zoning is mostly absent at the listing level.</strong> 3,055 of the 4,004 enrichment rows have no GIS zoning value. Without it the derivation cannot reach a hard <em>eligible</em> and returns <em>likely</em> instead, which is why 109,132 of the 489,915 scored parcels sit in that middle state. Absence of a block reason means no disqualifier was found rather than that eligibility was established.
+            </p>
+            <p>
+                <strong>A resume cursor can mark a new question answered.</strong> The Williamson Act check became its own signal on 28 September 2026, and the targeted re-pass for it has not reached the listing-level rows: none of the 4,004 carries a <code>williamsonAct</code> value, while 1,943 of them are already marked as having completed the farmland pass under the previous rule. The predicate that skips completed rows looks at that mark, so those rows will not be re-asked until it is invalidated. The parcel-scoring path, which the counts above come from, does carry the separated signals. The same mechanism that makes the backfill resumable is the one that lets a stale <em>done</em> outlive the question it answered, which is worth knowing before trusting any field added after a row was first enriched.
+            </p>
+            <p>
+                <strong>These counts come from the enrichment copy of the database, which is the only copy that has them.</strong> AddressIntel keeps two copies of a file with the same name: a canonical one that the application serves, and a working one on a development machine. They are not supersets of each other, and on 15 September 2026 four separate published figures were wrong from exactly that confusion. The provenance test written in response identifies a canonical database by requiring a marker table it carries and no marker tables only a development machine builds. The parcel scoring and enrichment tables are in the second set: they are named in the test as development markers, because they are never synced. So every figure in this piece is measured on that copy by necessity, and no canonical counterpart exists to check them against. Saying so is the only available form of provenance here.
+            </p>
+
+            <h2>What to take from it</h2>
+            <ul>
+                <li><strong>A spatial join has three answers.</strong> Inside, outside, and no layer to be inside of. If your schema cannot hold the third, you will serve it as the second.</li>
+                <li><strong>Check that a negative source can still produce a positive.</strong> An upstream layer republished empty answers a count query cheerfully. Something in the pipeline has to be able to notice that a signal which used to fire has stopped firing entirely.</li>
+                <li><strong>Keep the overlay hit and the legal conclusion in different fields.</strong> A polygon tells you where a parcel is. A statute tells you what that implies, and usually it implies less than the layer's name suggests.</li>
+                <li><strong>Carry source, as-of date and confidence on every rule.</strong> Rules as code without provenance is a number with no way to tell curated from guessed, and the guess is where the large errors live.</li>
+                <li><strong>Treat a default as an answer.</strong> Conservative in the typical case is not conservative in the tail, and the tail is where the decision is expensive.</li>
+                <li><strong>Preserve a source's refusal to answer.</strong> It is information, it is cheap to carry, and it is the one thing a downstream model cannot reconstruct.</li>
+            </ul>
+            <p>
+                The overlay does change the answer. What took longest to get right was the smaller claim underneath it: knowing when the overlay has not answered at all.
+            </p>
+
+        </article>
+
+        <!-- Newsletter -->
+        <aside class="mt-12 border-l-2 border-purple-700/50 pl-5 text-sm text-gray-400">
+            <p>
+                The pipelines behind this case study are documented as they change, corrections to our own published figures included. <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 transition-colors">See AddressIntel</a>.
+            </p>
+        </aside>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Joining messy public data to a decision?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, and into numbers a board can rely on.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://addressintel.co" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">AddressIntel</a>
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+                <span><a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> &middot; <a href="/terms/" class="hover:text-white transition-colors">Terms</a></span>
+        </footer>
+</body>
+</html>
