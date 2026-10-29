@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where Dollar Stablecoins Sit Against $1 | Rantum Studio</title>
+    <meta name="description" content="The OCC is encouraging community banks to develop payment stablecoin capabilities. I measured where 45 fiat-backed dollar coins sat against $1 over 30 days, and which of them moved with USDT.">
+    <meta property="og:title" content="Where Dollar Stablecoins Sit Against $1 | Rantum Studio">
+    <meta property="og:description" content="The OCC is encouraging community banks to develop payment stablecoin capabilities. I measured where 45 fiat-backed dollar coins sat against $1 over 30 days, and which of them moved with USDT.">
+    <meta property="og:image" content="https://rantum.xyz/og-stablecoin-peg-distance.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/stablecoin-peg-distance.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-stablecoin-peg-distance.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/stablecoin-peg-distance.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Where Dollar Stablecoins Sit Against $1",
+      "datePublished": "2026-10-29",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="index.html" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            All case studies &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-indigo-900/20 text-indigo-400 border border-indigo-500/20">Analysis</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Stablecoins</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Market Data</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                Where Dollar Stablecoins Sit Against $1
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                The OCC is encouraging community banks to develop payment stablecoin capabilities. I measured where 45 fiat-backed dollar coins sat against $1 over 30 days, and which of them moved with USDT.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>October 2026</span>
+            </div>
+        </header>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+            <p>
+                On 21 October 2026 the OCC <a href="https://www.occ.gov/news-issuances/news-releases/2026/nr-occ-2026-92a.pdf" target="_blank" rel="noopener noreferrer">finalized its rule</a> under the GENIUS Act, and its <a href="https://occ.gov/topics/charters-and-licensing/genius-act/community-bank-fact-sheet.pdf" target="_blank" rel="noopener noreferrer">community-bank fact sheet</a> says the agency is "encouraging the development of payment stablecoin capabilities within the community banking sector." The rule takes effect on 18 January 2027. As of 29 October the OCC is not yet taking applications, and it <a href="https://www.occ.gov/news-issuances/news-releases/2026/nr-occ-2026-92.html" target="_blank" rel="noopener noreferrer">says</a> it will announce separately when it begins.
+            </p>
+            <p>
+                A bank deciding whether to issue a public coin can already look at the coins that exist. So I measured where today's fiat-backed dollar stablecoins sat against $1 over the last 30 days, one number per coin. The page describes where they sat and makes no claim about why.
+            </p>
+
+            <h2>What I measured</h2>
+            <p>
+                DefiLlama publishes the two things this needs: a list of stablecoins with each one's supply and how it is backed, and a daily price for each. I took both on 27 October 2026. From the list I kept every coin pegged to the US dollar, labelled fiat-backed, with more than $1 million outstanding, which is 73 coins. For each one I took the distance of every daily price from $1, in basis points, over the 30 days from 28 September to 27 October, and used the median.
+            </p>
+            <p>
+                Two rules decide which coins count. A coin needs a usable price on at least 20 of the 30 days. And a daily price of exactly 1.0 is treated as a fixed value and dropped. That second rule removes three products that report a near-constant 1.0: BlackRock's BUIDL fund (28 of its 30 readings are exactly 1.0), Ondo's U.S. Dollar Token (27) and GAIB AID (23). None of the 45 coins that end up counted had a reading of exactly 1.0, so the rule removed no data from them. The other 25 dropped coins simply lack enough prices. In all 28 fail, 27 of them under $1 billion, and BUIDL is the one above. The 45 that pass have between 28 and 30 days each.
+            </p>
+            <p>
+                The fiat-backed label is DefiLlama's, and it is broader than the payment stablecoins the rule covers. It includes some yield-bearing tokens and at least one <a href="https://www.marketsmedia.com/figure-markets-launches-first-sec-registered-yield-bearing-stablecoin/" target="_blank" rel="noopener noreferrer">SEC-registered security</a>, Figure's YLDS. I left them in, and the table under the chart lists every counted coin, so anyone can drop the ones they would not count.
+            </p>
+
+            <figure class="not-prose my-10">
+<svg id="peg-chart" viewBox="0 0 720 440" role="img" aria-labelledby="peg-title peg-desc" style="width:100%;height:auto;display:block;font-family:Inter,system-ui,sans-serif">
+<title id="peg-title">Median daily distance from $1 against supply outstanding, fiat-backed dollar stablecoins, 28 September to 27 October 2026</title>
+<desc id="peg-desc">One dot per coin, 45 coins. Horizontal axis: supply outstanding on 27 October, log scale from $1 million to over $100 billion. Vertical axis: median daily distance from $1 in basis points, 0 to 40. The seven coins above $1 billion sit between 1.0 and 7.6. Coins below $1 billion spread from 1.0 to over 40, with a median of 10.3. The full table follows the chart.</desc>
+<line x1="64" x2="700" y1="380.0" y2="380.0" stroke="#374151" stroke-width="1" opacity="0.9"/>
+<text x="56" y="384.0" text-anchor="end" font-size="11" fill="#9ca3af">0</text>
+<line x1="64" x2="700" y1="295.0" y2="295.0" stroke="#374151" stroke-width="1" opacity="0.45"/>
+<text x="56" y="299.0" text-anchor="end" font-size="11" fill="#9ca3af">10</text>
+<line x1="64" x2="700" y1="210.0" y2="210.0" stroke="#374151" stroke-width="1" opacity="0.45"/>
+<text x="56" y="214.0" text-anchor="end" font-size="11" fill="#9ca3af">20</text>
+<line x1="64" x2="700" y1="125.0" y2="125.0" stroke="#374151" stroke-width="1" opacity="0.45"/>
+<text x="56" y="129.0" text-anchor="end" font-size="11" fill="#9ca3af">30</text>
+<line x1="64" x2="700" y1="40.0" y2="40.0" stroke="#374151" stroke-width="1" opacity="0.45"/>
+<text x="56" y="44.0" text-anchor="end" font-size="11" fill="#9ca3af">40</text>
+<text x="64" y="22" font-size="12" fill="#e5e7eb" font-weight="600">Median daily distance from $1, bps</text>
+<line x1="64.0" x2="64.0" y1="380" y2="385" stroke="#374151"/>
+<text x="64.0" y="398" text-anchor="middle" font-size="11" fill="#9ca3af">$1M</text>
+<line x1="179.6" x2="179.6" y1="380" y2="385" stroke="#374151"/>
+<text x="179.6" y="398" text-anchor="middle" font-size="11" fill="#9ca3af">$10M</text>
+<line x1="295.3" x2="295.3" y1="380" y2="385" stroke="#374151"/>
+<text x="295.3" y="398" text-anchor="middle" font-size="11" fill="#9ca3af">$100M</text>
+<line x1="410.9" x2="410.9" y1="380" y2="385" stroke="#374151"/>
+<text x="410.9" y="398" text-anchor="middle" font-size="11" fill="#9ca3af">$1B</text>
+<line x1="526.5" x2="526.5" y1="380" y2="385" stroke="#374151"/>
+<text x="526.5" y="398" text-anchor="middle" font-size="11" fill="#9ca3af">$10B</text>
+<line x1="642.2" x2="642.2" y1="380" y2="385" stroke="#374151"/>
+<text x="642.2" y="398" text-anchor="middle" font-size="11" fill="#9ca3af">$100B</text>
+<text x="700" y="420" text-anchor="end" font-size="11" fill="#9ca3af">Supply outstanding on 27 October, log scale</text>
+<line x1="410.9" x2="410.9" y1="40" y2="380" stroke="#9ca3af" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
+<circle cx="401.9" cy="328.1" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="380.1" cy="273.5" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="374.4" cy="294.4" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="374.2" cy="330.9" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="357.6" cy="181.4" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="346.7" cy="182.8" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="329.3" cy="308.4" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="307.7" cy="293.3" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="302.9" cy="232.8" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="293.2" cy="371.5" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="282.3" cy="315.9" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="256.4" cy="331.9" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="256.3" cy="275.8" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="243.5" cy="298.5" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="241.7" cy="311.8" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="241.6" cy="242.8" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="241.3" cy="357.5" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="210.1" cy="303.0" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="197.6" cy="92.1" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="188.9" cy="327.7" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="184.0" cy="271.0" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="180.4" cy="318.8" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="156.7" cy="91.6" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="143.9" cy="287.3" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="139.2" cy="261.7" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="132.6" cy="108.4" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="121.5" cy="311.7" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="105.3" cy="291.4" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="87.7" cy="321.7" r="4" fill="#6b7280" stroke="#111827" stroke-width="2"/>
+<circle cx="672.2" cy="315.4" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="625.2" cy="361.3" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="479.5" cy="320.3" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="467.3" cy="371.4" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="464.9" cy="363.0" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="458.7" cy="371.8" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="424.1" cy="369.0" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="377.7" cy="318.4" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="358.3" cy="321.9" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="325.4" cy="291.3" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="220.3" cy="195.6" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<circle cx="207.6" cy="353.4" r="5" fill="#a855f7" stroke="#111827" stroke-width="2"/>
+<text x="672.2" y="303.4" text-anchor="middle" font-size="11" fill="#e5e7eb">USDT</text>
+<text x="625.2" y="349.3" text-anchor="middle" font-size="11" fill="#e5e7eb">USDC</text>
+<text x="479.5" y="308.3" text-anchor="middle" font-size="11" fill="#e5e7eb">USD1</text>
+<text x="476.3" y="370.4" text-anchor="start" font-size="11" fill="#e5e7eb">USDG</text>
+<text x="473.9" y="357.0" text-anchor="start" font-size="11" fill="#e5e7eb">PYUSD</text>
+<line x1="455.7" y1="366.8" x2="444.7" y2="348.8" stroke="#9ca3af" stroke-width="1"/>
+<text x="442.7" y="345.8" text-anchor="end" font-size="11" fill="#e5e7eb">RLUSD</text>
+<text x="415.1" y="373.0" text-anchor="end" font-size="11" fill="#e5e7eb">USDGO</text>
+<text x="386.7" y="322.4" text-anchor="start" font-size="11" fill="#e5e7eb">USDtb</text>
+<text x="349.3" y="325.9" text-anchor="end" font-size="11" fill="#e5e7eb">SoFiUSD</text>
+<text x="334.4" y="295.3" text-anchor="start" font-size="11" fill="#e5e7eb">USAT</text>
+<text x="220.3" y="183.6" text-anchor="middle" font-size="11" fill="#e5e7eb">USDP</text>
+<text x="198.6" y="357.4" text-anchor="end" font-size="11" fill="#e5e7eb">USDPT</text>
+<circle class="peg-hit" cx="401.9" cy="328.1" r="9" fill="transparent" data-tip="Open USD (OUSD): $836.0M supply, median 6.1 bps from $1, worst day 54.6, median 4.0 from USDT, daily correlation with USDT 0.30"><title>Open USD (OUSD): $836.0M supply, median 6.1 bps from $1, worst day 54.6, median 4.0 from USDT, daily correlation with USDT 0.30</title></circle>
+<circle class="peg-hit" cx="380.1" cy="273.5" r="9" fill="transparent" data-tip="Usual USD (USD0): $541.3M supply, median 12.5 bps from $1, worst day 22.6, median 7.6 from USDT, daily correlation with USDT 0.29"><title>Usual USD (USD0): $541.3M supply, median 12.5 bps from $1, worst day 22.6, median 7.6 from USDT, daily correlation with USDT 0.29</title></circle>
+<circle class="peg-hit" cx="374.4" cy="294.4" r="9" fill="transparent" data-tip="TrueUSD (TUSD): $483.4M supply, median 10.1 bps from $1, worst day 24.7, median 4.0 from USDT, daily correlation with USDT 0.71"><title>TrueUSD (TUSD): $483.4M supply, median 10.1 bps from $1, worst day 24.7, median 4.0 from USDT, daily correlation with USDT 0.71</title></circle>
+<circle class="peg-hit" cx="374.2" cy="330.9" r="9" fill="transparent" data-tip="YLDS (YLDS): $481.2M supply, median 5.8 bps from $1, worst day 13.3, median 0.5 from USDT, daily correlation with USDT 0.83"><title>YLDS (YLDS): $481.2M supply, median 5.8 bps from $1, worst day 13.3, median 0.5 from USDT, daily correlation with USDT 0.83</title></circle>
+<circle class="peg-hit" cx="357.6" cy="181.4" r="9" fill="transparent" data-tip="Gate USD (GUSD): $319.1M supply, median 23.4 bps from $1, worst day 30.4, median 15.6 from USDT, daily correlation with USDT 0.98"><title>Gate USD (GUSD): $319.1M supply, median 23.4 bps from $1, worst day 30.4, median 15.6 from USDT, daily correlation with USDT 0.98</title></circle>
+<circle class="peg-hit" cx="346.7" cy="182.8" r="9" fill="transparent" data-tip="First Digital USD (FDUSD): $301.8M supply, median 23.2 bps from $1, worst day 33.5, median 15.6 from USDT, daily correlation with USDT 0.90"><title>First Digital USD (FDUSD): $301.8M supply, median 23.2 bps from $1, worst day 33.5, median 15.6 from USDT, daily correlation with USDT 0.90</title></circle>
+<circle class="peg-hit" cx="329.3" cy="308.4" r="9" fill="transparent" data-tip="Agora Dollar (AUSD): $197.0M supply, median 8.4 bps from $1, worst day 13.7, median 1.0 from USDT, daily correlation with USDT 0.97"><title>Agora Dollar (AUSD): $197.0M supply, median 8.4 bps from $1, worst day 13.7, median 1.0 from USDT, daily correlation with USDT 0.97</title></circle>
+<circle class="peg-hit" cx="307.7" cy="293.3" r="9" fill="transparent" data-tip="CASH (CASH): $128.2M supply, median 10.2 bps from $1, worst day 15.4, median 3.0 from USDT, daily correlation with USDT 0.95"><title>CASH (CASH): $128.2M supply, median 10.2 bps from $1, worst day 15.4, median 3.0 from USDT, daily correlation with USDT 0.95</title></circle>
+<circle class="peg-hit" cx="302.9" cy="232.8" r="9" fill="transparent" data-tip="Avant USD (avUSD): $116.4M supply, median 17.3 bps from $1, worst day 73.9, median 10.3 from USDT, daily correlation with USDT 0.37"><title>Avant USD (avUSD): $116.4M supply, median 17.3 bps from $1, worst day 73.9, median 10.3 from USDT, daily correlation with USDT 0.37</title></circle>
+<circle class="peg-hit" cx="293.2" cy="371.5" r="9" fill="transparent" data-tip="Frax USD (FRXUSD): $96.0M supply, median 1.0 bps from $1, worst day 6.1, median 5.8 from USDT, daily correlation with USDT 0.11"><title>Frax USD (FRXUSD): $96.0M supply, median 1.0 bps from $1, worst day 6.1, median 5.8 from USDT, daily correlation with USDT 0.11</title></circle>
+<circle class="peg-hit" cx="282.3" cy="315.9" r="9" fill="transparent" data-tip="Sui Dollar (USDSUI): $77.2M supply, median 7.5 bps from $1, worst day 51.9, median 1.6 from USDT, daily correlation with USDT 0.11"><title>Sui Dollar (USDSUI): $77.2M supply, median 7.5 bps from $1, worst day 51.9, median 1.6 from USDT, daily correlation with USDT 0.11</title></circle>
+<circle class="peg-hit" cx="256.4" cy="331.9" r="9" fill="transparent" data-tip="Fidelity Digital Dollar (FIDD): $46.1M supply, median 5.7 bps from $1, worst day 12.9, median 1.4 from USDT, daily correlation with USDT 0.34"><title>Fidelity Digital Dollar (FIDD): $46.1M supply, median 5.7 bps from $1, worst day 12.9, median 1.4 from USDT, daily correlation with USDT 0.34</title></circle>
+<circle class="peg-hit" cx="256.3" cy="275.8" r="9" fill="transparent" data-tip="PathUSD (pathUSD): $46.0M supply, median 12.3 bps from $1, worst day 112.1, median 18.5 from USDT, daily correlation with USDT -0.10"><title>PathUSD (pathUSD): $46.0M supply, median 12.3 bps from $1, worst day 112.1, median 18.5 from USDT, daily correlation with USDT -0.10</title></circle>
+<circle class="peg-hit" cx="243.5" cy="298.5" r="9" fill="transparent" data-tip="Gemini Dollar (GUSD): $35.7M supply, median 9.6 bps from $1, worst day 19.4, median 4.4 from USDT, daily correlation with USDT 0.78"><title>Gemini Dollar (GUSD): $35.7M supply, median 9.6 bps from $1, worst day 19.4, median 4.4 from USDT, daily correlation with USDT 0.78</title></circle>
+<circle class="peg-hit" cx="241.7" cy="311.8" r="9" fill="transparent" data-tip="Aegis YUSD (YUSD): $34.4M supply, median 8.0 bps from $1, worst day 30.1, median 4.2 from USDT, daily correlation with USDT 0.41"><title>Aegis YUSD (YUSD): $34.4M supply, median 8.0 bps from $1, worst day 30.1, median 4.2 from USDT, daily correlation with USDT 0.41</title></circle>
+<circle class="peg-hit" cx="241.6" cy="242.8" r="9" fill="transparent" data-tip="Binance USD (BUSD): $34.3M supply, median 16.1 bps from $1, worst day 43.4, median 14.3 from USDT, daily correlation with USDT -0.17"><title>Binance USD (BUSD): $34.3M supply, median 16.1 bps from $1, worst day 43.4, median 14.3 from USDT, daily correlation with USDT -0.17</title></circle>
+<circle class="peg-hit" cx="241.3" cy="357.5" r="9" fill="transparent" data-tip="StraitsX XUSD (XUSD): $34.1M supply, median 2.6 bps from $1, worst day 12.9, median 9.5 from USDT, daily correlation with USDT 0.11"><title>StraitsX XUSD (XUSD): $34.1M supply, median 2.6 bps from $1, worst day 12.9, median 9.5 from USDT, daily correlation with USDT 0.11</title></circle>
+<circle class="peg-hit" cx="210.1" cy="303.0" r="9" fill="transparent" data-tip="Stable Coin (SBC): $18.3M supply, median 9.1 bps from $1, worst day 16.5, median 2.1 from USDT, daily correlation with USDT 0.84"><title>Stable Coin (SBC): $18.3M supply, median 9.1 bps from $1, worst day 16.5, median 2.1 from USDT, daily correlation with USDT 0.84</title></circle>
+<circle class="peg-hit" cx="197.6" cy="92.1" r="9" fill="transparent" data-tip="OpenDollar USDO (USDO): $14.3M supply, median 33.9 bps from $1, worst day 158.8, median 29.6 from USDT, daily correlation with USDT 0.42"><title>OpenDollar USDO (USDO): $14.3M supply, median 33.9 bps from $1, worst day 158.8, median 29.6 from USDT, daily correlation with USDT 0.42</title></circle>
+<circle class="peg-hit" cx="188.9" cy="327.7" r="9" fill="transparent" data-tip="Stable Mint USD (USDSM): $12.0M supply, median 6.2 bps from $1, worst day 338.5, median 11.0 from USDT, daily correlation with USDT 0.22"><title>Stable Mint USD (USDSM): $12.0M supply, median 6.2 bps from $1, worst day 338.5, median 11.0 from USDT, daily correlation with USDT 0.22</title></circle>
+<circle class="peg-hit" cx="184.0" cy="271.0" r="9" fill="transparent" data-tip="USD CoinVertible (USDCV): $10.9M supply, median 12.8 bps from $1, worst day 99.6, median 5.6 from USDT, daily correlation with USDT 0.15"><title>USD CoinVertible (USDCV): $10.9M supply, median 12.8 bps from $1, worst day 99.6, median 5.6 from USDT, daily correlation with USDT 0.15</title></circle>
+<circle class="peg-hit" cx="180.4" cy="318.8" r="9" fill="transparent" data-tip="Telcoin eUSD (eUSD): $10.2M supply, median 7.2 bps from $1, worst day 187.9, median 8.4 from USDT, daily correlation with USDT -0.14"><title>Telcoin eUSD (eUSD): $10.2M supply, median 7.2 bps from $1, worst day 187.9, median 8.4 from USDT, daily correlation with USDT -0.14</title></circle>
+<circle class="peg-hit" cx="156.7" cy="91.6" r="9" fill="transparent" data-tip="USDH Stablecoin (USDH): $6.3M supply, median 33.9 bps from $1, worst day 85.4, median 25.6 from USDT, daily correlation with USDT 0.08"><title>USDH Stablecoin (USDH): $6.3M supply, median 33.9 bps from $1, worst day 85.4, median 25.6 from USDT, daily correlation with USDT 0.08</title></circle>
+<circle class="peg-hit" cx="143.9" cy="287.3" r="9" fill="transparent" data-tip="USDST (USDST): $4.9M supply, median 10.9 bps from $1, worst day 16.2, median 2.0 from USDT, daily correlation with USDT 0.92"><title>USDST (USDST): $4.9M supply, median 10.9 bps from $1, worst day 16.2, median 2.0 from USDT, daily correlation with USDT 0.92</title></circle>
+<circle class="peg-hit" cx="139.2" cy="261.7" r="9" fill="transparent" data-tip="Startale USD (USDSC): $4.5M supply, median 13.9 bps from $1, worst day 46.0, median 8.7 from USDT, daily correlation with USDT 0.27"><title>Startale USD (USDSC): $4.5M supply, median 13.9 bps from $1, worst day 46.0, median 8.7 from USDT, daily correlation with USDT 0.27</title></circle>
+<circle class="peg-hit" cx="132.6" cy="108.4" r="9" fill="transparent" data-tip="Anzens USDA (USDA): $3.9M supply, median 31.9 bps from $1, worst day 97.3, median 33.4 from USDT, daily correlation with USDT 0.03"><title>Anzens USDA (USDA): $3.9M supply, median 31.9 bps from $1, worst day 97.3, median 33.4 from USDT, daily correlation with USDT 0.03</title></circle>
+<circle class="peg-hit" cx="121.5" cy="311.7" r="9" fill="transparent" data-tip="USD Somnia (USDso): $3.1M supply, median 8.0 bps from $1, worst day 44.2, median 11.1 from USDT, daily correlation with USDT -0.07"><title>USD Somnia (USDso): $3.1M supply, median 8.0 bps from $1, worst day 44.2, median 11.1 from USDT, daily correlation with USDT -0.07</title></circle>
+<circle class="peg-hit" cx="105.3" cy="291.4" r="9" fill="transparent" data-tip="Glo Dollar (USDGLO): $2.3M supply, median 10.4 bps from $1, worst day 367.4, median 10.0 from USDT, daily correlation with USDT -0.34"><title>Glo Dollar (USDGLO): $2.3M supply, median 10.4 bps from $1, worst day 367.4, median 10.0 from USDT, daily correlation with USDT -0.34</title></circle>
+<circle class="peg-hit" cx="87.7" cy="321.7" r="9" fill="transparent" data-tip="Streamflow USD+ (USD+): $1.6M supply, median 6.9 bps from $1, worst day 13.4, median 0.8 from USDT, daily correlation with USDT 0.96"><title>Streamflow USD+ (USD+): $1.6M supply, median 6.9 bps from $1, worst day 13.4, median 0.8 from USDT, daily correlation with USDT 0.96</title></circle>
+<circle class="peg-hit" cx="672.2" cy="315.4" r="9" fill="transparent" data-tip="Tether (USDT): $181.9B supply, median 7.6 bps from $1, worst day 12.9, median 0.0 from USDT"><title>Tether (USDT): $181.9B supply, median 7.6 bps from $1, worst day 12.9, median 0.0 from USDT</title></circle>
+<circle class="peg-hit" cx="625.2" cy="361.3" r="9" fill="transparent" data-tip="USD Coin (USDC): $71.3B supply, median 2.2 bps from $1, worst day 6.8, median 4.7 from USDT"><title>USD Coin (USDC): $71.3B supply, median 2.2 bps from $1, worst day 6.8, median 4.7 from USDT</title></circle>
+<circle class="peg-hit" cx="479.5" cy="320.3" r="9" fill="transparent" data-tip="World Liberty Financial USD (USD1): $3.9B supply, median 7.0 bps from $1, worst day 12.6, median 2.2 from USDT"><title>World Liberty Financial USD (USD1): $3.9B supply, median 7.0 bps from $1, worst day 12.6, median 2.2 from USDT</title></circle>
+<circle class="peg-hit" cx="467.3" cy="371.4" r="9" fill="transparent" data-tip="Global Dollar (USDG): $3.1B supply, median 1.0 bps from $1, worst day 2.6, median 7.3 from USDT"><title>Global Dollar (USDG): $3.1B supply, median 1.0 bps from $1, worst day 2.6, median 7.3 from USDT</title></circle>
+<circle class="peg-hit" cx="464.9" cy="363.0" r="9" fill="transparent" data-tip="PayPal USD (PYUSD): $2.9B supply, median 2.0 bps from $1, worst day 6.3, median 4.9 from USDT"><title>PayPal USD (PYUSD): $2.9B supply, median 2.0 bps from $1, worst day 6.3, median 4.9 from USDT</title></circle>
+<circle class="peg-hit" cx="458.7" cy="371.8" r="9" fill="transparent" data-tip="Ripple USD (RLUSD): $2.6B supply, median 1.0 bps from $1, worst day 3.3, median 8.5 from USDT"><title>Ripple USD (RLUSD): $2.6B supply, median 1.0 bps from $1, worst day 3.3, median 8.5 from USDT</title></circle>
+<circle class="peg-hit" cx="424.1" cy="369.0" r="9" fill="transparent" data-tip="USDGO (USDGO): $1.3B supply, median 1.3 bps from $1, worst day 3.2, median 7.9 from USDT"><title>USDGO (USDGO): $1.3B supply, median 1.3 bps from $1, worst day 3.2, median 7.9 from USDT</title></circle>
+<circle class="peg-hit" cx="377.7" cy="318.4" r="9" fill="transparent" data-tip="Ethena USDtb (USDTB): $516.4M supply, median 7.2 bps from $1, worst day 15.0, median 1.0 from USDT, daily correlation with USDT 0.90"><title>Ethena USDtb (USDTB): $516.4M supply, median 7.2 bps from $1, worst day 15.0, median 1.0 from USDT, daily correlation with USDT 0.90</title></circle>
+<circle class="peg-hit" cx="358.3" cy="321.9" r="9" fill="transparent" data-tip="SoFiUSD (SOFID): $350.5M supply, median 6.8 bps from $1, worst day 19.6, median 3.2 from USDT, daily correlation with USDT 0.14"><title>SoFiUSD (SOFID): $350.5M supply, median 6.8 bps from $1, worst day 19.6, median 3.2 from USDT, daily correlation with USDT 0.14</title></circle>
+<circle class="peg-hit" cx="325.4" cy="291.3" r="9" fill="transparent" data-tip="USAT (USAT): $182.1M supply, median 10.4 bps from $1, worst day 17.7, median 3.4 from USDT, daily correlation with USDT 0.92"><title>USAT (USAT): $182.1M supply, median 10.4 bps from $1, worst day 17.7, median 3.4 from USDT, daily correlation with USDT 0.92</title></circle>
+<circle class="peg-hit" cx="220.3" cy="195.6" r="9" fill="transparent" data-tip="Pax Dollar (USDP): $22.5M supply, median 21.7 bps from $1, worst day 74.1, median 18.1 from USDT, daily correlation with USDT -0.34"><title>Pax Dollar (USDP): $22.5M supply, median 21.7 bps from $1, worst day 74.1, median 18.1 from USDT, daily correlation with USDT -0.34</title></circle>
+<circle class="peg-hit" cx="207.6" cy="353.4" r="9" fill="transparent" data-tip="Western Union USDPT (USDPT): $17.4M supply, median 3.1 bps from $1, worst day 26.1, median 4.3 from USDT, daily correlation with USDT -0.12"><title>Western Union USDPT (USDPT): $17.4M supply, median 3.1 bps from $1, worst day 26.1, median 4.3 from USDT, daily correlation with USDT -0.12</title></circle>
+</svg>
+                <div id="peg-tip" role="status" aria-live="polite" style="min-height:1.5em;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9ca3af">Hover or tap a dot for that coin's figures.</div>
+                <figcaption style="margin-top:8px;font-size:13px;line-height:1.5;color:#9ca3af">
+                    45 fiat-backed dollar coins per DefiLlama with over $1 million outstanding on 27 October 2026, median of the daily price-feed values from 28 September to 27 October (28 to 30 per coin). Purple: coins named under &ldquo;What the numbers show&rdquo;. Dashed line: $1 billion. 4 coins sit above 40 bps and are off the chart; they are in the table. Two overlapping dots near $300 million are nudged a few pixels apart.
+                </figcaption>
+                <details style="margin-top:12px;font-size:13px;color:#d1d5db">
+                    <summary style="cursor:pointer;color:#c084fc">All 45 coins as a table</summary>
+                    <div style="overflow-x:auto">
+                    <table style="margin-top:8px;width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:12px">
+                        <thead><tr style="text-align:left;color:#9ca3af"><th style="padding:4px 8px 4px 0">Coin</th><th style="padding:4px 8px;text-align:right">Supply</th><th style="padding:4px 8px;text-align:right">Median from $1</th><th style="padding:4px 8px;text-align:right">Worst day</th><th style="padding:4px 8px;text-align:right">Median from USDT</th><th style="padding:4px 0 4px 8px;text-align:right">Correlation with USDT</th></tr></thead>
+                        <tbody>
+<tr><td style="padding:2px 8px 2px 0">Tether (USDT)</td><td style="padding:2px 8px;text-align:right">$181.9B</td><td style="padding:2px 8px;text-align:right">7.6</td><td style="padding:2px 8px;text-align:right">12.9</td><td style="padding:2px 8px;text-align:right">0.0</td><td style="padding:2px 0 2px 8px;text-align:right">&ndash;</td></tr>
+<tr><td style="padding:2px 8px 2px 0">USD Coin (USDC)</td><td style="padding:2px 8px;text-align:right">$71.3B</td><td style="padding:2px 8px;text-align:right">2.2</td><td style="padding:2px 8px;text-align:right">6.8</td><td style="padding:2px 8px;text-align:right">4.7</td><td style="padding:2px 0 2px 8px;text-align:right">&ndash;</td></tr>
+<tr><td style="padding:2px 8px 2px 0">World Liberty Financial USD (USD1)</td><td style="padding:2px 8px;text-align:right">$3.9B</td><td style="padding:2px 8px;text-align:right">7.0</td><td style="padding:2px 8px;text-align:right">12.6</td><td style="padding:2px 8px;text-align:right">2.2</td><td style="padding:2px 0 2px 8px;text-align:right">&ndash;</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Global Dollar (USDG)</td><td style="padding:2px 8px;text-align:right">$3.1B</td><td style="padding:2px 8px;text-align:right">1.0</td><td style="padding:2px 8px;text-align:right">2.6</td><td style="padding:2px 8px;text-align:right">7.3</td><td style="padding:2px 0 2px 8px;text-align:right">&ndash;</td></tr>
+<tr><td style="padding:2px 8px 2px 0">PayPal USD (PYUSD)</td><td style="padding:2px 8px;text-align:right">$2.9B</td><td style="padding:2px 8px;text-align:right">2.0</td><td style="padding:2px 8px;text-align:right">6.3</td><td style="padding:2px 8px;text-align:right">4.9</td><td style="padding:2px 0 2px 8px;text-align:right">&ndash;</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Ripple USD (RLUSD)</td><td style="padding:2px 8px;text-align:right">$2.6B</td><td style="padding:2px 8px;text-align:right">1.0</td><td style="padding:2px 8px;text-align:right">3.3</td><td style="padding:2px 8px;text-align:right">8.5</td><td style="padding:2px 0 2px 8px;text-align:right">&ndash;</td></tr>
+<tr><td style="padding:2px 8px 2px 0">USDGO (USDGO)</td><td style="padding:2px 8px;text-align:right">$1.3B</td><td style="padding:2px 8px;text-align:right">1.3</td><td style="padding:2px 8px;text-align:right">3.2</td><td style="padding:2px 8px;text-align:right">7.9</td><td style="padding:2px 0 2px 8px;text-align:right">&ndash;</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Open USD (OUSD)</td><td style="padding:2px 8px;text-align:right">$836.0M</td><td style="padding:2px 8px;text-align:right">6.1</td><td style="padding:2px 8px;text-align:right">54.6</td><td style="padding:2px 8px;text-align:right">4.0</td><td style="padding:2px 0 2px 8px;text-align:right">0.30</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Usual USD (USD0)</td><td style="padding:2px 8px;text-align:right">$541.3M</td><td style="padding:2px 8px;text-align:right">12.5</td><td style="padding:2px 8px;text-align:right">22.6</td><td style="padding:2px 8px;text-align:right">7.6</td><td style="padding:2px 0 2px 8px;text-align:right">0.29</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Ethena USDtb (USDTB)</td><td style="padding:2px 8px;text-align:right">$516.4M</td><td style="padding:2px 8px;text-align:right">7.2</td><td style="padding:2px 8px;text-align:right">15.0</td><td style="padding:2px 8px;text-align:right">1.0</td><td style="padding:2px 0 2px 8px;text-align:right">0.90</td></tr>
+<tr><td style="padding:2px 8px 2px 0">TrueUSD (TUSD)</td><td style="padding:2px 8px;text-align:right">$483.4M</td><td style="padding:2px 8px;text-align:right">10.1</td><td style="padding:2px 8px;text-align:right">24.7</td><td style="padding:2px 8px;text-align:right">4.0</td><td style="padding:2px 0 2px 8px;text-align:right">0.71</td></tr>
+<tr><td style="padding:2px 8px 2px 0">YLDS (YLDS)</td><td style="padding:2px 8px;text-align:right">$481.2M</td><td style="padding:2px 8px;text-align:right">5.8</td><td style="padding:2px 8px;text-align:right">13.3</td><td style="padding:2px 8px;text-align:right">0.5</td><td style="padding:2px 0 2px 8px;text-align:right">0.83</td></tr>
+<tr><td style="padding:2px 8px 2px 0">SoFiUSD (SOFID)</td><td style="padding:2px 8px;text-align:right">$350.5M</td><td style="padding:2px 8px;text-align:right">6.8</td><td style="padding:2px 8px;text-align:right">19.6</td><td style="padding:2px 8px;text-align:right">3.2</td><td style="padding:2px 0 2px 8px;text-align:right">0.14</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Gate USD (GUSD)</td><td style="padding:2px 8px;text-align:right">$319.1M</td><td style="padding:2px 8px;text-align:right">23.4</td><td style="padding:2px 8px;text-align:right">30.4</td><td style="padding:2px 8px;text-align:right">15.6</td><td style="padding:2px 0 2px 8px;text-align:right">0.98</td></tr>
+<tr><td style="padding:2px 8px 2px 0">First Digital USD (FDUSD)</td><td style="padding:2px 8px;text-align:right">$301.8M</td><td style="padding:2px 8px;text-align:right">23.2</td><td style="padding:2px 8px;text-align:right">33.5</td><td style="padding:2px 8px;text-align:right">15.6</td><td style="padding:2px 0 2px 8px;text-align:right">0.90</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Agora Dollar (AUSD)</td><td style="padding:2px 8px;text-align:right">$197.0M</td><td style="padding:2px 8px;text-align:right">8.4</td><td style="padding:2px 8px;text-align:right">13.7</td><td style="padding:2px 8px;text-align:right">1.0</td><td style="padding:2px 0 2px 8px;text-align:right">0.97</td></tr>
+<tr><td style="padding:2px 8px 2px 0">USAT (USAT)</td><td style="padding:2px 8px;text-align:right">$182.1M</td><td style="padding:2px 8px;text-align:right">10.4</td><td style="padding:2px 8px;text-align:right">17.7</td><td style="padding:2px 8px;text-align:right">3.4</td><td style="padding:2px 0 2px 8px;text-align:right">0.92</td></tr>
+<tr><td style="padding:2px 8px 2px 0">CASH (CASH)</td><td style="padding:2px 8px;text-align:right">$128.2M</td><td style="padding:2px 8px;text-align:right">10.2</td><td style="padding:2px 8px;text-align:right">15.4</td><td style="padding:2px 8px;text-align:right">3.0</td><td style="padding:2px 0 2px 8px;text-align:right">0.95</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Avant USD (avUSD)</td><td style="padding:2px 8px;text-align:right">$116.4M</td><td style="padding:2px 8px;text-align:right">17.3</td><td style="padding:2px 8px;text-align:right">73.9</td><td style="padding:2px 8px;text-align:right">10.3</td><td style="padding:2px 0 2px 8px;text-align:right">0.37</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Frax USD (FRXUSD)</td><td style="padding:2px 8px;text-align:right">$96.0M</td><td style="padding:2px 8px;text-align:right">1.0</td><td style="padding:2px 8px;text-align:right">6.1</td><td style="padding:2px 8px;text-align:right">5.8</td><td style="padding:2px 0 2px 8px;text-align:right">0.11</td></tr>
+<tr><td style="padding:2px 8px 2px 0">AP USDA (USDA)</td><td style="padding:2px 8px;text-align:right">$83.2M</td><td style="padding:2px 8px;text-align:right">407.2</td><td style="padding:2px 8px;text-align:right">1173.4</td><td style="padding:2px 8px;text-align:right">398.5</td><td style="padding:2px 0 2px 8px;text-align:right">-0.75</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Sui Dollar (USDSUI)</td><td style="padding:2px 8px;text-align:right">$77.2M</td><td style="padding:2px 8px;text-align:right">7.5</td><td style="padding:2px 8px;text-align:right">51.9</td><td style="padding:2px 8px;text-align:right">1.6</td><td style="padding:2px 0 2px 8px;text-align:right">0.11</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Cygnus Finance Global USD (cgUSD)</td><td style="padding:2px 8px;text-align:right">$75.7M</td><td style="padding:2px 8px;text-align:right">78.2</td><td style="padding:2px 8px;text-align:right">86.4</td><td style="padding:2px 8px;text-align:right">75.0</td><td style="padding:2px 0 2px 8px;text-align:right">0.11</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Fidelity Digital Dollar (FIDD)</td><td style="padding:2px 8px;text-align:right">$46.1M</td><td style="padding:2px 8px;text-align:right">5.7</td><td style="padding:2px 8px;text-align:right">12.9</td><td style="padding:2px 8px;text-align:right">1.4</td><td style="padding:2px 0 2px 8px;text-align:right">0.34</td></tr>
+<tr><td style="padding:2px 8px 2px 0">PathUSD (pathUSD)</td><td style="padding:2px 8px;text-align:right">$46.0M</td><td style="padding:2px 8px;text-align:right">12.3</td><td style="padding:2px 8px;text-align:right">112.1</td><td style="padding:2px 8px;text-align:right">18.5</td><td style="padding:2px 0 2px 8px;text-align:right">-0.10</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Gemini Dollar (GUSD)</td><td style="padding:2px 8px;text-align:right">$35.7M</td><td style="padding:2px 8px;text-align:right">9.6</td><td style="padding:2px 8px;text-align:right">19.4</td><td style="padding:2px 8px;text-align:right">4.4</td><td style="padding:2px 0 2px 8px;text-align:right">0.78</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Aegis YUSD (YUSD)</td><td style="padding:2px 8px;text-align:right">$34.4M</td><td style="padding:2px 8px;text-align:right">8.0</td><td style="padding:2px 8px;text-align:right">30.1</td><td style="padding:2px 8px;text-align:right">4.2</td><td style="padding:2px 0 2px 8px;text-align:right">0.41</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Binance USD (BUSD)</td><td style="padding:2px 8px;text-align:right">$34.3M</td><td style="padding:2px 8px;text-align:right">16.1</td><td style="padding:2px 8px;text-align:right">43.4</td><td style="padding:2px 8px;text-align:right">14.3</td><td style="padding:2px 0 2px 8px;text-align:right">-0.17</td></tr>
+<tr><td style="padding:2px 8px 2px 0">StraitsX XUSD (XUSD)</td><td style="padding:2px 8px;text-align:right">$34.1M</td><td style="padding:2px 8px;text-align:right">2.6</td><td style="padding:2px 8px;text-align:right">12.9</td><td style="padding:2px 8px;text-align:right">9.5</td><td style="padding:2px 0 2px 8px;text-align:right">0.11</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Hex Trust USDX (USDX)</td><td style="padding:2px 8px;text-align:right">$24.5M</td><td style="padding:2px 8px;text-align:right">74.4</td><td style="padding:2px 8px;text-align:right">576.6</td><td style="padding:2px 8px;text-align:right">65.3</td><td style="padding:2px 0 2px 8px;text-align:right">0.17</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Pax Dollar (USDP)</td><td style="padding:2px 8px;text-align:right">$22.5M</td><td style="padding:2px 8px;text-align:right">21.7</td><td style="padding:2px 8px;text-align:right">74.1</td><td style="padding:2px 8px;text-align:right">18.1</td><td style="padding:2px 0 2px 8px;text-align:right">-0.34</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Stable Coin (SBC)</td><td style="padding:2px 8px;text-align:right">$18.3M</td><td style="padding:2px 8px;text-align:right">9.1</td><td style="padding:2px 8px;text-align:right">16.5</td><td style="padding:2px 8px;text-align:right">2.1</td><td style="padding:2px 0 2px 8px;text-align:right">0.84</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Western Union USDPT (USDPT)</td><td style="padding:2px 8px;text-align:right">$17.4M</td><td style="padding:2px 8px;text-align:right">3.1</td><td style="padding:2px 8px;text-align:right">26.1</td><td style="padding:2px 8px;text-align:right">4.3</td><td style="padding:2px 0 2px 8px;text-align:right">-0.12</td></tr>
+<tr><td style="padding:2px 8px 2px 0">OpenDollar USDO (USDO)</td><td style="padding:2px 8px;text-align:right">$14.3M</td><td style="padding:2px 8px;text-align:right">33.9</td><td style="padding:2px 8px;text-align:right">158.8</td><td style="padding:2px 8px;text-align:right">29.6</td><td style="padding:2px 0 2px 8px;text-align:right">0.42</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Stable Mint USD (USDSM)</td><td style="padding:2px 8px;text-align:right">$12.0M</td><td style="padding:2px 8px;text-align:right">6.2</td><td style="padding:2px 8px;text-align:right">338.5</td><td style="padding:2px 8px;text-align:right">11.0</td><td style="padding:2px 0 2px 8px;text-align:right">0.22</td></tr>
+<tr><td style="padding:2px 8px 2px 0">USD CoinVertible (USDCV)</td><td style="padding:2px 8px;text-align:right">$10.9M</td><td style="padding:2px 8px;text-align:right">12.8</td><td style="padding:2px 8px;text-align:right">99.6</td><td style="padding:2px 8px;text-align:right">5.6</td><td style="padding:2px 0 2px 8px;text-align:right">0.15</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Telcoin eUSD (eUSD)</td><td style="padding:2px 8px;text-align:right">$10.2M</td><td style="padding:2px 8px;text-align:right">7.2</td><td style="padding:2px 8px;text-align:right">187.9</td><td style="padding:2px 8px;text-align:right">8.4</td><td style="padding:2px 0 2px 8px;text-align:right">-0.14</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Anzen USDz (USDz)</td><td style="padding:2px 8px;text-align:right">$7.8M</td><td style="padding:2px 8px;text-align:right">265.0</td><td style="padding:2px 8px;text-align:right">869.0</td><td style="padding:2px 8px;text-align:right">256.0</td><td style="padding:2px 0 2px 8px;text-align:right">-0.77</td></tr>
+<tr><td style="padding:2px 8px 2px 0">USDH Stablecoin (USDH)</td><td style="padding:2px 8px;text-align:right">$6.3M</td><td style="padding:2px 8px;text-align:right">33.9</td><td style="padding:2px 8px;text-align:right">85.4</td><td style="padding:2px 8px;text-align:right">25.6</td><td style="padding:2px 0 2px 8px;text-align:right">0.08</td></tr>
+<tr><td style="padding:2px 8px 2px 0">USDST (USDST)</td><td style="padding:2px 8px;text-align:right">$4.9M</td><td style="padding:2px 8px;text-align:right">10.9</td><td style="padding:2px 8px;text-align:right">16.2</td><td style="padding:2px 8px;text-align:right">2.0</td><td style="padding:2px 0 2px 8px;text-align:right">0.92</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Startale USD (USDSC)</td><td style="padding:2px 8px;text-align:right">$4.5M</td><td style="padding:2px 8px;text-align:right">13.9</td><td style="padding:2px 8px;text-align:right">46.0</td><td style="padding:2px 8px;text-align:right">8.7</td><td style="padding:2px 0 2px 8px;text-align:right">0.27</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Anzens USDA (USDA)</td><td style="padding:2px 8px;text-align:right">$3.9M</td><td style="padding:2px 8px;text-align:right">31.9</td><td style="padding:2px 8px;text-align:right">97.3</td><td style="padding:2px 8px;text-align:right">33.4</td><td style="padding:2px 0 2px 8px;text-align:right">0.03</td></tr>
+<tr><td style="padding:2px 8px 2px 0">USD Somnia (USDso)</td><td style="padding:2px 8px;text-align:right">$3.1M</td><td style="padding:2px 8px;text-align:right">8.0</td><td style="padding:2px 8px;text-align:right">44.2</td><td style="padding:2px 8px;text-align:right">11.1</td><td style="padding:2px 0 2px 8px;text-align:right">-0.07</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Glo Dollar (USDGLO)</td><td style="padding:2px 8px;text-align:right">$2.3M</td><td style="padding:2px 8px;text-align:right">10.4</td><td style="padding:2px 8px;text-align:right">367.4</td><td style="padding:2px 8px;text-align:right">10.0</td><td style="padding:2px 0 2px 8px;text-align:right">-0.34</td></tr>
+<tr><td style="padding:2px 8px 2px 0">Streamflow USD+ (USD+)</td><td style="padding:2px 8px;text-align:right">$1.6M</td><td style="padding:2px 8px;text-align:right">6.9</td><td style="padding:2px 8px;text-align:right">13.4</td><td style="padding:2px 8px;text-align:right">0.8</td><td style="padding:2px 0 2px 8px;text-align:right">0.96</td></tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <p style="margin-top:8px;color:#9ca3af">Distances in basis points. Worst day is the largest single daily distance from $1 in the window. Correlation is between each coin&rsquo;s daily price and USDT&rsquo;s over the same days, shown for coins under $1 billion.</p>
+                </details>
+            </figure>
+            <script>
+            (function () {
+                var tip = document.getElementById('peg-tip');
+                var base = tip.textContent;
+                document.querySelectorAll('#peg-chart .peg-hit').forEach(function (c) {
+                    var show = function () { tip.textContent = c.getAttribute('data-tip'); };
+                    c.addEventListener('mouseenter', show);
+                    c.addEventListener('click', show);
+                    c.addEventListener('mouseleave', function () { tip.textContent = base; });
+                });
+            })();
+            </script>
+
+            <h2>What the numbers show</h2>
+            <ul>
+                <li><strong>The large coins sat close.</strong> Seven coins have more than $1 billion outstanding. Five sat within 2.2 bps of $1: USDG and RLUSD at 1.0, USDGO at 1.3, PYUSD at 2.0 and USDC at 2.2. USD1 sat at 7.0 and USDT at 7.6.</li>
+                <li><strong>The smaller coins spread out.</strong> The other 38, between $1 million and $1 billion, sat a median 10.3 bps from $1. Three of them were under 5 bps, and four were more than 40 bps away.</li>
+                <li><strong>Size went with distance across the whole set, much less below $1 billion.</strong> Across all 45, the rank correlation between supply and distance is &minus;0.42: larger coins tended to sit closer. Among the 38 coins under $1 billion it is &minus;0.16, too weak to call a relation.</li>
+                <li><strong>One issuer's coins can sit far apart.</strong> Paxos Trust Company issues both <a href="https://docs.paxos.com/stablecoin/pyusd" target="_blank" rel="noopener noreferrer">PYUSD</a>, with $2.9 billion outstanding, which sat at 2.0 bps, and <a href="https://docs.paxos.com/stablecoin/usdp" target="_blank" rel="noopener noreferrer">USDP</a>, with $22.5 million, which sat at 21.7. The four coins in the set that Anchorage Digital Bank issues (USDGO, USDPT, USDtb and USAT) sat at 1.3, 3.1, 7.2 and 10.4. Sources for each issuer are on <a href="https://www.anchorage.com/platform/transparency-stablecoin-reserves" target="_blank" rel="noopener noreferrer">Anchorage's reserves page</a> and, for USDPT, in <a href="https://www.theblock.co/post/399890/western-union-launches-usdpt-stablecoin-anchorage-solana" target="_blank" rel="noopener noreferrer">The Block</a>.</li>
+                <li><strong>The insured bank's coin sat in the middle.</strong> <a href="https://www.nasdaq.com/press-release/sofiusd-becomes-first-stablecoin-issued-us-national-bank-launch-banking-platform-2026" target="_blank" rel="noopener noreferrer">SoFiUSD</a>, issued by SoFi Bank, an FDIC-insured national bank, sat at 6.8 bps, with a worst single day of 19.6.</li>
+            </ul>
+
+            <h2>Which coins moved with USDT</h2>
+            <p>
+                USDT moved partway through the window. Its signed median (the median of price minus $1, so negative means below par) was &minus;2.0 bps over the ten days from 28 September to 7 October and &minus;8.3 bps from 8 October on. That is a step of 6.3 bps, and roughly four times the discount. Most of the field moved the same way: 33 of the 45 coins had a lower signed median after 8 October than before, and 35 of the 45 sat farther from $1.
+            </p>
+            <p>
+                Coin by coin, the smaller coins split. Correlating each one's daily price with USDT's over the window, 10 of the 38 under $1 billion score above 0.8, among them USAT, USDtb and First Digital's FDUSD. Eighteen score 0.2 or less, among them SoFiUSD, USDPT and USDP. The median is 0.24. Over 30 days a correlation like this mostly asks whether a coin stepped down on 8 October too, so it identifies which coins moved with USDT and says nothing about why. One possibility is that some prices are derived partly from trading against USDT; DefiLlama does not document how each price is built, so I cannot check that.
+            </p>
+            <p>
+                Measured against USDT's price on the same day, the smaller coins' median distance is 8.0 bps, against 10.3 from $1. That gap is no evidence of a link on its own. 35 of the 38 sit below $1, and so does USDT, so measuring against USDT shrinks the distance of any coin below par whether or not it tracks USDT. The correlation is the better test, and it is in the table for every coin under $1 billion.
+            </p>
+
+            <h2>Over 90 days</h2>
+            <p>
+                The same method over 90 days gives smaller numbers. Taking the coins with enough prices for that window, again seven above $1 billion and 38 below though not quite the same 38, the large coins' median is 1.6 bps and the smaller coins' 7.5, or 5.8 against USDT. Twelve of the smaller coins sit under 5 bps, against three over 30 days. The 30-day window includes the October move in USDT and reads farther from $1. The chart shows it because it is the current one.
+            </p>
+
+            <h2>What the rule says that bears on this</h2>
+            <p>
+                Three points from the final rule and the statute behind it.
+            </p>
+            <ul>
+                <li><strong>An insured bank issues through a subsidiary.</strong> Under the GENIUS Act, an insured bank must issue a payment stablecoin through a subsidiary (12 U.S.C. 5901(23)). SoFiUSD is issued by SoFi Bank itself today. The requirement applies from 18 January 2027, and <a href="https://www.coindesk.com/policy/2026/10/26/occ-calls-on-community-banks-to-enter-the-stablecoin-payments-market" target="_blank" rel="noopener noreferrer">existing issuers that apply by then may request a temporary waiver</a>.</li>
+                <li><strong>A tokenized deposit is a different instrument.</strong> In the words of the OCC's preamble, the Act's definition of a payment stablecoin "explicitly excludes deposits, regardless of whether the deposit is recorded using distributed ledger technology." A deposit can pay interest. A payment stablecoin's issuer cannot pay holders interest or yield "solely in connection with the holding, use, or retention" of the coin (12 U.S.C. 5903(a)(11)).</li>
+                <li><strong>Secondary trading and supervision.</strong> The OCC says the rule's redemption requirements "do not apply to secondary market trading," and also that it "intends to review" secondary-market information "for supervisory purposes."</li>
+            </ul>
+
+            <h2>What this does not show</h2>
+            <ul>
+                <li><strong>Trades.</strong> These are price-feed values, one a day. They say nothing about how much could be bought or sold at that price.</li>
+                <li><strong>Redemption.</strong> What a coin trades at and what its issuer pays on redemption are separate questions. Nothing here measures the second.</li>
+                <li><strong>Causes.</strong> Size, issuer, chain, trading venue and how the price feed is built all vary at once across 45 coins, and I have not separated them.</li>
+                <li><strong>More than one window.</strong> The 30-day picture includes a move in USDT that changes it, as the 90-day figures show.</li>
+            </ul>
+
+            <h2>What I would track from launch</h2>
+            <p>
+                For a bank that issues a public coin, the inexpensive version of this is a few figures recorded every day from the first one: the coin's worst daily distance from par, the same against USDT, and which trading pairs its price feed is built from, since that decides how much of a USDT move lands in the coin's own number.
+            </p>
+
+            <h2>Data</h2>
+            <p>
+                DefiLlama's public <code>stablecoins</code> and <code>stablecoinprices</code> endpoints, both taken on 27 October 2026. Every figure on this page is printed by one script run against that snapshot, which also draws the chart. The snapshot and the script are available on request.
+            </p>
+
+        </article>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Measuring a market you need to rely on?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, on-chain and beyond.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+                <span><a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> &middot; <a href="/terms/" class="hover:text-white transition-colors">Terms</a></span>
+        </footer>
+</body>
+</html>
