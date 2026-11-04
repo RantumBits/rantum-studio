@@ -140,9 +140,6 @@
             <p>
                 An unfilled order on a batch-auction or intent venue never becomes a transaction, so its on-chain revert rate is structurally near zero and says nothing about reliability. That is why ClearTrace does not rank revert across execution models at all: <code>execution_model.py</code> raises an exception rather than let code make that comparison, and a venue whose settlement submitter has not been established stays unclassified instead of being ranked. Tokenlon is the case worth naming, because its 0.04% revert rate would top any reliability ranking, which is exactly the reason it needs evidence rather than an assumption.
             </p>
-            <p>
-                The same restraint applies to cost, and this page did not practise it. Earlier versions compared CoW Protocol at &ldquo;12 bps of realized execution cost (median slippage against a 1-minute VWAP) over 10,638 on-chain fills&rdquo; against Tokenlon at &ldquo;73 bps over 2,140&rdquo;. Three things were wrong with that sentence. The baseline is Dune's <code>prices.usd</code>, a five-minute feed interpolated to the minute, so it is not a VWAP. The figure is a median of the <em>absolute</em> gap, which scores integrator fees as execution cost and discards direction, so it is not a cost the venue charged and the ordering is not a cost ranking. And the Tokenlon side was a number ClearTrace had already withdrawn venue-wide on 9 September 2026, after decoding every fill in a seven-day window showed takers received a median 47.37 bps <em>more</em> than the upstream data records. Roughly 64% of the published figure was a buffer nobody paid. On the 24 September 2026 data the CoW Ethereum cell reads 14.95 bps over 20,519 scored fills, which is what that field measures, and it is still not a cost ranking.
-            </p>
 
             <h3>A second gap: on-chain venues a fork can't replay</h3>
             <p>
