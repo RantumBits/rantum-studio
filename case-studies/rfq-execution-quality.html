@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detecting Off-Chain RFQ Routing | Rantum Studio</title>
-    <meta name="description" content="Off-chain RFQ and private-market-maker fills revert under fork-simulation. ClearTrace detects them from the quote's own route and sends them to an on-chain read instead of discarding the sample, so the execution-quality leaderboard is not biased toward AMM-only flow.">
+    <meta name="description" content="A revert on an off-chain RFQ route is not a quote failure. ClearTrace detects the route from the quote itself and keeps those reverts out of the execution-failure bucket instead of discarding the sample, so the execution-quality leaderboard is not biased toward AMM-only flow.">
     <meta property="og:title" content="Detecting Off-Chain RFQ Routing | Rantum Studio">
-    <meta property="og:description" content="Off-chain RFQ and PMM fills revert under fork-simulation. ClearTrace detects them from the route and sends them to an on-chain read, so the leaderboard is not biased toward AMM-only flow.">
+    <meta property="og:description" content="A revert on an off-chain RFQ or PMM route is not a quote failure. ClearTrace detects the route from the quote and counts those reverts as what they are, so the leaderboard is not biased toward AMM-only flow.">
     <meta property="og:image" content="https://rantum.xyz/og-rfq-execution-quality.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -94,16 +94,16 @@
         <!-- Key Stats -->
         <div class="grid grid-cols-3 gap-4 mb-16 not-prose">
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">7</div>
-                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Aggregators compared</div>
+                <div class="text-2xl font-bold text-white font-mono">8</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Aggregators sampled</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
                 <div class="text-2xl font-bold text-white font-mono">$1K&ndash;$1M</div>
                 <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Trade sizes replayed</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">9</div>
-                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">RFQ / PMM markers</div>
+                <div class="text-2xl font-bold text-white font-mono">4 of 9</div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">RFQ markers that have fired</div>
             </div>
         </div>
 
@@ -115,40 +115,45 @@
                 ClearTrace benchmarks DEX aggregator execution quality by comparing each quote to the price a trade actually realizes. The breadth method for that comparison is fork-and-simulate: take the aggregator's own swap calldata, replay it against current chain state with <code>eth_simulateV1</code>, and read the bought-token transfer to the taker. That works cleanly for a trade that settles through an on-chain automated market maker.
             </p>
             <p>
-                It does not work for how much large-size flow actually fills. At institutional size, aggregators route through RFQ and private-market-maker venues (Hashflow, Wintermute, Native, Dexalot, AirSwap) and through off-chain filler flows like UniswapX Dutch auctions. Those fills depend on a signed off-chain order that does not exist inside a fork. Replay them and the router reverts. A naive benchmark then faces a bad choice: score the revert as a quote failure, which is wrong, or silently drop the sample, which quietly biases the whole leaderboard toward the simple AMM routes that happen to simulate.
+                It reads differently for how much large-size flow actually fills. At institutional size, aggregators route through RFQ and private-market-maker venues and through off-chain filler flows like UniswapX Dutch auctions, and those fills depend on a signed off-chain order that does not exist inside a fork. The intuition is that replaying them reverts. Measured, that intuition is mostly wrong, and the correction is the interesting part: over the 30 days to 29 October 2026, of 1,674 RFQ-flagged samples 93.0% simulated successfully and 5.56% reverted, against 5.03% for non-RFQ routes whose venues we can read. The flag does not mark a sample that cannot be simulated. It marks a sample whose revert cannot be read as a quote failure, because the order the fill depended on was never in the fork. A benchmark that scores those reverts as quote failures is wrong, and one that drops the samples biases the leaderboard toward the simple AMM routes.
             </p>
             <p>
-                Neither is acceptable for a tool whose entire value is being a neutral, honest scorecard, and RFQ routing concentrates at exactly the large order sizes an institutional desk cares about: in a recent 30-day sample, the share of KyberSwap quotes whose route includes an off-chain RFQ leg climbs from about 2% at $1,000 to 86% at $1M.
+                Neither is acceptable for a tool whose value is being a neutral scorecard, and the routing does concentrate at the order sizes an institutional desk cares about. Over the 30 days to 29 October 2026, the share of KyberSwap quotes whose route carries an off-chain RFQ leg runs 2.2% at $1,000, 5.9% at $10,000, 18.2% at $100,000 and 87.2% at $1M, where the top rung is n=392 and Ethereum only, because that is where every $1M sample is taken. The concentration is one venue's, not the market's: ParaSwap over the same window runs the other way, 11.2% at $1,000 and 0.0% at $1M, and on Ethereum alone KyberSwap's own ladder stops climbing in the middle (11.3% at $10,000, 11.2% at $100,000). Earlier versions of this page gave &ldquo;about 2% at $1,000 to 86% at $1M&rdquo; as a recent 30-day sample; those figures were the 20 July 2026 snapshot.
             </p>
 
             <h2>What We Built</h2>
             <p>
-                Rather than treat an un-simulatable route as a failure, ClearTrace detects it from the quote's own route and sends it down a different, honest measurement path. Every sample is classified before it is scored:
+                Rather than treat such a route as a failure, ClearTrace detects it from the quote's own route and records what it found, so the row can be read correctly afterwards. The flag is computed for every sample before the simulation runs:
             </p>
             <ul>
-                <li><strong>AMM-routed samples</strong> go to the fork-sim quote-accuracy method: realized output versus quoted output, the breadth comparison.</li>
-                <li><strong>RFQ-routed samples</strong> go to the on-chain read instead: the realized execution cost from what actually landed on-chain, never a simulated number that was never going to succeed.</li>
+                <li><strong>AMM-routed samples</strong> are scored on the fork-sim quote-accuracy method: realized output versus quoted output, the breadth comparison.</li>
+                <li><strong>RFQ-routed samples</strong> are simulated too, because the pipeline does not fork into a second path, but the flag travels with the row, and a <em>reverted</em> RFQ-routed row is kept out of the execution-failure bucket rather than counted as a quote that failed. The honest read for the venue itself is its on-chain fills, which is a venue-level measurement and not a per-sample one.</li>
             </ul>
             <p>
-                Detection reads each aggregator's route in its own shape, because none of them expose venues the same way. ClearTrace parses ParaSwap's <code>bestRoute</code> swap exchanges, KyberSwap's <code>routeSummary</code> hops, 1inch's nested <code>protocols</code>, and Uniswap's top-level <code>routing</code> field that distinguishes a classic AMM route from a Dutch-auction filler. A route is tagged <code>rfq_routed</code> when any venue on it matches a known off-chain market-maker marker.
+                Detection reads each aggregator's route in its own shape, because none of them expose venues the same way. ClearTrace parses ParaSwap's <code>bestRoute</code> swap exchanges, KyberSwap's <code>routeSummary</code> hops, 1inch's nested <code>protocols</code>, and Uniswap's top-level <code>routing</code> field. A route is tagged <code>rfq_routed</code> when any venue on it matches a known off-chain market-maker marker.</p>
+            <p>
+                That shape-by-shape parsing is also the method's own limit, and the limit is large. Of the eight sources sampled in the 30 days to 29 October 2026, four (1inch, LI.FI, OKX and SushiSwap) returned no readable route at all, so their RFQ share reads 0% because it is unmeasured rather than because it is zero. That is why <code>rfq_share</code> was dropped as a published metric on 14 July 2026, and why the explainer withdrew its off-chain RFQ axis on 8 September 2026: a cross-venue comparison in which most venues read exactly zero is a detection artifact, not a finding. The KyberSwap ladder above is one venue's measurement and is not a ranking against its peers. Four of the nine markers have ever fired in 206,316 sampled routes &mdash; Dexalot, Native, Hashflow and Bebop; <code>rfq</code>, Wintermute, AirSwap, UniswapX and <code>dutch</code> have never matched a route we could read.
             </p>
             <p>
-                The classification is deliberately conservative. Bebop, for example, settles on-chain through its own settlement contract with maker signatures embedded directly in the transaction, so a direct Bebop quote does fork-simulate and is measured on the breadth path; the RFQ marker only fires when a Bebop leg appears inside another aggregator's route, where the signed settlement calldata is absent. Under-claiming beats over-claiming: a route that can be measured properly is, and only the ones that genuinely cannot are moved off the sim path.
+                The classification is deliberately conservative. Bebop, for example, settles on-chain through its own settlement contract with maker signatures embedded directly in the transaction, so a direct Bebop quote does fork-simulate and is measured on the breadth path; the RFQ marker only fires when a Bebop leg appears inside another aggregator's route, where the signed settlement calldata is absent. A route whose revert can be read as a quote failure is left to be read that way, and only the ones whose revert genuinely cannot be are flagged.
             </p>
             <p>
-                That on-chain read, rather than the revert rate, is the honest signal for an off-chain fill. Because an unfilled order on a batch-auction or intent venue never becomes a transaction, its on-chain revert rate is structurally near zero and says nothing about reliability, so ClearTrace does not rank revert across execution models. What the chain can measure is realized cost. On the current Ethereum leaderboard, a batch-auction venue like CoW Protocol settles near <strong>12 bps</strong> of realized execution cost (median slippage against a 1-minute VWAP) over 10,638 on-chain fills, while another off-chain-quoted venue, Tokenlon, runs near <strong>73 bps</strong> over 2,140. Both post a near-zero revert rate; only the realized-cost read, taken on-chain, tells them apart.
+                An unfilled order on a batch-auction or intent venue never becomes a transaction, so its on-chain revert rate is structurally near zero and says nothing about reliability. That is why ClearTrace does not rank revert across execution models at all: <code>execution_model.py</code> raises an exception rather than let code make that comparison, and a venue whose settlement submitter has not been established stays unclassified instead of being ranked. Tokenlon is the case worth naming, because its 0.04% revert rate would top any reliability ranking, which is exactly the reason it needs evidence rather than an assumption.
+            </p>
+            <p>
+                The same restraint applies to cost, and this page did not practise it. Earlier versions compared CoW Protocol at &ldquo;12 bps of realized execution cost (median slippage against a 1-minute VWAP) over 10,638 on-chain fills&rdquo; against Tokenlon at &ldquo;73 bps over 2,140&rdquo;. Three things were wrong with that sentence. The baseline is Dune's <code>prices.usd</code>, a five-minute feed interpolated to the minute, so it is not a VWAP. The figure is a median of the <em>absolute</em> gap, which scores integrator fees as execution cost and discards direction, so it is not a cost the venue charged and the ordering is not a cost ranking. And the Tokenlon side was a number ClearTrace had already withdrawn venue-wide on 9 September 2026, after decoding every fill in a seven-day window showed takers received a median 47.37 bps <em>more</em> than the upstream data records. Roughly 64% of the published figure was a buffer nobody paid. On the 24 September 2026 data the CoW Ethereum cell reads 14.95 bps over 20,519 scored fills, which is what that field measures, and it is still not a cost ranking.
             </p>
 
             <h3>A second gap: on-chain venues a fork can't replay</h3>
             <p>
-                Off-chain RFQ is not the only source of a misleading revert. A separate class of venues settles fully on-chain and works for real users, yet still reverts in a naive fork simulation: Uniswap V4 hook pools (including MEV-protection hooks like Angstrom), Fluid DEX, and several next-generation AMMs. Our <code>[approve, swap]</code> bundle on a latest-block fork, with a generic caller and no builder or hook context, trips their leg and the router fails.
+                Off-chain RFQ is not the only source of a misleading revert. A separate class of venues settles fully on-chain and works for real users, yet still reverts in a naive fork simulation: Fluid DEX, several next-generation AMMs, and Uniswap V4 reached as one hop of a multi-leg route, MEV-protection hooks like Angstrom among them. The distinction inside that last case matters and we got it by measuring rather than by assuming: routing <em>directly</em> into a V4 pool replays at 99.4% in our own sampler, while V4 reached as a hop does not, and Angstrom-tagged routes fail 4.5% of the time. Our <code>[approve, swap]</code> bundle on a latest-block fork, with a generic caller and no builder or hook context, trips the leg and the router fails.
             </p>
             <p>
-                Left uncorrected, that gap distorts the leaderboard in the same direction as the RFQ one: a naive sampler scores these routes as failing far more often than they do for real users, when the reverts are an artifact of the simulation rather than the routing. ClearTrace flags them as a coverage gap rather than a quote failure, and stores the route venue names so the classification sharpens over time instead of hard-coding a guess.
+                Left uncorrected, that gap distorts the leaderboard in the same direction as the RFQ one, and it is worth stating at its real size rather than at its rhetorical one. Over the 30 days to 29 October 2026, routes touching one of those venue markers reverted 9.79% of the time (n=3,176) against 4.34% for marker-clean routes (n=20,639). The gap is real, and so is the other half of that measurement: about 90% of the supposedly unreplayable routes replay fine. ClearTrace uses the marker list for exactly one job, annotating a row that has <em>already</em> reverted with why, and not as a comparability filter. Ranking every route token by observed failure rate puts two plain-AMM ParaSwap composites, at 20.5% and 14.5%, above most of the exotic markers, and those composites are not markers at any failure rate. The route venue names are stored so the classification sharpens over time instead of hard-coding a guess.
             </p>
 
             <h3>Detecting the route</h3>
-            <p>The detection itself is a small, pure function over the quote each adapter already fetches, so it is unit-testable against static fixtures and never touches the network:</p>
+            <p>The detection itself is a small, pure function over the quote each adapter already fetches, so it is unit-testable against static fixtures and never touches the network. It returns the matching venue tokens as well as the boolean, so a flagged row names its own trigger:</p>
 
 <pre><code class="language-python"># Off-chain RFQ / PMM venues fill via a signed order, so they revert
 # under fork-simulation. Detect them from the quote's own route and
@@ -158,29 +163,51 @@ RFQ_MARKERS = (
     "dexalot", "airswap", "uniswapx", "dutch",
 )
 
-def is_rfq_routed(raw_quote: dict, source: str) -> bool:
-    """True if any venue on the route is an RFQ/PMM market maker."""
-    venues = extract_venues(raw_quote, source)
-    return any(m in v.lower() for v in venues for m in RFQ_MARKERS)</code></pre>
+def rfq_marker_hits(venues) -&gt; list:
+    """The venue tokens that make a route RFQ-routed: every distinct
+    venue name matching an RFQ_MARKERS substring, sorted."""
+    return sorted({v for v in venues or []
+                   if v and any(m in v.lower() for m in RFQ_MARKERS)})
+
+
+def is_rfq_routed(raw_quote: dict, source: str) -&gt; bool:
+    """True if any venue on the route is an RFQ/PMM market-maker."""
+    return bool(rfq_marker_hits(extract_venues(raw_quote, source)))</code></pre>
 
             <p>
-                You can read the result directly in the <a href="https://cleartracedata.com/research/execution-quality" target="_blank" rel="noopener noreferrer">interactive execution-quality explainer</a>, which replays the identical trade across seven aggregators and four trade sizes against a mainnet fork, and reports reliability, realized cost, and off-chain RFQ routing side by side rather than collapsing them into one figure.
+                You can read the quote-accuracy and realized-cost result in the <a href="https://cleartracedata.com/research/execution-quality" target="_blank" rel="noopener noreferrer">interactive execution-quality explainer</a>, which replays the identical trade across the sampled aggregators and four trade sizes against a mainnet fork, and reports reliability and realized cost separately rather than collapsing them into one figure. It no longer plots off-chain RFQ routing: that axis was withdrawn on 8 September 2026, for the coverage reason above.
             </p>
 
             <h2>What It Shows</h2>
             <p>
-                Turning a measurement gap into a labeled dimension rather than a dropped row. Three outcomes look identical in a raw log: a route that genuinely failed, a route that filled off-chain, and a route that only fails inside the test harness. ClearTrace tells them apart and counts each as what it is, so a simulation artifact never gets published as a real failure.
+                Turning a measurement gap into a label on the row rather than a dropped row. Three outcomes look identical in a raw log: a route that genuinely failed, a route whose fill depended on an order the fork never had, and a route that only fails inside the test harness. ClearTrace tells them apart and counts each as what it is, so a simulation artifact never gets published as a real failure.
             </p>
 
             <h2>What It Proves to a Client</h2>
             <p>
-                That the numbers survive scrutiny. Any team can publish a slippage chart; the hard part is not overstating your own coverage when the data fights back. ClearTrace separates real execution outcomes from artifacts of the measurement method, which is what makes it usable by foundations and protocol teams as neutral proof rather than marketing. It runs today as a free dashboard and public API, and it is the instrument behind our <a href="../audit/">Data &amp; Model Audit</a>.
+                That the numbers survive scrutiny. Any team can publish a slippage chart; the hard part is not overstating your own coverage when the data fights back. ClearTrace separates real execution outcomes from artifacts of the measurement method, which is what made it usable by foundations and protocol teams as neutral proof rather than marketing. It ran as a free dashboard and public API; the venture closed on 2 November 2026. The measurement discipline is what we bring to a <a href="../audit/">Data &amp; Model Audit</a>.
             </p>
             <p>
                 Correction, 27 October 2026: this paragraph used to end by saying the product also ran
                 paid per-chain integrity reports and standing monthly monitoring engagements. No such
                 engagement had ever been sold, so the clause was removed rather than put into the past
                 tense.
+            </p>
+            <p>
+                Corrections, 4 November 2026, after an independent review re-measured every figure on this
+                page against the source repository rather than against the page. Five claims did not hold.
+                (1) &ldquo;Replay them and the router reverts&rdquo; was wrong: 93.0% of RFQ-flagged samples
+                simulate successfully, and the flag's real job is to stop a revert being read as a quote
+                failure. (2) There is no second measurement path; the flag is written to every row and keeps
+                a reverted RFQ row out of the execution-failure bucket. (3) The KyberSwap ladder was presented
+                as &ldquo;a recent 30-day sample&rdquo; when it was the 20 July 2026 snapshot, and the
+                single-venue figure was easy to read as a market-wide one. (4) The CoW and Tokenlon
+                comparison quoted stale numbers, described the baseline as a VWAP when it is not one, and
+                republished a Tokenlon figure ClearTrace itself had withdrawn as an upstream data defect; it
+                is cut rather than refreshed. (5) The stat tile said seven aggregators when Odos retired on
+                30 July 2026 and OpenOcean has been blocked since 21 August 2026; eight sources were sampled
+                in the 30 days to 29 October 2026. The coverage limit that makes the RFQ share unmeasurable
+                for half the basket was missing entirely and is now stated in the body.
             </p>
 
         </article>
