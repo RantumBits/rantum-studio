@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data &amp; Model Audit: Fixed Scope, Fixed Price | Rantum Studio</title>
-    <meta name="description" content="A fixed-scope, fixed-price audit of one pipeline, model, or data system: $12,000, three weeks, ending in a written report: findings, risk flags, and an ROI-ranked roadmap.">
-    <meta property="og:title" content="Data &amp; Model Audit: Fixed Scope, Fixed Price | Rantum Studio">
-    <meta property="og:description" content="Three weeks against one named system. You keep a written report: findings, risk flags, and an ROI-ranked roadmap, whether or not we work together after.">
+    <title>Data &amp; Model Audit: Measure What Your Numbers Actually Deliver | Rantum Studio</title>
+    <meta name="description" content="Your system publishes a number it promised. What it delivered is a second number, and nobody computes the subtraction. Three weeks, $12,000, five findings ranked by what closing each one protects or earns.">
+    <meta property="og:title" content="Data &amp; Model Audit: Measure What Your Numbers Actually Deliver | Rantum Studio">
+    <meta property="og:description" content="The gap between what your system promised and what it delivered is nobody's job to compute. Three weeks against one named system returns it, as five findings ranked by what closing each one is worth.">
     <meta property="og:image" content="https://rantum.xyz/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -39,7 +39,7 @@
       "@type": "Service",
       "name": "Data & Model Audit",
       "serviceType": "Data and machine-learning model audit",
-      "description": "A fixed-scope, fixed-price audit of one pipeline, model, or data system, delivered as a written report: findings, risk flags, and an ROI-ranked roadmap.",
+      "description": "A fixed-scope, fixed-price audit of one pipeline, model, or data system. Measures the gap between the numbers the system promises and the numbers it delivers, and returns five findings ranked by what closing each one protects or earns.",
       "provider": {
         "@type": "Organization",
         "@id": "https://rantum.xyz/#organization",
@@ -79,15 +79,18 @@
         <!-- Header -->
         <header class="mb-16">
             <div class="flex flex-wrap gap-2 mb-6">
-                <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Fixed scope</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">Ranked by what it&rsquo;s worth</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Fixed scope</span>
                 <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Fixed price</span>
-                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Written deliverable</span>
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
                 Data &amp; Model Audit
             </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-6">
+                Every system you run publishes a number it promised: a quoted price, a predicted score, an advertised accuracy, the metric on your board deck. What it delivered is a second number, recorded somewhere else. Subtracting one from the other is nobody&rsquo;s assigned job, so it is a cost line that has never been computed, and you cannot say today whether it is rounding error or the largest one you carry.
+            </p>
             <p class="text-xl text-gray-400 leading-relaxed mb-8">
-                Three weeks against one named pipeline, model, or data system. You keep a written report: findings, risk flags, and an ROI-ranked roadmap, whether or not we work together after.
+                Three weeks against one named pipeline, model, or data system returns that number: five findings, ranked by what closing each one protects or earns, each carrying the query behind it so your team can re-run it without us.
             </p>
             <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
                 <div class="flex items-center gap-2">
@@ -110,8 +113,8 @@
                 <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Start to report</div>
             </div>
             <div class="glass-panel p-5 rounded-xl text-center">
-                <div class="text-2xl font-bold text-white font-mono">1<span class="text-base text-gray-400"> system</span></div>
-                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Named up front</div>
+                <div class="text-2xl font-bold text-white font-mono">5<span class="text-base text-gray-400"> findings</span></div>
+                <div class="text-xs text-gray-400 mt-1 font-mono uppercase tracking-wide">Minimum, or rebated</div>
             </div>
         </div>
 
@@ -137,12 +140,9 @@
                 What would it cost you to put one of your own senior engineers on this for three weeks? Fully loaded that is about $14,000, and it is three weeks they are not shipping the roadmap. The audit is $12,000 for five findings, each one a query you re-run on your own data.
             </p>
 
-            <h2>What the audit actually measures</h2>
+            <h2>Why that comparison is so rarely run</h2>
             <p>
-                Most of what we find comes out of one comparison: the number your system promised, measured against what it actually delivered. A quoted price, a predicted score, an advertised accuracy, the metric your investors see.
-            </p>
-            <p>
-                In trading that comparison already has a name, implementation shortfall, and a regulatory context, best execution, and desks staff a function to do it. Outside trading it usually has neither, and the promise and the outcome are typically recorded by different systems, so the comparison is nobody's assigned job. That is most of why the gap goes unmeasured.
+                In trading it already has a name, implementation shortfall, and a regulatory context, best execution, and desks staff a function to do it. Outside trading it usually has neither, and the promise and the outcome are typically recorded by different systems, so no one team owns both halves of it. That is most of why the gap goes unmeasured.
             </p>
             <p>
                 We built our instrument for it on our own product. ClearTrace, our live execution-quality service, asks a DEX aggregator for a real quote, then replays that aggregator's own swap calldata in a fork simulation and reads the output the route produces. The shortfall against the quote is split into the fee the venue took and an unexplained residual, with gas reported alongside it rather than folded into it. Everything about how that is computed, including what it cannot measure, is <a href="https://cleartracedata.com/research/how-execution-quality-works" target="_blank" rel="noopener noreferrer">published in full</a>.
