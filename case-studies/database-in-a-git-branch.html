@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ceiling Was Someone Else's | Rantum Studio</title>
+    <meta name="description" content="AddressIntel kept its production database as a single SQLite blob committed to a Git branch, pushed twice a day. The pattern is cheap and it works until the file approaches a size limit nobody on the project set. Six remedies, three of them wrong in ways you can measure, and a twelve-run outage whose real cause was the fix the project had already written once.">
+    <meta property="og:title" content="The Ceiling Was Someone Else's | Rantum Studio">
+    <meta property="og:description" content="AddressIntel kept its production database as a single SQLite blob committed to a Git branch, pushed twice a day. The pattern is cheap and it works until the file approaches a size limit nobody on the project set. Six remedies, three of them wrong in ways you can measure, and a twelve-run outage whose real cause was the fix the project had already written once.">
+    <meta property="og:image" content="https://rantum.xyz/og-database-in-a-git-branch.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://rantum.xyz/case-studies/database-in-a-git-branch.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rantum.xyz/og-database-in-a-git-branch.png">
+    <link rel="canonical" href="https://rantum.xyz/case-studies/database-in-a-git-branch.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/app.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "The Ceiling Was Someone Else's",
+      "author": {
+        "@type": "Person",
+        "name": "Andrew Maury"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Rantum Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rantum.xyz/favicon.png"
+        }
+      }
+    }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-300 antialiased min-h-screen selection:bg-purple-500/30">
+    <!-- Subtle grid background -->
+    <div class="fixed inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <nav class="relative z-10 max-w-3xl mx-auto px-6 py-8 flex justify-between items-center">
+        <a href="../index.html" class="text-gray-400 hover:text-white flex items-center gap-2 font-mono text-sm transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Studio
+        </a>
+        <a href="index.html" class="text-xs font-mono px-3 py-1.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-500/30 hover:bg-purple-900/50 transition-colors">
+            All case studies &rarr;
+        </a>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-6 py-12 sm:py-20">
+
+        <!-- Article Header -->
+        <header class="mb-16">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="text-xs font-mono px-2 py-1 rounded bg-indigo-900/20 text-indigo-400 border border-indigo-500/20">Case Study</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">Data Engineering</span>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-black/50 text-gray-400 border border-gray-800">CI as Infrastructure</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+                The Ceiling Was Someone Else's
+            </h1>
+            <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                A production database kept as one SQLite blob on a Git branch, pushed twice a day. The pattern is cheap and it works, until the file approaches a limit you did not set. Six remedies, three of them wrong in ways you can measure, and a twelve-run outage whose real cause was the fix the project had already written once, for a different table.
+            </p>
+            <div class="flex items-center gap-4 text-sm font-mono text-gray-400 border-b border-gray-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden border border-gray-700">
+                        <img src="https://github.com/RantumBits.png" alt="Andrew Maury" class="w-full h-full object-cover">
+                    </div>
+                    <span>Andrew Maury</span>
+                </div>
+                <span>&bull;</span>
+                <span>November 2026</span>
+            </div>
+        </header>
+
+        <!-- Article Content (Prose) -->
+        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-purple-400 prose-code:text-purple-300">
+            <p>
+                AddressIntel, our predictive real-estate intelligence project, scraped municipal permit portals on a schedule and served what it found. It had no database server. The whole store was a single SQLite file, <code>peninsula_intelligence.db</code>, committed as a blob to a long-lived Git branch called <code>data-store</code>, checked out at the start of each run and pushed back at the end of it.
+            </p>
+            <p>
+                That branch carries 152 commits between 3 September and 4 November 2026, 62 days: 120 of them carrying the pipeline's automated-backup message, the other 32 hand-run data commits. The project was wound down in November 2026; the last pipeline run started on 4 November at 17:30 UTC and the last commit to the branch landed at 18:50. Everything here is measured against the store as it was finally left. The figures come from the canonical copy on <code>data-store</code> rather than from a development machine, and the piece says so again later, because that distinction turns out to be one of the pattern's running costs.
+            </p>
+            <p>
+                The pattern deserves part of its reputation. There is no instance to pay for, no connection string, no backup job, and the history of the data is the history of the branch. What the write-ups we read did not cover is that once the file gets large the constraint stops being yours. It becomes a number set by whoever hosts the remote, enforced at the least convenient point in the run, and the obvious ways around it are mostly wrong in ways you can measure.
+            </p>
+            <p>
+                It is worth saying the ending first, because the rest reads differently without it. Twelve consecutive runs failed, from 29 October to 3 November 2026, eleven of them on the project's own size gate with the store at 92.27 MiB and 7.73 MiB of headroom under the host's hard limit. Then a sixth remedy landed, the pipeline ran green three more times, and the project was wound down for unrelated reasons. The interesting part is not that the ceiling was hit. It is what actually caused the collision, which was not the thing the project had spent two months defending against.
+            </p>
+
+            <h2>What the pattern bought</h2>
+            <p>
+                The shape is simple enough to describe in a sentence. A scheduled GitHub Actions workflow checks out <code>data-store</code> into a <code>db_storage</code> directory, copies the SQLite file into the working tree, scrapes, enriches, derives, pushes the new rows to the serving layer, copies the file back and commits it. The workflow is 1,138 lines, and the scraping is a small share of them; most of the file is guards and ordering.
+            </p>
+            <p>
+                What it genuinely bought is that the store is its own backup, restored once per run, with two months of versions retained for nothing. The second property, the one that looks like free real estate, is that anything the pipeline wants to remember between runs can be written into the file and ride to the branch with everything else, with no second system to provision.
+            </p>
+            <p>
+                That second one is a trap, and the project walked into it. The section after next is about how.
+            </p>
+
+            <h2>The number that was not ours</h2>
+            <p>
+                GitHub rejects any blob of 100 MiB or more at the pre-receive hook. The project's record of 15 September 2026 at 17:30 UTC has the push finally failing:
+            </p>
+            <pre><code>remote: error: File peninsula_intelligence.db is 100.55 MB; this exceeds
+GitHub's file size limit of 100.00 MB
+ ! [remote rejected] data-store -&gt; data-store (pre-receive hook declined)</code></pre>
+            <p>
+                The timing is the lesson rather than the limit. The save step is the last thing a sixty-minute run does, and the sync to the serving layer runs before it. So production kept receiving fresh rows while the canonical lineage stopped advancing, silently, and that run's scraped rows were lost. A failure at the end of the run is a failure that has already spent the run.
+            </p>
+            <p>
+                What pushed it over was not drift. By the project's account a change five days earlier had replaced a 25,000-row ceiling on the archive restore with a count-sized fetch, and the first run under it restored 40,322 archived permits the ceiling had been hiding, taking the store from 146,903 to 187,225 permits in one pass. The restore was working as designed. The consequence of it working was that the store began converging on an append-only archive, which is to say the file could only grow.
+            </p>
+
+            <h2>The first four remedies, three of them closed with a number</h2>
+            <p>
+                Each of the obvious answers is plausible, and three are worse than the problem once someone puts a number on them. The measurements in this section and the next are the project's own, recorded in the header of the compaction script and in the horizon config at the time each option was ruled out. I have reproduced the end state they produced, but not re-run the comparisons themselves.
+            </p>
+            <ul>
+                <li><strong>Git LFS.</strong> Closed on arithmetic rather than taste. The repository is private on the free plan, which allows 1 GB of LFS bandwidth a month, against a roughly 90 MiB blob pushed twice a day. That exhausts the quota in under a week, and LFS stores every version whole rather than as a delta.</li>
+                <li><strong>Compressing the blob.</strong> <code>gzip -9</code> takes the file to 17.7 MiB, which reads like a five-fold win until you measure what it costs Git rather than the filesystem. Packed side by side, five consecutive raw snapshots occupy 19 MB, because Git deltas SQLite files extremely well. The same five gzipped occupy 96 MB. It trades a five-fold file win for a five-fold repository-growth loss, and slows every clone.</li>
+                <li><strong>A plain <code>VACUUM</code>.</strong> The intuitive answer, and close to a no-op here. The freelist was empty at every recent commit, and <code>VACUUM</code> alone moved 90.16 MiB to 88.35. The file was full of live data rather than slack.</li>
+                <li><strong>Changing the physical layout.</strong> The one that worked, and it touched no schema and no rows. The page size went from 4 KiB to 16 KiB, because the largest per-row payload averaged about 2,369 bytes and spilled into overflow chains whose tails were dead space: the enrichment table occupied 23.34 MiB on disk for 13.49 MiB of actual JSON, 40.8% of its pages unused. A 16 KiB page holds those rows inline, taking 90.16 MiB to 77.61 MiB. Then the two tables keyed on a composite text primary key, <code>(city, permit_id)</code> and <code>(city, apn)</code>, were rebuilt <code>WITHOUT ROWID</code>, each having carried a full shadow copy of that key in an implicit autoindex, 5.68 MiB and 2.17 MiB, purely to find a rowid nothing in the codebase reads. That took it to 70.72 MiB.</li>
+            </ul>
+            <p>
+                Together, 21.6% with nothing lost. Both changes are verifiable on the final store, which reports a page size of 16,384, carries both tables as <code>WITHOUT ROWID</code>, and has a freelist of zero pages. A 32 KiB page was measured too, at 77.59 MiB against 16 KiB's 77.61, so the larger page bought 0.02 MiB and cost read amplification. That result is worth recording precisely because it is boring: it closes the question instead of leaving it to be re-proposed.
+            </p>
+            <p>
+                One paragraph of that script's own header has gone stale, and it is worth flagging because it is the sentence a reader would otherwise inherit. The header says the compaction is idempotent, a no-op once the layout is right. The function has a third rewrite trigger: it also rebuilds when at least 3% of pages are unused and that slack is at least 2 MiB, which is what a bulk insert does to a b-tree. The behaviour is documented twice lower down, beside the constants and again inside the function, where the comment says plainly that this is the case the first release missed. Only the summary at the top never caught up. On 3 November it fired on a store whose layout was already correct, logging <em>3.1% of pages unused (2.89 MiB); reclaiming</em> and then <em>92.27 to 92.27 MiB (0.00 MiB reclaimed)</em>: a full rewrite that returned nothing. A docstring is the part of the code that ages without anything failing.
+            </p>
+
+            <h2>The remedy the guard forbids</h2>
+            <p>
+                Compaction buys a fixed percentage once. It does not change the slope, and against an append-only archive a fixed percentage is a delay. The real remedy was to decide what the working store is for and stop keeping rows outside that window.
+            </p>
+            <p>
+                An earlier note had ruled pruning out, and its reasoning was correct when written: a prune is self-defeating while the restore is additive, because the archive re-inserts what you removed on the next run. What made pruning viable was bounding the restore at a configured horizon date, 1 January 2023, on 15 September. What the objection could not foresee is that bounding the restore bounded one writer out of eleven. Three ingest loaders then put 78,803 pre-2023 rows into the store by hand, which is what tripped the size gate on 6 October before that run had scraped anything.
+            </p>
+            <p>
+                So the horizon stopped being one writer's rule and became the store's invariant: a filter applied to every loader at write time, and a sweep over the table on every run. There is a test that enforces this by discovering the writers rather than listing them, so a new loader fails it by existing. Measured through the compaction script on one commit, the sweep took 93.53 MiB to 75.61 MiB, and the permit table from 47.28 MiB to 29.36 MiB.
+            </p>
+            <p>
+                Which the regression gate is built to reject. A prune makes a total fall, and a falling total is the exact condition that fails a run. The two guards are in tension by construction, and the resolution is not clever: the one-time cleanup carries an explicit acceptance flag that records the reduction as deliberate and rebaselines. The drop is still legible in the stored metric history. The highest permit total it ever recorded is 198,608 on 5 October at 19:04 UTC; the lowest is 120,039 the following evening at 18:47. The store ended at 127,947.
+            </p>
+
+            <h2>The guard whose memory the branch erased</h2>
+            <p>
+                The regression gate exists because of a defect two snapshot guards could not see. Rows kept landing and per-city counts held while a placeholder overwrote a real valuation on every sync, and by the project's reckoning $794,618,780 of valuation obtained through public-records requests was erased over months with every run staying green. Nothing had recorded what the numbers were last run, so nothing could notice them shrinking.
+            </p>
+            <p>
+                The fix was a <code>metric_history</code> table written into the database itself, so it would ride to the branch for free. This is the obvious move under this pattern and it is where the pattern bites hardest, because for its first weeks the gate never compared anything at all. Every run printed that it had no prior record and that the gate would be live from the next run, and it never was.
+            </p>
+            <p>
+                Both persistence paths had failed, and they failed for opposite reasons. The sidecar JSON file was covered twice by <code>.gitignore</code>, and the checkout action cleans ignored files at the start of every run, so it was deleted before the run that would have read it. The in-database table failed <em>because of the branch</em>: the gate ran last, after the save step had already copied and pushed the file, and the next run's restore overwrote the working copy wholesale with the pushed copy that had no such table. The guard against an eight-figure silent loss was itself silently doing nothing, which is the precise failure mode it was built to catch.
+            </p>
+            <p>
+                The fix kept the property that made the gate safe and moved only the write: record the baseline before the save, save, then run the gate. The table's history starting on 16 September rather than at the branch's own beginning on 3 September is the fingerprint of that repair. It now holds 20,138 rows across 76 snapshots, per city and in total.
+            </p>
+            <p>
+                The transferable version is not about SQLite. If a guard's state lives inside the artifact your pipeline overwrites every run, the ordering of the write against the overwrite <em>is</em> the guard. Get it wrong and you have a gate that reports success and compares nothing.
+            </p>
+
+            <h2>Ordering, four more times</h2>
+            <p>
+                The same reasoning runs through the rest of the workflow once you look for it.
+            </p>
+            <p>
+                The horizon sweep was first placed in the derivation block at step 15, while the size gate is step 8, so on 6 October a run died at the gate on a 93.53 MiB store while holding the rows that the step seven places later existed to remove. To be exact about the blast radius, because the lesson is more quotable than the incident: the misordering was introduced at 09:15 and corrected at 10:13 the same morning, and cost exactly one run. The principle is still the one worth keeping. A remedy downstream of the check that demands it is not a remedy.
+            </p>
+            <p>
+                Compaction happens before the copy, so the blob that goes up is the small one, and the early gate cannot do that job because the run's own bulk inserts happen after it. The final size check is deliberately duplicated immediately before the push, because a single run can add rows and the number that matters is the one being pushed. Failing there with your own message beats failing on the remote's pre-receive hook: it names the file, the size and the remedy inside the step's own log rather than as a <code>remote: error:</code> line in a 1,300-line run log.
+            </p>
+            <p>
+                Four gates sit after the sync and after the save, with only log handling behind them: source health, permit coverage, metric regression and a narrow scoring check. They are last for the opposite reason to everything above. A run that goes red has already persisted every byte it collected, and a red run that kept its data is the goal. The source-health gate exists because a city sat at 2 permits for weeks on a rejected portal login while the scraper printed a warning, returned an empty list and let the run report success, and that absence then rendered as "0 demo permits" in copy sent to an audience who would know it was false. It checks only failures a scraper knows about and refuses to infer breakage from a low count, since a quiet city and a broken scraper both yield zero. It is also deliberately slow to escalate: a failure is annotated on the first run, and the job only goes red once a source has failed a threshold number of a recent window of runs, or two sources break at once. That rule was added after a single scraper crash red a run in which everything else had worked.
+            </p>
+            <p>
+                There is one more guard worth stealing outright. The <code>data-store</code> checkout is allowed to fail without failing the run, so the save step first asks whether the directory is missing while the branch exists on the remote. If both are true, this run started from an empty database and pushing it would replace the whole backup with one run's worth of data. It bails. The push is a force push, so nothing else would have stopped it.
+            </p>
+
+            <h2>Two copies, one filename</h2>
+            <p>
+                The cost the pattern never stops charging is that a database you can copy is a database that gets copied.
+            </p>
+            <p>
+                On 15 September 2026 four separate published figures were wrong from a single cause: they were measured against the file on the development Mac rather than the canonical copy on <code>data-store</code>. Both files are called <code>peninsula_intelligence.db</code> and nothing on either said which was which. A classifier change was published as moving 37 rows in one city; measured against canonical it moved 280, and the gap was a second city whose permits the development copy did not hold at the time, so the published claim could not have named it. (The canonical re-measure was not the end of it either: that city's rescue was later partly reverted, because 108 of the 274 rescued rows were detached ADUs mislabelled under single-family.) A join rate of "3,417 of 3,447 APNs, 99.1%" was measured against a table that exists only on the dev machine, where the canonical figure is 0 of 3,447, and it reached a commit message and a public-facing log. An ingest's before-count was read as 57 when canonical already held 96. A committed test fixture was generated from the local copy and so covered 40,514 pairs of a 95,354-pair corpus, blind to the vocabularies it was missing.
+            </p>
+            <p>
+                The response was a provenance test rather than a naming convention, and it is two-sided on purpose so it cannot pass on a truncated or unreadable file. A database is canonical only when it carries a marker table that <code>data-store</code> has and the dev copy does not, <em>and</em> carries none of the seven tables only a development machine builds. Run against the two copies as they now stand it classifies both correctly: canonical holds 20 tables and the marker and none of the seven, the development copy holds 25 tables and all seven and no marker.
+            </p>
+            <p>
+                The divergence is not a rounding error. The canonical store is 92,487,680 bytes, 88.20 MiB, holding 127,947 permits. The development copy is 769,474,560 bytes, about 733.8 MiB, holding 228,011. Eight times the file for 1.8 times the rows, because only one of the two is under any pressure to stay small. Neither is a superset of the other, and the gap is wide in both directions: comparing them on the composite key, 121,776 permits are in both, 6,171 exist only on canonical and 106,235 only on the development copy. The canonical copy holds permits issued as recently as 4 November; the development copy stops at 13 October.
+            </p>
+            <p>
+                That is the honest accounting. The branch gives you a canonical copy for free, and then the ordinary act of working on the data produces a second one that is larger, fresher in some respects, staler in others, and indistinguishable by name.
+            </p>
+
+            <h2>How it actually ended</h2>
+            <p>
+                Twelve consecutive runs failed, from 29 October 05:30 to 3 November 17:30. Eleven died at the size gate within a minute of starting, before scraping anything; the twelfth was the only one in the streak to reach the metric regression gate and fail there.
+            </p>
+            <p>
+                The gate's error text on 3 November is the fairest summary of the pattern anyone wrote (punctuation normalised, tail elided):
+            </p>
+            <pre><code>The data-store SQLite file is 92.27 MiB, over the 92 MiB gate and only
+7.73 MiB under GitHub's 100 MiB blob limit. The save step at the END of
+this run would be rejected by the pre-receive hook, after the Data Connect
+sync had already published this run's rows, so the run is stopped HERE
+instead, with nothing published and nothing lost. Compaction has already
+been applied and was not enough: the store needs a real remedy (bound the
+working store against the archive, or split it). [...]</code></pre>
+            <p>
+                The guard did its job. It converted a push rejection at the end of the run into a cheap refusal at the start of it, which is the whole difference between losing an hour's scraping and not. The store sat over the project's own gate for twelve consecutive runs, five and a half days.
+            </p>
+            <p>
+                And then the obvious conclusion turned out to be wrong, which is the most useful thing in this piece.
+            </p>
+            <p>
+                The tidy reading is that an append-only permit archive had outgrown a fixed-percentage fix and the pattern was finished. The commit that ended the outage says otherwise. It names the cause as a single dispatched run: a ten-year sold-sales pull on 13 October wrote 17,054 pre-2023 sales, taking the <code>sales</code> table from 19,629 to 45,766 rows and 4.69 to 10.98 MiB. The permit horizon had no part in it. Permits were bounded; sales were not. The backfill did not trip the gate on the day either: it landed on 13 October and the first red run was the 29th, so it was the thing that removed the headroom rather than the thing that consumed the last of it.
+            </p>
+            <p>
+                That is this piece's own best insight happening a second time. Bounding the restore bounded one writer of eleven, and the answer was to make the horizon the store's invariant. The horizon was then made an invariant <em>of the permits table</em>, and a different table walked through the same door one week later. The fix of 3 November extended the sweep to <code>sales</code> on <code>sale_date</code> at the same 1 January 2023 horizon, and rebuilt three more tables <code>WITHOUT ROWID</code>: the sixth remedy, and more of the third, fourth and fifth. It took the store from 92.27 to 85.61 MiB on a copy, and it worked. The next run pruned 200 sales, compacted 87.38 to 87.33 MiB, and went green. Two more green runs followed on 4 November, and the store was finally left at 88.20 MiB with no pre-2023 permits under the horizon's own predicate, which deliberately keeps the 7,716 rows carrying no issued date, and 201 pre-2023 sales, 0.7% of that table, arriving after the last sweep.
+            </p>
+            <p>
+                So the pipeline did not die against the ceiling. It was wound down, three green runs later, for reasons unrelated to the ceiling. What the episode actually demonstrates is narrower and more useful than exhaustion: an invariant enforced per table is not an invariant, and the table that breaks it next is the one nobody re-checks, because by then the rule reads as settled.
+            </p>
+
+            <h2>What to take from it</h2>
+            <ul>
+                <li><strong>A storage pattern you do not pay for has a limit you do not set.</strong> The 100 MiB blob ceiling is the host's number, not configurable, and it is enforced at the push rather than at the write.</li>
+                <li><strong>Find out early or spend the run.</strong> The first failure arrived at the last step of a sixty-minute run, after the serving layer had already been updated. Gate the size at the start, where it costs a second, and again immediately before the push, where the number is real.</li>
+                <li><strong>A remedy downstream of the check that demands it is not a remedy.</strong> The sweep sat seven steps after the gate it was written to satisfy. It cost one run, and only because someone noticed within the hour.</li>
+                <li><strong>Close the obvious options with a number.</strong> LFS, gzip and <code>VACUUM</code> are each the obvious answer to somebody. One measurement apiece closes them, and writing the numbers down is what stops them being re-proposed.</li>
+                <li><strong>Physical layout is the cheapest fifth you will find.</strong> Page size and <code>WITHOUT ROWID</code> cut 21.6% with no schema change and no row loss. It buys headroom rather than a slope, so it is worth doing first and worth not mistaking for the answer.</li>
+                <li><strong>An invariant enforced per table is not an invariant.</strong> The horizon was made the store's rule and then applied to permits. A one-off backfill into the sales table a week later went unguarded, and the collision it set up took twelve runs to clear.</li>
+                <li><strong>Expect your guards to contradict each other.</strong> A gate that forbids a shrinking table and a prune that keeps you under the ceiling cannot both be satisfied, and the resolution is an explicit recorded acceptance rather than a weakened gate.</li>
+                <li><strong>A guard whose state lives in the artifact you overwrite every run is an ordering problem.</strong> Writing the baseline after the save meant the next restore erased it, and the gate reported success while comparing nothing for weeks.</li>
+                <li><strong>Name the copies.</strong> Here two files with the same name and different contents produced four wrong published figures in a single day, from two reviewers working independently. A two-sided provenance test is cheap, and a convention is not enforcement.</li>
+                <li><strong>Know the exit condition before you start.</strong> The pattern is excellent early and has a hard end, and the end is a migration you would rather schedule than discover. Decide in advance what size triggers it.</li>
+            </ul>
+            <p>
+                A Git branch was a defensible place to keep this database, and it held one for two months without an instance to pay for. What it charged was not storage. It was the work of discovering, one red run at a time, where somebody else's limit sat, which of your own guards would fight you on the way to it, that the file you were protecting had quietly become two, and that the rule you wrote to protect it covered one table out of several.
+            </p>
+
+        </article>
+
+        <!-- Newsletter -->
+        <aside class="mt-12 border-l-2 border-purple-700/50 pl-5 text-sm text-gray-400">
+            <p>
+                The pipelines behind these case studies are documented as they change. <a href="index.html" class="text-purple-400 hover:text-purple-300 transition-colors">See the rest of the work</a>.
+            </p>
+        </aside>
+
+        <!-- Call to Action -->
+        <section class="mt-20 glass-panel p-10 rounded-2xl text-center border-t border-purple-900/30 bg-gradient-to-b from-purple-900/10 to-transparent">
+            <h3 class="text-2xl font-bold text-white mb-4">Running a pipeline that has outgrown its storage?</h3>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">Rantum is a senior data science &amp; ML studio. We turn messy, fragmented, and adversarial data into models, APIs, and products that ship, and into numbers a board can rely on.</p>
+            <a href="mailto:andrew@andrewmaury.com" class="inline-block bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg shadow-purple-500/20 text-sm">
+                Work with us
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8 border-t border-gray-800 text-center text-xs font-mono text-gray-400">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Rantum Studio</p>
+            <div class="flex gap-6">
+                <a href="https://dune.com/rantum" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Dune</a>
+                <a href="https://github.com/RantumBits" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://andrewmaury.com" class="hover:text-white transition-colors">andrewmaury.com</a>
+            </div>
+        </div>
+                <span><a href="/privacy/" class="hover:text-white transition-colors">Privacy</a> &middot; <a href="/terms/" class="hover:text-white transition-colors">Terms</a></span>
+        </footer>
+</body>
+</html>
